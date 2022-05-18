@@ -1,0 +1,48 @@
+{
+  "name": "WebXR Quest Emulator",
+  "short_name": "WQE",
+  "version": "0.1",
+  "minimum_chrome_version": "21.0",
+  "devtools_page": "src/extension/devtools.html",
+  "description": "WebXR API Emulator for Meta Quest",
+  "author": "Felix Zhang",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "background": {
+    "scripts": ["src/extension/background.js"]
+  },
+  "permissions": [
+    "file://*/*",
+    "http://*/*",
+    "https://*/*",
+    "storage",
+    "activeTab"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["file://*/*", "http://*/*", "https://*/*"],
+      "js": [
+        "polyfill/webxr-polyfill.js",
+        "src/ConfigurationManager.js",
+        "src/extension/content-script.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],
+  "browser_action": {
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "WebXR API Emulator for Meta Quest",
+    "default_popup": "src/extension/popup.html"
+  },
+  "manifest_version": 2,
+  "web_accessible_resources": ["src/devices.json"],
+  "content_security_policy": "script-src 'self' https://cdn.jsdelivr.net; object-src 'self'"
+}

@@ -1,0 +1,58 @@
+<div class="card pose-card">
+  <div class="card-body">
+    <div class="row" style="margin: 2%">
+      <div class="col-6 d-flex justify-content-start align-items-center">
+        <img src="/assets/images/pose.png" class="control-icon" />
+        <div>
+          <select
+            id="pose-select"
+            class="form-select pose-action-button button-leftmost"
+            aria-label="Default select example"
+            style="width: 100px; margin-left: 10px"
+          >
+            <option selected value="1">No Pose Saved</option>
+            <option value="2">Pose 2</option>
+          </select>
+          <button
+            id="pose-delete"
+            type="button"
+            class="btn pose-action-button button-middle"
+          >
+            <img src="/assets/images/trash.png" class="action-icon" />
+          </button>
+          <button
+            id="pose-reset"
+            type="button"
+            class="btn pose-action-button button-rightmost"
+          >
+            <img src="/assets/images/reset.png" class="action-icon" />
+          </button>
+        </div>
+      </div>
+      <div class="col-6 d-flex justify-content-end align-items-center">
+        <div>
+          <button
+            id="pose-revert"
+            type="button"
+            class="btn pose-action-button button-leftmost"
+          >
+            <img src="/assets/images/revert.png" class="action-icon" />
+            Revert
+          </button>
+          <button
+            id="pose-apply"
+            type="button"
+            class="btn pose-action-button button-rightmost"
+          >
+            <img src="/assets/images/save.png" class="action-icon" />
+            Apply
+          </button>
+          <button id="pose-save" type="button" class="btn pose-action-button">
+            <img src="/assets/images/save-copy.png" class="action-icon" />
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
