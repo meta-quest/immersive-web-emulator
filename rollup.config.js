@@ -1,12 +1,12 @@
+import cleanup from 'rollup-plugin-cleanup';
 import commonjs from 'rollup-plugin-commonjs';
 import replace from 'rollup-plugin-replace';
 import resolve from 'rollup-plugin-node-resolve';
-import cleanup from 'rollup-plugin-cleanup';
 
 export default {
-  input: 'src/polyfill/CustomWebXRPolyfill.js',
+  input: 'polyfill/CustomWebXRPolyfill.js',
   output: {
-    file: './polyfill/webxr-polyfill.js',
+    file: './polyfill/build/webxr-polyfill.js',
     format: 'umd',
     name: 'CustomWebXRPolyfill',
     // Note: These banner and footer are the trick to inject polyfill in content-script

@@ -4,7 +4,7 @@
   "version": "0.1",
   "minimum_chrome_version": "21.0",
   "devtools_page": "src/extension/devtools.html",
-  "description": "WebXR API Emulator for Meta Quest",
+  "description": "WebXR Emulator for Meta Quest",
   "author": "Felix Zhang",
   "icons": {
     "16": "icons/icon16.png",
@@ -25,7 +25,7 @@
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
       "js": [
-        "polyfill/webxr-polyfill.js",
+        "polyfill/build/webxr-polyfill.js",
         "src/ConfigurationManager.js",
         "src/extension/content-script.js"
       ],
