@@ -7,9 +7,9 @@
   "description": "WebXR Emulator for Meta Quest",
   "author": "Felix Zhang",
   "icons": {
-    "16": "icons/icon16.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
+    "16": "assets/icons/icon16.png",
+    "48": "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
   },
   "background": {
     "scripts": ["src/extension/background.js"]
@@ -35,9 +35,9 @@
   ],
   "browser_action": {
     "default_icon": {
-      "16": "icons/icon16.png",
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
+      "16": "assets/icons/icon16.png",
+      "48": "assets/icons/icon48.png",
+      "128": "assets/icons/icon128.png"
     },
     "default_title": "WebXR API Emulator for Meta Quest",
     "default_popup": "src/extension/popup.html"

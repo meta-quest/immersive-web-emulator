@@ -269,17 +269,6 @@ function updateAxes(deviceId) {
   });
 }
 
-// copy values to clipboard on click
-const onTransformFieldClick = (event) => {
-  const el = event.target;
-  navigator.clipboard.writeText(el.innerHTML.split(" ").join(", "));
-};
-
-for (const field of document.getElementsByClassName("value")) {
-  field.addEventListener("click", onTransformFieldClick, false);
-  field.title = "Click to copy to clipboard";
-}
-
 $("#headset-component").load(
   "headset-component.html",
   setupHeadsetComponentButtons

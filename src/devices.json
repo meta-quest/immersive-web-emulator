@@ -1,8 +1,7 @@
 {
   "default": {
     "deviceKey": "Oculus Quest 2",
-    "stereoEffect": false,
-    "poses": {}
+    "stereoEffect": false
   },
   "devices": {
     "Oculus Rift CV1": {

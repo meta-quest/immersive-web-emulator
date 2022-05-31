@@ -84,7 +84,6 @@ class ConfigurationManager {
     this.updateDeviceKey(deviceKey);
     this.updateStereoEffect(stereoEffect);
     this.updateStoredPoses(storedPoses);
-    this.updateStoredSessions(storedSessions);
   }
 
   updateDeviceKey(key) {
@@ -111,10 +110,6 @@ class ConfigurationManager {
     this._storedPoses = storedPoses;
   }
 
-  updateStoredSessions(storedSessions) {
-    this._storedSessions = storedSessions;
-  }
-
   savePose(key, newPose) {
     this._storedPoses[key] = newPose;
   }
@@ -123,16 +118,8 @@ class ConfigurationManager {
     delete this._storedPoses[key];
   }
 
-  saveSession(key, newSession) {
-    this._storedSessions[key] = newSession;
-  }
-
-  deleteSession(key) {
-    delete this.storedSessions[key];
-  }
-
   loadFromStorage() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
       chrome.storage.local.get(this._storageKey, result => {
         this.deserialize(result[this._storageKey] || '');
         resolve(result);
@@ -140,8 +127,8 @@ class ConfigurationManager {
     });
   }
 
-  storeToStorage() {
-    return new Promise((resolve, reject) => {
+  writeToStorage() {
+    return new Promise((resolve, _reject) => {
       const storedValue = {};
       storedValue[this._storageKey] = this.serialize();
       chrome.storage.local.set(storedValue, () => {
