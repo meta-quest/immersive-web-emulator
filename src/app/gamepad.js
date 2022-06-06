@@ -192,7 +192,6 @@ const sendKeyPressToActiveTab = (key, keyCode) => {
       `
       .replace(/<key>/g, key)
       .replace(/<keycode>/g, keyCode);
-    // http://infoheap.com/chrome-extension-tutorial-access-dom/
     chrome.tabs.executeScript(tabId, { code }, function (result) {
       console.log("keyboard event sent:", key);
     });

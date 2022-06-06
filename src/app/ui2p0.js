@@ -120,6 +120,34 @@ const pressAndReleaseButton = (deviceId, inputId) => {
   }, PRESS_AND_RELEASE_DURATION);
 };
 
+const pressAndReleaseAnalogButton = (pressButton, rangeInput) => {
+  const step = 10;
+  const interval = 10;
+  const holdTime = 50;
+  pressButton.disabled = true;
+  let rangeValue = 0;
+  const pressIntervalId = setInterval(() => {
+    if (rangeInput.value >= 100) {
+      rangeInput.value = 100;
+      clearInterval(pressIntervalId);
+      setTimeout(() => {
+        const depressIntervalId = setInterval(() => {
+          if (rangeInput.value <= 0) {
+            rangeInput.value = 0;
+            clearInterval(depressIntervalId);
+            pressButton.disabled = false;
+          } else {
+            rangeInput.value -= step;
+          }
+        }, interval);
+      }, holdTime);
+    } else {
+      rangeValue += step;
+      rangeInput.value = rangeValue;
+    }
+  }, interval);
+};
+
 const setupJoystickButtons = (deviceId) => {
   const deviceName = OBJECT_NAME[deviceId];
   const stickyButton = document.getElementById(deviceName + "-joystick-sticky");
@@ -158,7 +186,11 @@ const registerControllerButtonEvents = (deviceId) => {
     }
     if (pressButton) {
       pressButton.onclick = () => {
-        pressAndReleaseButton(deviceId, key);
+        if (rangeInput) {
+          pressAndReleaseAnalogButton(pressButton, rangeInput);
+        } else {
+          pressAndReleaseButton(deviceId, key);
+        }
       };
     }
     if (holdButton) {

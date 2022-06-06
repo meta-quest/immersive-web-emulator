@@ -65,6 +65,12 @@ const onResize = () => {
     renderer.setSize(width - 5, height);
     render();
   }, 50);
+
+  if (document.body.offsetHeight < 600 || document.body.offsetWidth < 550) {
+    document.getElementById("mask").style.display = "block";
+  } else {
+    document.getElementById("mask").style.display = "none";
+  }
 };
 
 // scene, camera, light, grid
