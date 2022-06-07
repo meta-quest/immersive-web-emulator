@@ -304,3 +304,14 @@ body {
   border-width: 5px;
   border-style: dashed;
 }
+
+.alternative-control-card {
+  border-radius: 10px;
+  background-color: #252526;
+  color: #a7a7a7;
+  margin: 0px 5px 5px 5px;
+}
+
+.alternative-control-card .card-body {
+  padding: 5px 0px 5px 0px;
+}

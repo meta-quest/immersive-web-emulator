@@ -6,6 +6,7 @@ const states = {
   transformCheckpoint: {},
   deviceOverridden: null,
   customMappingMode: false,
+  keyboardInputPassthrough: true,
 };
 
 const PRESS_AND_RELEASE_DURATION = 250;

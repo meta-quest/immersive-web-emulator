@@ -264,9 +264,9 @@ const setupHeadsetComponentButtons = () => {
       changeDevice(this.value);
     });
 
-  document
-    .getElementById("reset-poses")
-    .addEventListener("click", resetDevicePose);
+  document.getElementById("settings").onclick = function () {
+    alert("Emulator settings not yet available");
+  };
 };
 
 function updateAxes(deviceId) {

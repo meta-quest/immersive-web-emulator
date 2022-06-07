@@ -6,7 +6,7 @@ document.addEventListener(
       const [handKey, action] = result;
       onReservedKeyDown(handKey, action);
       moveJoysticks();
-    } else {
+    } else if (states.keyboardInputPassthrough) {
       passThroughKeyboardEvent(event);
     }
   },
@@ -21,7 +21,7 @@ document.addEventListener(
       const [handKey, action] = result;
       onReservedKeyUp(handKey, action);
       moveJoysticks();
-    } else {
+    } else if (states.keyboardInputPassthrough) {
       passThroughKeyboardEvent(event);
     }
   },
@@ -31,7 +31,10 @@ document.addEventListener(
 document.addEventListener(
   "keypress",
   (event) => {
-    passThroughKeyboardEvent(event);
+    const result = getReservedKeyAction(event.key);
+    if (!result && states.keyboardInputPassthrough) {
+      passThroughKeyboardEvent(event);
+    }
   },
   false
 );
@@ -44,8 +47,8 @@ const KEYBOARD_CONTROL_MAPPING = {
     joystickBackward: "s",
     trigger: "e",
     grip: "q",
-    button1: "z",
-    button2: "x",
+    button1: "x",
+    button2: "z",
     joystick: "c",
   },
   right: {
@@ -108,6 +111,9 @@ const onReservedKeyDown = (handKey, action) => {
         handKey + "-controller-" + action + "-value"
       );
       rangeInput.value = 100;
+      document.getElementById(
+        handKey + "-controller-" + action + "-press"
+      ).disabled = true;
       break;
     default:
       const pressButton = document.getElementById(
@@ -137,7 +143,15 @@ const onReservedKeyUp = (handKey, action) => {
         handKey + "-controller-" + action + "-value"
       );
       rangeInput.value = 0;
+      document.getElementById(
+        handKey + "-controller-" + action + "-press"
+      ).disabled = false;
       break;
+    default:
+      const pressButton = document.getElementById(
+        handKey + "-controller-" + action + "-press"
+      );
+      pressButton.click();
   }
 };
 
@@ -207,3 +221,35 @@ const moveJoysticks = () => {
     });
   }
 };
+
+const setupKeyboardControlButtons = () => {
+  document.getElementById("keyboard-input-relay").onclick = function () {
+    states.keyboardInputPassthrough = !states.keyboardInputPassthrough;
+    this.classList.toggle("button-pressed");
+  };
+  document.getElementById("keyboard-mapping").onclick = function () {
+    alert(`
+    Left Controller Mapping:
+    Joystick: WASD
+    Trigger: E
+    Grip: Q
+    ButtonX: X
+    ButtonY: Z
+    ---------------------------
+    Right Controller Mapping:
+    Joystick: Arrow keys
+    Trigger: Enter
+    Grip: Shift
+    ButtonA: '
+    ButtonB: /
+    `);
+  };
+  document.getElementById("keyboard-settings").onclick = function () {
+    alert("Keyboard control settings not yet available");
+  };
+};
+
+$("#keyboard-control-component").load(
+  "keyboard-control-component.html",
+  setupKeyboardControlButtons
+);

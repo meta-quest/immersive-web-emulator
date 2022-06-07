@@ -39,6 +39,8 @@ const onGamepadConnected = (e) => {
   deregisterControllerButtonEvents(DEVICE.LEFT_CONTROLLER);
   saveButtonStates(e.gamepad);
   console.log(lastFrameButtonStates);
+  document.getElementById("keyboard-control-component").style.display = "none";
+  document.getElementById("gamepad-control-component").style.display = "block";
   requestAnimationFrame(updateStatus);
 };
 
@@ -46,6 +48,8 @@ const onGamepadDisconnected = (e) => {
   states.deviceOverridden = null;
   registerControllerButtonEvents(DEVICE.LEFT_CONTROLLER);
   delete gamepads[e.gamepad.index];
+  document.getElementById("keyboard-control-component").style.display = "block";
+  document.getElementById("gamepad-control-component").style.display = "none";
 };
 
 const scanConnectedGamepads = () => {
@@ -248,3 +252,5 @@ const customMapping = (gamepad) => {
     updateButtonStates();
   }
 };
+
+$("#gamepad-control-component").load("gamepad-control-component.html");
