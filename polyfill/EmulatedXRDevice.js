@@ -1,11 +1,7 @@
 import { mat4, quat, vec3 } from "gl-matrix";
 
-import ARScene from "./ARScene";
 import GamepadXRInputSource from "webxr-polyfill/src/devices/GamepadXRInputSource";
 import XRDevice from "webxr-polyfill/src/devices/XRDevice";
-import XRInputSource from "webxr-polyfill/src/api/XRInputSource";
-import { PRIVATE as XRSESSION_PRIVATE } from "webxr-polyfill/src/api/XRSession";
-import XRTransientInputHitTestSource from "./api/XRTransientInputHitTestSource";
 
 const DEFAULT_MODES = ["inline"];
 
@@ -84,12 +80,10 @@ export default class EmulatedXRDevice extends XRDevice {
     // For AR
 
     // Assuming a device supports at most either one VR or AR
-    this.arDevice = this.modes.includes("immersive-ar");
     this.resolution =
       config.resolution !== undefined ? config.resolution : DEFAULT_RESOLUTION;
     this.deviceSize =
       config.size !== undefined ? config.size : DEFAULT_DEVICE_SIZE;
-    this.arScene = null;
     this.touched = false;
     this.isPointerAndTabledCloseEnough = false; // UGH... @TODO: Rename
 
@@ -115,18 +109,6 @@ export default class EmulatedXRDevice extends XRDevice {
     session.baseLayer = layer;
     if (session.immersive && session.baseLayer) {
       this._appendBaseLayerCanvasToDiv(sessionId);
-      if (session.ar) {
-        const canvas = session.baseLayer.context.canvas;
-        canvas.width = this.resolution.width;
-        canvas.height = this.resolution.height;
-        this.arScene.setCanvas(canvas);
-        if (canvas.parentElement) {
-          // Not sure why but this is necessary for Firefox.
-          // Otherwise, the canvas won't be rendered in AR scene.
-          // @TODO: Figure out the root issue and resolve.
-          canvas.parentElement.removeChild(canvas);
-        }
-      }
     }
   }
 
@@ -160,40 +142,9 @@ export default class EmulatedXRDevice extends XRDevice {
     if (!this.isSessionSupported(mode)) {
       return Promise.reject();
     }
-    const immersive = mode === "immersive-vr" || mode === "immersive-ar";
+    const immersive = mode === "immersive-vr";
     const session = new Session(mode, enabledFeatures);
     this.sessions.set(session.id, session);
-    if (mode === "immersive-ar") {
-      if (!this.arScene) {
-        this.arScene = new ARScene(this.deviceSize);
-        this._requestVirtualRoomAsset();
-        this.arScene.onTouch = (position) => {
-          this.touched = true;
-          for (let i = 0; i < 3; i++) {
-            this.gamepads[0].pose.position[i] = position[i];
-          }
-          this.arScene.updatePointerTransform(
-            this.gamepads[0].pose.position,
-            this.gamepads[0].pose.orientation
-          );
-          this._notifyInputPoseUpdate(0);
-        };
-        this.arScene.onRelease = () => {
-          this.touched = false;
-        };
-        this.arScene.onCameraPoseUpdate = (positionArray, quaternionArray) => {
-          this._updatePose(positionArray, quaternionArray);
-          this.arScene.updateCameraTransform(positionArray, quaternionArray);
-          this._notifyPoseUpdate();
-        };
-        this.arScene.onTabletPoseUpdate = (positionArray, quaternionArray) => {
-          this._updateInputPose(positionArray, quaternionArray, 1);
-          this.arScene.updateTabletTransform(positionArray, quaternionArray);
-          this._notifyInputPoseUpdate(1);
-        };
-      }
-      this.arScene.inject(this.div);
-    }
     if (immersive) {
       this.dispatchEvent("@@webxr-polyfill/vr-present-start", session.id);
       this._notifyEnterImmersive();
@@ -310,55 +261,22 @@ export default class EmulatedXRDevice extends XRDevice {
     // @TODO: If there are multiple immersive sessions, input events are fired only for the first session.
     //        Fix this issue (if multiple immersive sessions can be created).
     if (session.immersive) {
-      if (this.arDevice) {
-        if (this.touched && this._isPointerCloseEnoughToTablet()) {
-          if (!this.isPointerAndTabledCloseEnough) {
-            this._updateInputButton(0, 0, true);
-            this.isPointerAndTabledCloseEnough = true;
-            this.arScene.touched();
-          }
-          const coordinates = this._getTouchCoordinates();
-          this._updateInputAxes(0, coordinates[0], -coordinates[1]);
-        } else {
-          if (this.isPointerAndTabledCloseEnough) {
-            this._updateInputButton(0, 0, false);
-            this.isPointerAndTabledCloseEnough = false;
-            this.arScene.released();
-          }
-          this._updateInputAxes(0, 0, 0);
-        }
-      }
-
       for (let i = 0; i < this.gamepads.length; ++i) {
         const gamepad = this.gamepads[i];
         const inputSourceImpl = this.gamepadInputSources[i];
         inputSourceImpl.updateFromGamepad(gamepad);
-        // @TODO: temporal workaround because the polyfill doesn't have a way to set 'screen'.
-        //        We should send the feedback to the polyfill.
-        if (this.arDevice && i === 0) {
-          inputSourceImpl.targetRayMode = "screen";
-        }
         if (inputSourceImpl.primaryButtonIndex !== -1) {
           const primaryActionPressed =
             gamepad.buttons[inputSourceImpl.primaryButtonIndex].pressed;
           if (primaryActionPressed && !inputSourceImpl.primaryActionPressed) {
-            // Fire primary action select start event in onEndFrame() for AR device.
-            // See the comment in onEndFrame() for the detail.
-            if (this.arDevice) {
-              inputSourceImpl.active = true;
-            } else {
-              this.dispatchEvent("@@webxr-polyfill/input-select-start", {
-                sessionId: session.id,
-                inputSource: inputSourceImpl.inputSource,
-              });
-            }
+            this.dispatchEvent("@@webxr-polyfill/input-select-start", {
+              sessionId: session.id,
+              inputSource: inputSourceImpl.inputSource,
+            });
           } else if (
             !primaryActionPressed &&
             inputSourceImpl.primaryActionPressed
           ) {
-            if (this.arDevice) {
-              inputSourceImpl.active = false;
-            }
             this.dispatchEvent("@@webxr-polyfill/input-select-end", {
               sessionId: session.id,
               inputSource: inputSourceImpl.inputSource,
@@ -391,12 +309,12 @@ export default class EmulatedXRDevice extends XRDevice {
         }
       }
 
-      this._hitTest(sessionId, this.hitTestSources, this.hitTestResults);
-      this._hitTest(
-        sessionId,
-        this.hitTestSourcesForTransientInput,
-        this.hitTestResultsForTransientInput
-      );
+      // this._hitTest(sessionId, this.hitTestSources, this.hitTestResults);
+      // this._hitTest(
+      //   sessionId,
+      //   this.hitTestSourcesForTransientInput,
+      //   this.hitTestResultsForTransientInput
+      // );
     }
   }
 
@@ -418,14 +336,6 @@ export default class EmulatedXRDevice extends XRDevice {
         if (inputSourceImpl.primaryButtonIndex !== -1) {
           const primaryActionPressed =
             gamepad.buttons[inputSourceImpl.primaryButtonIndex].pressed;
-          if (primaryActionPressed && !inputSourceImpl.primaryActionPressed) {
-            if (this.arDevice) {
-              this.dispatchEvent("@@webxr-polyfill/input-select-start", {
-                sessionId: session.id,
-                inputSource: inputSourceImpl.inputSource,
-              });
-            }
-          }
           inputSourceImpl.primaryActionPressed = primaryActionPressed;
         }
       }
@@ -457,10 +367,6 @@ export default class EmulatedXRDevice extends XRDevice {
     if (session.immersive && session.baseLayer) {
       this._removeBaseLayerCanvasFromDiv(sessionId);
       this.domOverlayRoot = null;
-      if (session.ar) {
-        this.arScene.eject();
-        this.arScene.releaseCanvas();
-      }
       this.dispatchEvent("@@webxr-polyfill/vr-present-end", sessionId);
       this._notifyLeaveImmersive();
     }
@@ -507,7 +413,7 @@ export default class EmulatedXRDevice extends XRDevice {
   }
 
   getProjectionMatrix(eye) {
-    return this.arDevice || eye === "none"
+    return eye === "none"
       ? this.projectionMatrix
       : eye === "left"
       ? this.leftProjectionMatrix
@@ -519,7 +425,7 @@ export default class EmulatedXRDevice extends XRDevice {
   }
 
   getBaseViewMatrix(eye) {
-    if (eye === "none" || this.arDevice || !this.stereoEffectEnabled) {
+    if (eye === "none" || !this.stereoEffectEnabled) {
       return this.viewMatrix;
     }
     return eye === "left" ? this.leftViewMatrix : this.rightViewMatrix;
@@ -539,47 +445,6 @@ export default class EmulatedXRDevice extends XRDevice {
     for (const inputSourceImpl of this.gamepadInputSources) {
       if (inputSourceImpl.inputSource === inputSource) {
         const pose = inputSourceImpl.getXRPose(coordinateSystem, poseType);
-
-        // In AR mode, calculate the input pose for right controller
-        // from the relation of right controller(pointer) and left controller(tablet)
-        if (this.arDevice && inputSourceImpl === this.gamepadInputSources[0]) {
-          if (!inputSourceImpl.active) {
-            return null;
-          }
-          // @TODO: Add note about this matrix
-          // @TODO: Optimize if possible
-          const viewMatrixInverse = mat4.invert(mat4.create(), this.viewMatrix);
-          coordinateSystem._transformBasePoseMatrix(
-            viewMatrixInverse,
-            viewMatrixInverse
-          );
-          const viewMatrix = mat4.invert(mat4.create(), viewMatrixInverse);
-          mat4.multiply(
-            pose.transform.matrix,
-            viewMatrix,
-            pose.transform.matrix
-          );
-          const matrix = mat4.identity(mat4.create());
-          // Assuming FOV is 90 degree @TODO: Remove this constraint
-          const near = 0.1; // @TODO: Should be from render state
-          const aspect = this.deviceSize.width / this.deviceSize.height;
-          // @TODO: Duplicate with ARScene.js. Should we import from common place?
-          const outsideFrameWidth = 0.005;
-          const dx =
-            (pose.transform.matrix[12] /
-              ((this.deviceSize.width - outsideFrameWidth) * 0.5)) *
-            aspect;
-          const dy =
-            pose.transform.matrix[13] /
-            ((this.deviceSize.height - outsideFrameWidth) * 0.5);
-          mat4.rotateY(matrix, matrix, (-dx * Math.PI) / 4);
-          mat4.rotateX(matrix, matrix, (dy * Math.PI) / 4);
-          matrix[12] = dx * near;
-          matrix[13] = dy * near;
-          matrix[14] = -near;
-          mat4.multiply(pose.transform.matrix, viewMatrixInverse, matrix);
-          mat4.invert(pose.transform.inverse.matrix, pose.transform.matrix);
-        }
 
         return pose;
       }
@@ -732,86 +597,6 @@ export default class EmulatedXRDevice extends XRDevice {
     return [dx, dy];
   }
 
-  // Hit Test
-
-  _hitTest(sessionId, hitTestSources, hitTestResults) {
-    // Remove inactive sources first
-    let activeHitTestSourceNum = 0;
-    for (let i = 0; i < hitTestSources.length; i++) {
-      const source = hitTestSources[i];
-      if (source._active) {
-        hitTestSources[activeHitTestSourceNum++] = source;
-      }
-    }
-    hitTestSources.length = activeHitTestSourceNum;
-
-    // Do hit test next
-    hitTestResults.clear();
-    for (const source of hitTestSources) {
-      if (sessionId !== source._session[XRSESSION_PRIVATE].id) {
-        continue;
-      }
-
-      // Gets base matrix depending on hit test source type
-      let baseMatrix;
-      if (source instanceof XRTransientInputHitTestSource) {
-        if (!this.gamepadInputSources[0].active) {
-          continue;
-        }
-        if (!source._profile.includes("touch")) {
-          continue;
-        }
-        const gamepad = this.gamepads[0];
-        const matrix = mat4.identity(mat4.create());
-        matrix[12] = gamepad.axes[0];
-        matrix[13] = -gamepad.axes[1];
-        baseMatrix = mat4.multiply(matrix, this.matrix, matrix);
-      } else {
-        baseMatrix = source._space._baseMatrix;
-        if (!baseMatrix) {
-          continue;
-        }
-      }
-
-      // Calculates origin and direction used for hit test in AR scene
-      const offsetRay = source._offsetRay;
-      const origin = vec3.set(
-        vec3.create(),
-        offsetRay.origin.x,
-        offsetRay.origin.y,
-        offsetRay.origin.z
-      );
-      const direction = vec3.set(
-        vec3.create(),
-        offsetRay.direction.x,
-        offsetRay.direction.y,
-        offsetRay.direction.z
-      );
-      vec3.transformMat4(origin, origin, baseMatrix);
-      vec3.transformQuat(
-        direction,
-        direction,
-        mat4.getRotation(quat.create(), baseMatrix)
-      );
-
-      // Do hit test in AR scene and stores the result matrices
-      const arHitTestResults = this.arScene.getHitTestResults(
-        origin,
-        direction
-      );
-      const results = [];
-      for (const result of arHitTestResults) {
-        const matrix = mat4.create();
-        // @TODO: Save rotation
-        matrix[12] = result.point.x;
-        matrix[13] = result.point.y;
-        matrix[14] = result.point.z;
-        results.push(matrix);
-      }
-      hitTestResults.set(source, results);
-    }
-  }
-
   // Notify the update to panel
 
   _notifyPoseUpdate() {
@@ -959,7 +744,7 @@ export default class EmulatedXRDevice extends XRDevice {
         primaryButtonIndex,
         primarySqueezeButtonIndex
       );
-      imputSourceImpl.active = !this.arDevice; // Override property for transient imput
+      imputSourceImpl.active = true; // Override property for transient imput
       this.gamepadInputSources.push(imputSourceImpl);
     }
   }
@@ -972,7 +757,6 @@ export default class EmulatedXRDevice extends XRDevice {
 
       this.modes = config.modes || DEFAULT_MODES;
       this.features = config.features || [];
-      this.arDevice = this.modes.includes("immersive-ar");
       this.resolution =
         config.resolution !== undefined
           ? config.resolution
@@ -986,7 +770,7 @@ export default class EmulatedXRDevice extends XRDevice {
       for (let i = 0; i < this.gamepads.length; ++i) {
         const gamepad = this.gamepads[i];
         const inputSourceImpl = this.gamepadInputSources[i];
-        inputSourceImpl.active = !this.arDevice;
+        inputSourceImpl.active = true;
         if (inputSourceImpl.primaryButtonIndex !== -1) {
           gamepad.buttons[inputSourceImpl.primaryButtonIndex].pressed = false;
         }
@@ -1009,15 +793,7 @@ export default class EmulatedXRDevice extends XRDevice {
       (event) => {
         const positionArray = event.detail.position;
         const quaternionArray = event.detail.quaternion;
-        if (this.arDevice) {
-          if (this.arScene) {
-            this._updatePose(positionArray, quaternionArray);
-            // In AR-mode, emulated headset corresponds to camera in AR scene
-            this.arScene.updateCameraTransform(positionArray, quaternionArray);
-          }
-        } else {
-          this._updatePose(positionArray, quaternionArray);
-        }
+        this._updatePose(positionArray, quaternionArray);
       },
       false
     );
@@ -1027,51 +803,21 @@ export default class EmulatedXRDevice extends XRDevice {
       const quaternionArray = event.detail.quaternion;
       const objectName = event.detail.objectName;
 
-      if (this.arDevice) {
-        // In AR-mode, right controller corresponds to pointer and left controller corresponds to tablet
-        switch (objectName) {
-          case "right-controller":
-            this._updateInputPose(positionArray, quaternionArray, 0);
-            if (this.arScene) {
-              this.arScene.updatePointerTransform(
-                positionArray,
-                quaternionArray
-              );
-            }
-            break;
-          case "left-controller":
-            this._updateInputPose(positionArray, quaternionArray, 1);
-            if (this.arScene) {
-              this.arScene.updateTabletTransform(
-                positionArray,
-                quaternionArray
-              );
-            }
-            break;
-        }
-      } else {
-        switch (objectName) {
-          case "right-controller":
-          case "left-controller":
-            this._updateInputPose(
-              positionArray,
-              quaternionArray,
-              objectName === "right-controller" ? 0 : 1
-            ); // @TODO: remove magic number
-            break;
-        }
+      switch (objectName) {
+        case "right-controller":
+        case "left-controller":
+          this._updateInputPose(
+            positionArray,
+            quaternionArray,
+            objectName === "right-controller" ? 0 : 1
+          ); // @TODO: remove magic number
+          break;
       }
     });
 
     window.addEventListener(
       "webxr-input-button",
       (event) => {
-        // Ignore button trigger in AR mode
-        // @TODO: Disable button in devtool panel in AR mode
-        if (this.arDevice) {
-          return;
-        }
-
         const objectName = event.detail.objectName;
         const buttonIndex = event.detail.buttonIndex;
         const pressed = event.detail.pressed;
@@ -1097,10 +843,6 @@ export default class EmulatedXRDevice extends XRDevice {
     window.addEventListener(
       "webxr-input-axis",
       (event) => {
-        if (this.arDevice) {
-          return;
-        }
-
         const value = event.detail.value;
         const objectName = event.detail.objectName;
         const axisIndex = event.detail.axisIndex;
@@ -1122,11 +864,6 @@ export default class EmulatedXRDevice extends XRDevice {
     window.addEventListener("webxr-stereo-effect", (event) => {
       this._updateStereoEffect(event.detail.enabled);
     });
-
-    window.addEventListener("webxr-virtual-room-response", (event) => {
-      const virtualRoomAssetBuffer = event.detail.buffer;
-      this.arScene.loadVirtualRoomAsset(virtualRoomAssetBuffer);
-    });
   }
 }
 
@@ -1134,9 +871,9 @@ let SESSION_ID = 0;
 class Session {
   constructor(mode, enabledFeatures) {
     this.mode = mode;
-    this.immersive = mode == "immersive-vr" || mode == "immersive-ar";
+    this.immersive = mode == "immersive-vr";
     this.vr = mode === "immersive-vr";
-    this.ar = mode === "immersive-ar";
+    this.ar = false;
     this.id = ++SESSION_ID;
     this.baseLayer = null;
     this.inlineVerticalFieldOfView = Math.PI * 0.5;

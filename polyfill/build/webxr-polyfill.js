@@ -6068,25 +6068,6 @@ host this content on a secure origin for the best user experience.
                   out[15] = a[15];
                   return out;
                 }
-                function identity$1(out) {
-                  out[0] = 1;
-                  out[1] = 0;
-                  out[2] = 0;
-                  out[3] = 0;
-                  out[4] = 0;
-                  out[5] = 1;
-                  out[6] = 0;
-                  out[7] = 0;
-                  out[8] = 0;
-                  out[9] = 0;
-                  out[10] = 1;
-                  out[11] = 0;
-                  out[12] = 0;
-                  out[13] = 0;
-                  out[14] = 0;
-                  out[15] = 1;
-                  return out;
-                }
                 function invert$2(out, a) {
                   var a00 = a[0],
                       a01 = a[1],
@@ -6234,68 +6215,6 @@ host this content on a secure origin for the best user experience.
                   }
                   return out;
                 }
-                function rotateX(out, a, rad) {
-                  var s = Math.sin(rad);
-                  var c = Math.cos(rad);
-                  var a10 = a[4];
-                  var a11 = a[5];
-                  var a12 = a[6];
-                  var a13 = a[7];
-                  var a20 = a[8];
-                  var a21 = a[9];
-                  var a22 = a[10];
-                  var a23 = a[11];
-                  if (a !== out) {
-                    out[0] = a[0];
-                    out[1] = a[1];
-                    out[2] = a[2];
-                    out[3] = a[3];
-                    out[12] = a[12];
-                    out[13] = a[13];
-                    out[14] = a[14];
-                    out[15] = a[15];
-                  }
-                  out[4] = a10 * c + a20 * s;
-                  out[5] = a11 * c + a21 * s;
-                  out[6] = a12 * c + a22 * s;
-                  out[7] = a13 * c + a23 * s;
-                  out[8] = a20 * c - a10 * s;
-                  out[9] = a21 * c - a11 * s;
-                  out[10] = a22 * c - a12 * s;
-                  out[11] = a23 * c - a13 * s;
-                  return out;
-                }
-                function rotateY(out, a, rad) {
-                  var s = Math.sin(rad);
-                  var c = Math.cos(rad);
-                  var a00 = a[0];
-                  var a01 = a[1];
-                  var a02 = a[2];
-                  var a03 = a[3];
-                  var a20 = a[8];
-                  var a21 = a[9];
-                  var a22 = a[10];
-                  var a23 = a[11];
-                  if (a !== out) {
-                    out[4] = a[4];
-                    out[5] = a[5];
-                    out[6] = a[6];
-                    out[7] = a[7];
-                    out[12] = a[12];
-                    out[13] = a[13];
-                    out[14] = a[14];
-                    out[15] = a[15];
-                  }
-                  out[0] = a00 * c - a20 * s;
-                  out[1] = a01 * c - a21 * s;
-                  out[2] = a02 * c - a22 * s;
-                  out[3] = a03 * c - a23 * s;
-                  out[8] = a00 * s + a20 * c;
-                  out[9] = a01 * s + a21 * c;
-                  out[10] = a02 * s + a22 * c;
-                  out[11] = a03 * s + a23 * c;
-                  return out;
-                }
                 function fromTranslation(out, v) {
                   out[0] = 1;
                   out[1] = 0;
@@ -6382,65 +6301,6 @@ host this content on a secure origin for the best user experience.
                   out[13] = v[1];
                   out[14] = v[2];
                   out[15] = 1;
-                  return out;
-                }
-                function getScaling(out, mat) {
-                  var m11 = mat[0];
-                  var m12 = mat[1];
-                  var m13 = mat[2];
-                  var m21 = mat[4];
-                  var m22 = mat[5];
-                  var m23 = mat[6];
-                  var m31 = mat[8];
-                  var m32 = mat[9];
-                  var m33 = mat[10];
-                  out[0] = Math.hypot(m11, m12, m13);
-                  out[1] = Math.hypot(m21, m22, m23);
-                  out[2] = Math.hypot(m31, m32, m33);
-                  return out;
-                }
-                function getRotation$1(out, mat) {
-                  var scaling = new ARRAY_TYPE$1(3);
-                  getScaling(scaling, mat);
-                  var is1 = 1 / scaling[0];
-                  var is2 = 1 / scaling[1];
-                  var is3 = 1 / scaling[2];
-                  var sm11 = mat[0] * is1;
-                  var sm12 = mat[1] * is2;
-                  var sm13 = mat[2] * is3;
-                  var sm21 = mat[4] * is1;
-                  var sm22 = mat[5] * is2;
-                  var sm23 = mat[6] * is3;
-                  var sm31 = mat[8] * is1;
-                  var sm32 = mat[9] * is2;
-                  var sm33 = mat[10] * is3;
-                  var trace = sm11 + sm22 + sm33;
-                  var S = 0;
-                  if (trace > 0) {
-                    S = Math.sqrt(trace + 1.0) * 2;
-                    out[3] = 0.25 * S;
-                    out[0] = (sm23 - sm32) / S;
-                    out[1] = (sm31 - sm13) / S;
-                    out[2] = (sm12 - sm21) / S;
-                  } else if (sm11 > sm22 && sm11 > sm33) {
-                    S = Math.sqrt(1.0 + sm11 - sm22 - sm33) * 2;
-                    out[3] = (sm23 - sm32) / S;
-                    out[0] = 0.25 * S;
-                    out[1] = (sm12 + sm21) / S;
-                    out[2] = (sm31 + sm13) / S;
-                  } else if (sm22 > sm33) {
-                    S = Math.sqrt(1.0 + sm22 - sm11 - sm33) * 2;
-                    out[3] = (sm31 - sm13) / S;
-                    out[0] = (sm12 + sm21) / S;
-                    out[1] = 0.25 * S;
-                    out[2] = (sm23 + sm32) / S;
-                  } else {
-                    S = Math.sqrt(1.0 + sm33 - sm11 - sm22) * 2;
-                    out[3] = (sm12 - sm21) / S;
-                    out[0] = (sm31 + sm13) / S;
-                    out[1] = (sm23 + sm32) / S;
-                    out[2] = 0.25 * S;
-                  }
                   return out;
                 }
                 function fromRotationTranslationScale(out, q, v, s) {
@@ -6571,43 +6431,6 @@ host this content on a secure origin for the best user experience.
                   out[2] = ax * by - ay * bx;
                   return out;
                 }
-                function transformMat4(out, a, m) {
-                  var x = a[0],
-                      y = a[1],
-                      z = a[2];
-                  var w = m[3] * x + m[7] * y + m[11] * z + m[15];
-                  w = w || 1.0;
-                  out[0] = (m[0] * x + m[4] * y + m[8] * z + m[12]) / w;
-                  out[1] = (m[1] * x + m[5] * y + m[9] * z + m[13]) / w;
-                  out[2] = (m[2] * x + m[6] * y + m[10] * z + m[14]) / w;
-                  return out;
-                }
-                function transformQuat$1(out, a, q) {
-                  var qx = q[0],
-                      qy = q[1],
-                      qz = q[2],
-                      qw = q[3];
-                  var x = a[0],
-                      y = a[1],
-                      z = a[2];
-                  var uvx = qy * z - qz * y,
-                      uvy = qz * x - qx * z,
-                      uvz = qx * y - qy * x;
-                  var uuvx = qy * uvz - qz * uvy,
-                      uuvy = qz * uvx - qx * uvz,
-                      uuvz = qx * uvy - qy * uvx;
-                  var w2 = qw * 2;
-                  uvx *= w2;
-                  uvy *= w2;
-                  uvz *= w2;
-                  uuvx *= 2;
-                  uuvy *= 2;
-                  uuvz *= 2;
-                  out[0] = x + uvx + uuvx;
-                  out[1] = y + uvy + uuvy;
-                  out[2] = z + uvz + uuvz;
-                  return out;
-                }
                 var len$1 = length$1;
                 var forEach$2 = function () {
                   var vec = create$7();
@@ -6669,7 +6492,7 @@ host this content on a secure origin for the best user experience.
                   out[3] = w * len;
                   return out;
                 }
-                function transformMat4$1(out, a, m) {
+                function transformMat4(out, a, m) {
                   var x = a[0],
                       y = a[1],
                       z = a[2],
@@ -6886,8 +6709,8 @@ host this content on a secure origin for the best user experience.
                       const matrix = transform.matrix;
                       const originVec4 = set$1(create$8(), _origin.x, _origin.y, _origin.z, _origin.w) ;
                       const directionVec4 = set$1(create$8(), _direction.x, _direction.y, _direction.z, _direction.w);
-                      transformMat4$1(originVec4, originVec4, matrix);
-                      transformMat4$1(directionVec4, directionVec4, matrix);
+                      transformMat4(originVec4, originVec4, matrix);
+                      transformMat4(directionVec4, directionVec4, matrix);
                       _origin.x = originVec4[0];
                       _origin.y = originVec4[1];
                       _origin.z = originVec4[2];
@@ -7057,23 +6880,6 @@ host this content on a secure origin for the best user experience.
                   XRRay: XRRay$1
                 };
 
-                class ARScene {
-                  constructor(deviceSize) {}
-                  inject(div) {}
-                  eject() {}
-                  setCanvas(canvas) {}
-                  releaseCanvas() {}
-                  getHitTestResults(origin, direction) {
-                    return [];
-                  }
-                  loadVirtualRoomAsset(buffer) {}
-                  updateCameraTransform(positionArray, quaternionArray) {}
-                  updateTabletTransform(positionArray, quaternionArray) {}
-                  updatePointerTransform(positionArray, quaternionArray) {}
-                  touched() {}
-                  released() {}
-                }
-
                 const DEFAULT_MODES = ["inline"];
                 const DEFAULT_HEADSET_POSITION = [0, 1.6, 0];
                 const DIV_Z_INDEX = "9999";
@@ -7121,12 +6927,10 @@ host this content on a secure origin for the best user experience.
                       height: 0,
                     };
                     this.domOverlayRoot = null;
-                    this.arDevice = this.modes.includes("immersive-ar");
                     this.resolution =
                       config.resolution !== undefined ? config.resolution : DEFAULT_RESOLUTION;
                     this.deviceSize =
                       config.size !== undefined ? config.size : DEFAULT_DEVICE_SIZE;
-                    this.arScene = null;
                     this.touched = false;
                     this.isPointerAndTabledCloseEnough = false;
                     this.hitTestSources = [];
@@ -7144,15 +6948,6 @@ host this content on a secure origin for the best user experience.
                     session.baseLayer = layer;
                     if (session.immersive && session.baseLayer) {
                       this._appendBaseLayerCanvasToDiv(sessionId);
-                      if (session.ar) {
-                        const canvas = session.baseLayer.context.canvas;
-                        canvas.width = this.resolution.width;
-                        canvas.height = this.resolution.height;
-                        this.arScene.setCanvas(canvas);
-                        if (canvas.parentElement) {
-                          canvas.parentElement.removeChild(canvas);
-                        }
-                      }
                     }
                   }
                   isSessionSupported(mode) {
@@ -7183,40 +6978,9 @@ host this content on a secure origin for the best user experience.
                     if (!this.isSessionSupported(mode)) {
                       return Promise.reject();
                     }
-                    const immersive = mode === "immersive-vr" || mode === "immersive-ar";
+                    const immersive = mode === "immersive-vr";
                     const session = new Session$2(mode, enabledFeatures);
                     this.sessions.set(session.id, session);
-                    if (mode === "immersive-ar") {
-                      if (!this.arScene) {
-                        this.arScene = new ARScene(this.deviceSize);
-                        this._requestVirtualRoomAsset();
-                        this.arScene.onTouch = (position) => {
-                          this.touched = true;
-                          for (let i = 0; i < 3; i++) {
-                            this.gamepads[0].pose.position[i] = position[i];
-                          }
-                          this.arScene.updatePointerTransform(
-                            this.gamepads[0].pose.position,
-                            this.gamepads[0].pose.orientation
-                          );
-                          this._notifyInputPoseUpdate(0);
-                        };
-                        this.arScene.onRelease = () => {
-                          this.touched = false;
-                        };
-                        this.arScene.onCameraPoseUpdate = (positionArray, quaternionArray) => {
-                          this._updatePose(positionArray, quaternionArray);
-                          this.arScene.updateCameraTransform(positionArray, quaternionArray);
-                          this._notifyPoseUpdate();
-                        };
-                        this.arScene.onTabletPoseUpdate = (positionArray, quaternionArray) => {
-                          this._updateInputPose(positionArray, quaternionArray, 1);
-                          this.arScene.updateTabletTransform(positionArray, quaternionArray);
-                          this._notifyInputPoseUpdate(1);
-                        };
-                      }
-                      this.arScene.inject(this.div);
-                    }
                     if (immersive) {
                       this.dispatchEvent("@@webxr-polyfill/vr-present-start", session.id);
                       this._notifyEnterImmersive();
@@ -7314,50 +7078,22 @@ host this content on a secure origin for the best user experience.
                       translateOnX(copy$4(this.rightViewMatrix, this.matrix), 0.02)
                     );
                     if (session.immersive) {
-                      if (this.arDevice) {
-                        if (this.touched && this._isPointerCloseEnoughToTablet()) {
-                          if (!this.isPointerAndTabledCloseEnough) {
-                            this._updateInputButton(0, 0, true);
-                            this.isPointerAndTabledCloseEnough = true;
-                            this.arScene.touched();
-                          }
-                          const coordinates = this._getTouchCoordinates();
-                          this._updateInputAxes(0, coordinates[0], -coordinates[1]);
-                        } else {
-                          if (this.isPointerAndTabledCloseEnough) {
-                            this._updateInputButton(0, 0, false);
-                            this.isPointerAndTabledCloseEnough = false;
-                            this.arScene.released();
-                          }
-                          this._updateInputAxes(0, 0, 0);
-                        }
-                      }
                       for (let i = 0; i < this.gamepads.length; ++i) {
                         const gamepad = this.gamepads[i];
                         const inputSourceImpl = this.gamepadInputSources[i];
                         inputSourceImpl.updateFromGamepad(gamepad);
-                        if (this.arDevice && i === 0) {
-                          inputSourceImpl.targetRayMode = "screen";
-                        }
                         if (inputSourceImpl.primaryButtonIndex !== -1) {
                           const primaryActionPressed =
                             gamepad.buttons[inputSourceImpl.primaryButtonIndex].pressed;
                           if (primaryActionPressed && !inputSourceImpl.primaryActionPressed) {
-                            if (this.arDevice) {
-                              inputSourceImpl.active = true;
-                            } else {
-                              this.dispatchEvent("@@webxr-polyfill/input-select-start", {
-                                sessionId: session.id,
-                                inputSource: inputSourceImpl.inputSource,
-                              });
-                            }
+                            this.dispatchEvent("@@webxr-polyfill/input-select-start", {
+                              sessionId: session.id,
+                              inputSource: inputSourceImpl.inputSource,
+                            });
                           } else if (
                             !primaryActionPressed &&
                             inputSourceImpl.primaryActionPressed
                           ) {
-                            if (this.arDevice) {
-                              inputSourceImpl.active = false;
-                            }
                             this.dispatchEvent("@@webxr-polyfill/input-select-end", {
                               sessionId: session.id,
                               inputSource: inputSourceImpl.inputSource,
@@ -7388,12 +7124,6 @@ host this content on a secure origin for the best user experience.
                             primarySqueezeActionPressed;
                         }
                       }
-                      this._hitTest(sessionId, this.hitTestSources, this.hitTestResults);
-                      this._hitTest(
-                        sessionId,
-                        this.hitTestSourcesForTransientInput,
-                        this.hitTestResultsForTransientInput
-                      );
                     }
                   }
                   onFrameEnd(sessionId) {
@@ -7405,14 +7135,6 @@ host this content on a secure origin for the best user experience.
                         if (inputSourceImpl.primaryButtonIndex !== -1) {
                           const primaryActionPressed =
                             gamepad.buttons[inputSourceImpl.primaryButtonIndex].pressed;
-                          if (primaryActionPressed && !inputSourceImpl.primaryActionPressed) {
-                            if (this.arDevice) {
-                              this.dispatchEvent("@@webxr-polyfill/input-select-start", {
-                                sessionId: session.id,
-                                inputSource: inputSourceImpl.inputSource,
-                              });
-                            }
-                          }
                           inputSourceImpl.primaryActionPressed = primaryActionPressed;
                         }
                       }
@@ -7438,10 +7160,6 @@ host this content on a secure origin for the best user experience.
                     if (session.immersive && session.baseLayer) {
                       this._removeBaseLayerCanvasFromDiv(sessionId);
                       this.domOverlayRoot = null;
-                      if (session.ar) {
-                        this.arScene.eject();
-                        this.arScene.releaseCanvas();
-                      }
                       this.dispatchEvent("@@webxr-polyfill/vr-present-end", sessionId);
                       this._notifyLeaveImmersive();
                     }
@@ -7481,7 +7199,7 @@ host this content on a secure origin for the best user experience.
                     return true;
                   }
                   getProjectionMatrix(eye) {
-                    return this.arDevice || eye === "none"
+                    return eye === "none"
                       ? this.projectionMatrix
                       : eye === "left"
                       ? this.leftProjectionMatrix
@@ -7491,7 +7209,7 @@ host this content on a secure origin for the best user experience.
                     return this.matrix;
                   }
                   getBaseViewMatrix(eye) {
-                    if (eye === "none" || this.arDevice || !this.stereoEffectEnabled) {
+                    if (eye === "none" || !this.stereoEffectEnabled) {
                       return this.viewMatrix;
                     }
                     return eye === "left" ? this.leftViewMatrix : this.rightViewMatrix;
@@ -7509,40 +7227,6 @@ host this content on a secure origin for the best user experience.
                     for (const inputSourceImpl of this.gamepadInputSources) {
                       if (inputSourceImpl.inputSource === inputSource) {
                         const pose = inputSourceImpl.getXRPose(coordinateSystem, poseType);
-                        if (this.arDevice && inputSourceImpl === this.gamepadInputSources[0]) {
-                          if (!inputSourceImpl.active) {
-                            return null;
-                          }
-                          const viewMatrixInverse = invert$2(create$6(), this.viewMatrix);
-                          coordinateSystem._transformBasePoseMatrix(
-                            viewMatrixInverse,
-                            viewMatrixInverse
-                          );
-                          const viewMatrix = invert$2(create$6(), viewMatrixInverse);
-                          multiply$2(
-                            pose.transform.matrix,
-                            viewMatrix,
-                            pose.transform.matrix
-                          );
-                          const matrix = identity$1(create$6());
-                          const near = 0.1;
-                          const aspect = this.deviceSize.width / this.deviceSize.height;
-                          const outsideFrameWidth = 0.005;
-                          const dx =
-                            (pose.transform.matrix[12] /
-                              ((this.deviceSize.width - outsideFrameWidth) * 0.5)) *
-                            aspect;
-                          const dy =
-                            pose.transform.matrix[13] /
-                            ((this.deviceSize.height - outsideFrameWidth) * 0.5);
-                          rotateY(matrix, matrix, (-dx * Math.PI) / 4);
-                          rotateX(matrix, matrix, (dy * Math.PI) / 4);
-                          matrix[12] = dx * near;
-                          matrix[13] = dy * near;
-                          matrix[14] = -near;
-                          multiply$2(pose.transform.matrix, viewMatrixInverse, matrix);
-                          invert$2(pose.transform.inverse.matrix, pose.transform.matrix);
-                        }
                         return pose;
                       }
                     }
@@ -7644,73 +7328,6 @@ host this content on a secure origin for the best user experience.
                     const dx = matrix[12] / (this.deviceSize.width * 0.5);
                     const dy = matrix[13] / (this.deviceSize.height * 0.5);
                     return [dx, dy];
-                  }
-                  _hitTest(sessionId, hitTestSources, hitTestResults) {
-                    let activeHitTestSourceNum = 0;
-                    for (let i = 0; i < hitTestSources.length; i++) {
-                      const source = hitTestSources[i];
-                      if (source._active) {
-                        hitTestSources[activeHitTestSourceNum++] = source;
-                      }
-                    }
-                    hitTestSources.length = activeHitTestSourceNum;
-                    hitTestResults.clear();
-                    for (const source of hitTestSources) {
-                      if (sessionId !== source._session[PRIVATE$e].id) {
-                        continue;
-                      }
-                      let baseMatrix;
-                      if (source instanceof XRTransientInputHitTestSource) {
-                        if (!this.gamepadInputSources[0].active) {
-                          continue;
-                        }
-                        if (!source._profile.includes("touch")) {
-                          continue;
-                        }
-                        const gamepad = this.gamepads[0];
-                        const matrix = identity$1(create$6());
-                        matrix[12] = gamepad.axes[0];
-                        matrix[13] = -gamepad.axes[1];
-                        baseMatrix = multiply$2(matrix, this.matrix, matrix);
-                      } else {
-                        baseMatrix = source._space._baseMatrix;
-                        if (!baseMatrix) {
-                          continue;
-                        }
-                      }
-                      const offsetRay = source._offsetRay;
-                      const origin = set(
-                        create$7(),
-                        offsetRay.origin.x,
-                        offsetRay.origin.y,
-                        offsetRay.origin.z
-                      );
-                      const direction = set(
-                        create$7(),
-                        offsetRay.direction.x,
-                        offsetRay.direction.y,
-                        offsetRay.direction.z
-                      );
-                      transformMat4(origin, origin, baseMatrix);
-                      transformQuat$1(
-                        direction,
-                        direction,
-                        getRotation$1(create$9(), baseMatrix)
-                      );
-                      const arHitTestResults = this.arScene.getHitTestResults(
-                        origin,
-                        direction
-                      );
-                      const results = [];
-                      for (const result of arHitTestResults) {
-                        const matrix = create$6();
-                        matrix[12] = result.point.x;
-                        matrix[13] = result.point.y;
-                        matrix[14] = result.point.z;
-                        results.push(matrix);
-                      }
-                      hitTestResults.set(source, results);
-                    }
                   }
                   _notifyPoseUpdate() {
                     dispatchCustomEvent("device-pose", {
@@ -7839,7 +7456,7 @@ host this content on a secure origin for the best user experience.
                         primaryButtonIndex,
                         primarySqueezeButtonIndex
                       );
-                      imputSourceImpl.active = !this.arDevice;
+                      imputSourceImpl.active = true;
                       this.gamepadInputSources.push(imputSourceImpl);
                     }
                   }
@@ -7848,7 +7465,6 @@ host this content on a secure origin for the best user experience.
                       const config = event.detail.deviceDefinition;
                       this.modes = config.modes || DEFAULT_MODES;
                       this.features = config.features || [];
-                      this.arDevice = this.modes.includes("immersive-ar");
                       this.resolution =
                         config.resolution !== undefined
                           ? config.resolution
@@ -7858,7 +7474,7 @@ host this content on a secure origin for the best user experience.
                       for (let i = 0; i < this.gamepads.length; ++i) {
                         const gamepad = this.gamepads[i];
                         const inputSourceImpl = this.gamepadInputSources[i];
-                        inputSourceImpl.active = !this.arDevice;
+                        inputSourceImpl.active = true;
                         if (inputSourceImpl.primaryButtonIndex !== -1) {
                           gamepad.buttons[inputSourceImpl.primaryButtonIndex].pressed = false;
                         }
@@ -7879,14 +7495,7 @@ host this content on a secure origin for the best user experience.
                       (event) => {
                         const positionArray = event.detail.position;
                         const quaternionArray = event.detail.quaternion;
-                        if (this.arDevice) {
-                          if (this.arScene) {
-                            this._updatePose(positionArray, quaternionArray);
-                            this.arScene.updateCameraTransform(positionArray, quaternionArray);
-                          }
-                        } else {
-                          this._updatePose(positionArray, quaternionArray);
-                        }
+                        this._updatePose(positionArray, quaternionArray);
                       },
                       false
                     );
@@ -7894,46 +7503,20 @@ host this content on a secure origin for the best user experience.
                       const positionArray = event.detail.position;
                       const quaternionArray = event.detail.quaternion;
                       const objectName = event.detail.objectName;
-                      if (this.arDevice) {
-                        switch (objectName) {
-                          case "right-controller":
-                            this._updateInputPose(positionArray, quaternionArray, 0);
-                            if (this.arScene) {
-                              this.arScene.updatePointerTransform(
-                                positionArray,
-                                quaternionArray
-                              );
-                            }
-                            break;
-                          case "left-controller":
-                            this._updateInputPose(positionArray, quaternionArray, 1);
-                            if (this.arScene) {
-                              this.arScene.updateTabletTransform(
-                                positionArray,
-                                quaternionArray
-                              );
-                            }
-                            break;
-                        }
-                      } else {
-                        switch (objectName) {
-                          case "right-controller":
-                          case "left-controller":
-                            this._updateInputPose(
-                              positionArray,
-                              quaternionArray,
-                              objectName === "right-controller" ? 0 : 1
-                            );
-                            break;
-                        }
+                      switch (objectName) {
+                        case "right-controller":
+                        case "left-controller":
+                          this._updateInputPose(
+                            positionArray,
+                            quaternionArray,
+                            objectName === "right-controller" ? 0 : 1
+                          );
+                          break;
                       }
                     });
                     window.addEventListener(
                       "webxr-input-button",
                       (event) => {
-                        if (this.arDevice) {
-                          return;
-                        }
                         const objectName = event.detail.objectName;
                         const buttonIndex = event.detail.buttonIndex;
                         const pressed = event.detail.pressed;
@@ -7957,9 +7540,6 @@ host this content on a secure origin for the best user experience.
                     window.addEventListener(
                       "webxr-input-axis",
                       (event) => {
-                        if (this.arDevice) {
-                          return;
-                        }
                         const value = event.detail.value;
                         const objectName = event.detail.objectName;
                         const axisIndex = event.detail.axisIndex;
@@ -7979,19 +7559,15 @@ host this content on a secure origin for the best user experience.
                     window.addEventListener("webxr-stereo-effect", (event) => {
                       this._updateStereoEffect(event.detail.enabled);
                     });
-                    window.addEventListener("webxr-virtual-room-response", (event) => {
-                      const virtualRoomAssetBuffer = event.detail.buffer;
-                      this.arScene.loadVirtualRoomAsset(virtualRoomAssetBuffer);
-                    });
                   }
                 }
                 let SESSION_ID$2 = 0;
                 class Session$2 {
                   constructor(mode, enabledFeatures) {
                     this.mode = mode;
-                    this.immersive = mode == "immersive-vr" || mode == "immersive-ar";
+                    this.immersive = mode == "immersive-vr";
                     this.vr = mode === "immersive-vr";
-                    this.ar = mode === "immersive-ar";
+                    this.ar = false;
                     this.id = ++SESSION_ID$2;
                     this.baseLayer = null;
                     this.inlineVerticalFieldOfView = Math.PI * 0.5;
