@@ -54,6 +54,18 @@ document.getElementById("renderComponent").appendChild(renderer.domElement);
 // Canvas size relying on browser's flexbox
 // then waiting for the flex box determines the size.
 const onResize = () => {
+  if (document.body.offsetHeight < 600) {
+    document.getElementById("mask").style.display = "block";
+    document.getElementById("mask-text").innerHTML =
+      "Not Enough Vertical Space";
+  } else if (document.body.offsetWidth < 550) {
+    document.getElementById("mask").style.display = "block";
+    document.getElementById("mask-text").innerHTML =
+      "Not Enough Horizontal Space";
+  } else {
+    document.getElementById("mask").style.display = "none";
+  }
+
   const div = document.getElementById("renderComponent");
   renderer.setSize(1, 1);
   // Not sure if 1ms is long enough but seems working fine for now.
@@ -65,12 +77,6 @@ const onResize = () => {
     renderer.setSize(width - 5, height);
     render();
   }, 50);
-
-  if (document.body.offsetHeight < 600 || document.body.offsetWidth < 550) {
-    document.getElementById("mask").style.display = "block";
-  } else {
-    document.getElementById("mask").style.display = "none";
-  }
 };
 
 // scene, camera, light, grid
