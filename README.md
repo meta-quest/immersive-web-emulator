@@ -35,6 +35,14 @@ Firefox's official guide for loading an unpacked extension can be found [here](h
 3. click "Load Temporary Add-on"
 4. open the extension's directory and select any file inside the extension (e.g. manifest.json in the WebXRQuestEmulator folder that you cloned/downloaded).
 
+### Installing on Edge
+
+Edge's official guide for loading an unpacked extension can be found [here](https://learn.microsoft.com/en-us/microsoft-edge/extensions-chromium/getting-started/extension-sideloading). Here is a quick list of steps copied from their guide:
+
+1. Open the Extension Management page by navigating to edge://extensions.
+2. Enable Developer Mode by clicking the toggle switch next to Developer mode.
+3. Click the Load unpacked button and select the extension directory (the WebXRQuestEmulator folder that you cloned/downloaded).
+
 ## Usage
 
 After successfully installing the emulator
