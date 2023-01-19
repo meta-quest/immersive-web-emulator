@@ -1,0 +1,192 @@
+<!-- 
+  Copyright (c) Meta Platforms, Inc. and affiliates.
+
+  This source code is licensed under the MIT license found in the
+  LICENSE file in the root directory of this source tree.
+-->
+
+<div class="card controller-card">
+	<div class="card-header">
+		<img src="./assets/images/controller-left.png" class="control-icon" />
+		<span class="control-label">Left Controller</span>
+	</div>
+	<div class="card-body">
+		<div class="row" style="margin: 2%">
+			<div class="col-4 d-flex align-items-center">
+				<img src="./assets/images/joystick.png" class="control-icon" />
+				<span class="control-label">Joystick</span>
+			</div>
+			<div class="col-8 d-flex justify-content-end">
+				<div>
+					<button
+						id="left-controller-joystick-touch"
+						type="button"
+						class="btn special-button button-leftmost"
+					>
+						<img src="./assets/images/press.png" style="width: 1.2em" />
+					</button>
+					<button
+						id="left-controller-joystick-press"
+						type="button"
+						class="btn special-button button-middle"
+					>
+						Press
+					</button>
+					<button
+						id="left-controller-joystick-hold"
+						type="button"
+						class="btn special-button button-rightmost"
+					>
+						<img src="./assets/images/lock.png" style="width: 1.2em" />
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class="row" style="margin: 2%">
+			<div class="col-12 d-flex justify-content-end">
+				<div>
+					<div id="left-controller-joystick" class="joystick-panel">
+						<button
+							id="left-controller-joystick-sticky"
+							type="button"
+							class="btn special-button joystick-button"
+							style="top: 75px"
+						>
+							<img src="./assets/images/sticky.png" class="action-icon" />
+							Sticky
+						</button>
+						<button
+							id="left-controller-joystick-reset"
+							type="button"
+							class="btn special-button joystick-button"
+							style="top: 108px"
+						>
+							<img src="./assets/images/reset.png" class="action-icon" />
+							Reset
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row" style="margin: 2%">
+			<div class="col-3 d-flex align-items-center">
+				<img src="./assets/images/trigger-left.png" class="control-icon" />
+				<span class="control-label">Trigger</span>
+			</div>
+			<div class="col-9 d-flex justify-content-end">
+				<div>
+					<button
+						id="left-controller-trigger-touch"
+						type="button"
+						class="btn special-button button-leftmost"
+					>
+						<img src="./assets/images/press.png" style="width: 1.2em" />
+					</button>
+					<button
+						id="left-controller-trigger-press"
+						type="button"
+						class="btn special-button button-rightmost"
+					>
+						Press
+					</button>
+				</div>
+				<input
+					id="left-controller-trigger-value"
+					type="range"
+					class="form-range"
+				/>
+			</div>
+		</div>
+		<div class="row" style="margin: 2%">
+			<div class="col-3 d-flex align-items-center">
+				<img src="./assets/images/grip-left.png" class="control-icon" />
+				<span class="control-label">Grip</span>
+			</div>
+			<div class="col-9 d-flex justify-content-end">
+				<div>
+					<button
+						id="left-controller-grip-touch"
+						type="button"
+						class="btn special-button button-leftmost"
+					>
+						<img src="./assets/images/press.png" style="width: 1.2em" />
+					</button>
+					<button
+						id="left-controller-grip-press"
+						type="button"
+						class="btn special-button button-rightmost"
+					>
+						Press
+					</button>
+				</div>
+				<input
+					id="left-controller-grip-value"
+					type="range"
+					class="form-range"
+				/>
+			</div>
+		</div>
+		<div class="row" style="margin: 2%">
+			<div class="col-4 d-flex align-items-center">
+				<img src="./assets/images/button2-left.png" class="control-icon" />
+				<span class="control-label">ButtonY</span>
+			</div>
+			<div class="col-8 d-flex justify-content-end">
+				<div>
+					<button
+						id="left-controller-button2-touch"
+						type="button"
+						class="btn special-button button-leftmost"
+					>
+						<img src="./assets/images/press.png" style="width: 1.2em" />
+					</button>
+					<button
+						id="left-controller-button2-press"
+						type="button"
+						class="btn special-button button-middle"
+					>
+						Press
+					</button>
+					<button
+						id="left-controller-button2-hold"
+						type="button"
+						class="btn special-button button-rightmost"
+					>
+						<img src="./assets/images/lock.png" style="width: 1.2em" />
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class="row" style="margin: 2%">
+			<div class="col-4 d-flex align-items-center">
+				<img src="./assets/images/button1-left.png" class="control-icon" />
+				<span class="control-label">ButtonX</span>
+			</div>
+			<div class="col-8 d-flex justify-content-end">
+				<div>
+					<button
+						id="left-controller-button1-touch"
+						type="button"
+						class="btn special-button button-leftmost"
+					>
+						<img src="./assets/images/press.png" style="width: 1.2em" />
+					</button>
+					<button
+						id="left-controller-button1-press"
+						type="button"
+						class="btn special-button button-middle"
+					>
+						Press
+					</button>
+					<button
+						id="left-controller-button1-hold"
+						type="button"
+						class="btn special-button button-rightmost"
+					>
+						<img src="./assets/images/lock.png" style="width: 1.2em" />
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

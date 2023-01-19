@@ -1,0 +1,354 @@
+/*
+  Copyright (c) Meta Platforms, Inc. and affiliates.
+
+  This source code is licensed under the MIT license found in the
+  LICENSE file in the root directory of this source tree.
+*/
+body {
+	margin: 0;
+	background-color: #18191a;
+	color: #2a2a2a;
+	font-size: 12px;
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	display: flex;
+	flex-wrap: nowrap;
+	flex-direction: column;
+	height: 100%;
+	font-family: sans-serif;
+}
+
+.component {
+	display: flex;
+	flex-direction: column;
+}
+
+.main-component {
+	height: 50%;
+	flex: 1;
+	margin: 0;
+}
+
+.component-container {
+	padding: 0;
+	z-index: 1;
+}
+
+.ui-panel {
+	border-radius: 20px 20px 0 0;
+	padding: 2px 0px 5px 20px;
+	color: #a7a7a7;
+}
+
+.viewport-header-panel {
+	border-radius: 20px 20px 0 0;
+	padding: 5px 0px 1px 20px;
+	color: #a7a7a7;
+}
+
+.viewport-footer-panel {
+	border-radius: 0px 0px 20px 20px;
+	padding: 1px 0px 1px 20px;
+	color: #a7a7a7;
+}
+
+.headset-action-button {
+	height: 2.1em;
+	border-radius: 6px;
+	border-style: none;
+	padding: 4px 6px 4px 6px;
+	margin: 0px 0px 0px 10px;
+	font-size: small;
+	background-color: #3b3b3c;
+	color: #e4e6eb;
+	text-align: center;
+}
+
+.headset-select {
+	height: 2.1em;
+	width: 70px;
+	appearance: none;
+	border-radius: 6px;
+	border-style: none;
+	padding: 4px;
+	margin: 0px 0px 0px 10px;
+	font-size: small;
+	background-color: #252526;
+	color: #e4e6eb;
+	text-align: center;
+}
+
+.headset-select:hover {
+	background-color: #3b3b3c;
+}
+
+.headset-select:before {
+	content: 'Device: ';
+	color: #e4e6eb;
+}
+
+.special-button {
+	height: 2.1em;
+	border-radius: 6px;
+	padding: 4px;
+	margin: 0px 0px 0px 10px;
+	font-size: small;
+	background-color: #3b3b3c;
+	color: #e4e6eb;
+}
+
+.pose-action-button {
+	height: 2em;
+	display: inline-block;
+	border-radius: 6px;
+	border-style: none;
+	padding: 2px 6px;
+	margin: 0px;
+	font-size: small;
+	background-color: #3b3b3c;
+	color: #e4e6eb;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.pose-action-button:hover,
+.headset-action-button:hover,
+.special-button:hover {
+	background-color: #676767;
+	color: #e4e6eb;
+}
+
+.pose-action-button:disabled,
+.special-button:disabled {
+	background-color: #2a2a2b;
+	/* color: #656568; */
+	color: #b0b0b0;
+}
+
+.button-pressed {
+	background-color: #317bef;
+}
+
+.button-pressed:hover {
+	background-color: #679bec;
+}
+
+.button-rightmost {
+	border-radius: 2px 6px 6px 2px !important;
+	margin-left: 0px;
+}
+
+.button-leftmost {
+	border-radius: 6px 2px 2px 6px !important;
+}
+
+.button-middle {
+	border-radius: 2px !important;
+	margin-left: 0px;
+}
+
+.joystick-button {
+	top: 0px;
+	right: 12px;
+	position: absolute;
+	width: 70px;
+	margin: 2px;
+}
+
+.action-icon {
+	width: 1.25em;
+	height: 1.25em;
+}
+
+.control-icon {
+	width: 2em;
+	height: 2em;
+}
+
+.control-label {
+	padding-left: 5px;
+}
+
+@media only screen and (max-width: 500px) {
+	.control-label {
+		display: none;
+	}
+}
+
+.control-row {
+	margin-top: 8px;
+	margin-bottom: 8px;
+}
+
+.controller-card {
+	border-radius: 10px;
+	background-color: #252526;
+	color: #a7a7a7;
+	margin: 5px;
+}
+
+.headset-card {
+	border-radius: 10px 10px 0 0;
+	background-color: #252526;
+	color: #a7a7a7;
+	margin: 5px 5px 0px 5px;
+}
+
+.headset-card .card-body {
+	padding: 5px 0px 5px 0px;
+}
+
+.controller-panel {
+	max-width: 100%;
+}
+
+.controller-panel .row {
+	margin: 4px 0px !important;
+}
+
+.controller-panel .col {
+	padding: 0;
+}
+
+.controller-card .card-header {
+	border-bottom-width: 2px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+
+.controller-card .card-body {
+	padding: 0 0 10px 0;
+}
+
+.joystick-panel {
+	width: 150px;
+}
+
+.transform-card {
+	color: white;
+	margin: 5px;
+}
+
+.transform-icon {
+	background-color: #252526;
+	opacity: 50%;
+	border-radius: 10px 2px 2px 10px;
+}
+
+.transform-body {
+	background-color: #252526;
+	width: 160px;
+	opacity: 50%;
+	color: white;
+	border-radius: 2px 10px 10px 2px;
+	padding: 0px;
+	margin-left: 3px;
+}
+
+.value {
+	font-family: 'Roboto Mono', monospace;
+	padding: 0;
+}
+
+.value-changed {
+	color: #679bec;
+}
+
+.form-range {
+	max-width: 60px;
+	margin-left: 8px;
+}
+
+.pose-left-full {
+	width: 110px;
+}
+
+.pose-right-full {
+	width: 85px;
+	margin-left: 3px;
+}
+
+.pose-left-long {
+	width: 78px;
+	border-radius: 6px 2px 2px 6px;
+}
+
+.pose-left-short {
+	width: 30px;
+	margin-left: 2px;
+	border-radius: 2px 6px 6px 2px;
+}
+
+.pose-card {
+	border-radius: 0 0 10px 10px;
+	background-color: #252526;
+	color: #a7a7a7;
+	margin: 0px 5px 0px 5px;
+}
+
+.pose-card .card-body {
+	padding: 5px 0px 5px 0px;
+}
+
+#mask {
+	font-size: x-large;
+	background-color: #3b3b3c;
+	color: #e4e6eb;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	z-index: 1000;
+}
+
+.prompt {
+	width: calc(100% - 20px);
+	height: calc(100% - 20px);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 10px;
+	border-width: 5px;
+	border-style: dashed;
+}
+
+.alternative-control-card {
+	border-radius: 10px;
+	background-color: #252526;
+	color: #a7a7a7;
+	margin: 0px 5px 5px 5px;
+}
+
+.alternative-control-card .card-body {
+	padding: 5px 0px 5px 0px;
+}
+
+.session-progress-bar {
+	display: inline-block;
+	width: calc(100% - 32px - 6em);
+	margin: 10px 5px 0px 5px;
+}
+
+#session-file {
+	margin: 8px 0px 0px 16px;
+}
+
+#save-default-pose {
+	margin-left: 10px;
+}
+
+.playback-action-button {
+	height: 2.1em;
+	width: 2.1em;
+	border-radius: 6px;
+	border-style: none;
+	padding: 4px 6px 4px 6px;
+	font-size: small;
+	background-color: #3b3b3c;
+	color: #e4e6eb;
+	text-align: center;
+}
+
+#playback-control {
+	margin: 5px 0px 0px 16px;
+}

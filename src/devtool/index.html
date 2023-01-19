@@ -1,0 +1,62 @@
+<!-- 
+  Copyright (c) Meta Platforms, Inc. and affiliates.
+
+  This source code is licensed under the MIT license found in the
+  LICENSE file in the root directory of this source tree.
+-->
+
+<html lang="en">
+	<head>
+		<meta
+			name="viewport"
+			content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+		/>
+		<link rel="stylesheet" href="/build/devtool.css" />
+		<link rel="stylesheet" href="./styles/index.css" />
+	</head>
+	<body>
+		<div id="mask">
+			<div id="mask-text" class="prompt"></div>
+		</div>
+		<div class="viewport-header-panel">
+			<div class="row controller-panel">
+				<div id="headset-component" class="component-container"></div>
+			</div>
+		</div>
+		<div id="renderComponent" class="row component main-component">
+			<div id="transform-component" class="component-container"></div>
+		</div>
+		<div class="viewport-footer-panel">
+			<div class="row controller-panel">
+				<div id="pose-component" class="component-container"></div>
+			</div>
+		</div>
+		<div class="ui-panel">
+			<div id="controller-panel" class="row controller-panel">
+				<div class="col">
+					<div id="left-controller-component" class="component-container"></div>
+				</div>
+				<div class="col">
+					<div
+						id="right-controller-component"
+						class="component-container"
+					></div>
+				</div>
+			</div>
+			<div id="player-panel" class="row controller-panel" style="display: none">
+				<div id="session-player-component" class="component-container"></div>
+			</div>
+			<div class="row controller-panel">
+				<div id="keyboard-control-component" class="component-container"></div>
+			</div>
+			<div class="row controller-panel">
+				<div
+					id="gamepad-control-component"
+					class="component-container"
+					style="display: none"
+				></div>
+			</div>
+		</div>
+		<script src="/build/devtool.js"></script>
+	</body>
+</html>
