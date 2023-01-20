@@ -10,7 +10,7 @@ Immersive Web Emulator is a browser extension that assists WebXR content creatio
 
 Inspired by the [official WebXR Emulator Extension by Mozilla Reality](https://github.com/MozillaReality/WebXR-emulator-extension/) and our previous efforts of extending it for better functionality, Immersive Web Emulator is designed and rebuilt from the ground up with an emphasis on full input emulation (including touch and analog input), better usability with a re-engineered UI, and more features, such as keyboard input mirroring and input session recording/playback, specifically for Meta Quest headsets.
 
-![Immersive Web Emulator](./screenshots/screenshot.gif)
+![Immersive Web Emulator](./screenshots/overview.gif)
 
 ## Immersive Web Emulator Features
 
@@ -73,7 +73,7 @@ By clicking a device node in the emulator's 3D viewport, you can select gizmo mo
 | Joystick-Reset  | Recenter the emulated joystick.                                                                   |
 | Slider          | Emulate analog input for trigger and grip.                                                        |
 
-![Controls](./screenshots/controller.gif)
+![UI-Controls](./screenshots/uicontrols.gif)
 
 ### Stereo Effect
 
@@ -101,6 +101,8 @@ There are keyboard mapping built in for some important controller emulated contr
 | Button B             | /                |
 | Right Trigger        | Enter            |
 | Right Grip           | Shift            |
+
+![Keyboard-Controls](./screenshots/keyboardcontrols.gif)
 
 Keyboard events other than those reserved for controller emulation are passed through to the main WebXR experience, you may wish to utilize this feature to build in some shortcuts for debugging purposes.
 
