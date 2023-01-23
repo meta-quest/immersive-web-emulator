@@ -14,11 +14,11 @@
 	"background": {
 		"service_worker": "src/extension/service-worker.js"
 	},
-	"permissions": ["storage", "activeTab", "tabs", "scripting"],
-	"host_permissions": ["file://*/*", "http://*/*", "https://*/*"],
+	"permissions": ["storage", "scripting"],
+	"host_permissions": ["http://*/*", "https://*/*"],
 	"content_scripts": [
 		{
-			"matches": ["file://*/*", "http://*/*", "https://*/*"],
+			"matches": ["http://*/*", "https://*/*"],
 			"js": ["build/content.js"],
 			"run_at": "document_start",
 			"all_frames": true
