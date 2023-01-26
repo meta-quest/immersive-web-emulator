@@ -20,7 +20,7 @@ const browser = chrome;
 const connection = {
 	port: null,
 	connect: () => {
-		connection.port = browser.runtime.connect({ name: 'contentScript' });
+		connection.port = browser.runtime.connect({ name: 'iwe_app' });
 		connection.port.onMessage.addListener((message) => {
 			switch (message.action) {
 				case EMULATOR_ACTIONS.DEVICE_TYPE_CHANGE:

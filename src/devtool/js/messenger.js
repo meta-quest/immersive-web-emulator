@@ -17,7 +17,7 @@ const connection = {
 	port: null,
 	connect: () => {
 		// eslint-disable-next-line no-undef
-		connection.port = chrome.runtime.connect(null, { name: 'panel' });
+		connection.port = chrome.runtime.connect(null, { name: 'iwe_devtool' });
 		connection.port.onMessage.addListener((payload) => {
 			switch (payload.action) {
 				case CLIENT_ACTIONS.ENTER_IMMERSIVE:

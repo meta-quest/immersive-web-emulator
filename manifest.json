@@ -3,7 +3,7 @@
 	"short_name": "IWE",
 	"version": "1.0.0",
 	"minimum_chrome_version": "88",
-	"devtools_page": "src/extension/devtools.html",
+	"devtools_page": "dist/devtools.html",
 	"description": "WebXR Emulator for Meta Quest devices",
 	"author": "Felix Zhang (fe1ix@meta.com)",
 	"icons": {
@@ -19,7 +19,7 @@
 	"content_scripts": [
 		{
 			"matches": ["http://*/*", "https://*/*"],
-			"js": ["build/content.js"],
+			"js": ["dist/content.js"],
 			"run_at": "document_start",
 			"all_frames": true
 		}

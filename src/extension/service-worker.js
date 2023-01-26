@@ -6,8 +6,8 @@
  */
 
 const PORT_DESTINATION_MAPPING = {
-	contentScript: 'panel',
-	panel: 'contentScript',
+	iwe_app: 'iwe_devtool',
+	iwe_devtool: 'iwe_app',
 };
 
 const connectedTabs = {};
@@ -50,7 +50,7 @@ chrome.scripting.registerContentScripts([
 	{
 		id: 'polyfill-injection' + Math.random().toString(),
 		matches: ['http://*/*', 'https://*/*'],
-		js: ['build/webxr-polyfill.js'],
+		js: ['dist/webxr-polyfill.js'],
 		runAt: 'document_start',
 		world: 'MAIN',
 	},

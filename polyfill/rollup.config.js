@@ -6,7 +6,7 @@ import resolve from 'rollup-plugin-node-resolve';
 export default {
 	input: 'CustomWebXRPolyfill.js',
 	output: {
-		file: '../build/webxr-polyfill.js',
+		file: '../dist/webxr-polyfill.js',
 		format: 'umd',
 		name: 'CustomWebXRPolyfill',
 		// Note: These banner and footer are the trick to inject polyfill in content-script
