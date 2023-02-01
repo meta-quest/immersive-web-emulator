@@ -1,0 +1,43 @@
+{
+	"name": "immersive-web-emulator",
+	"version": "1.0.0",
+	"watch": {
+		"build:devtool": {
+			"patterns": [
+				"src"
+			],
+			"extensions": "js,css,html",
+			"quiet": false
+		}
+	},
+	"scripts": {
+		"build:devtool": "rollup -c --bundleConfigAsCjs",
+		"build:polyfill": "cd polyfill && npm run build",
+		"build": "rm -rf dist && npm run build:polyfill && npm run build:devtool",
+		"lint": "eslint ./src",
+		"format": "prettier --write ./src/**/*",
+		"watch": "npm-watch"
+	},
+	"pre-commit": [
+		"lint"
+	],
+	"dependencies": {
+		"bootstrap": "^5.2.3",
+		"jquery": "^3.6.1",
+		"lodash": "^4.17.21",
+		"three": "^0.147.0"
+	},
+	"devDependencies": {
+		"eslint-config-prettier": "^8.5.0",
+		"npm-watch": "^0.11.0",
+		"pre-commit": "^1.2.2",
+		"prettier": "^2.8.0",
+		"rollup": "^3.6.0",
+		"rollup-plugin-cleanup": "^3.2.1",
+		"rollup-plugin-commonjs": "^10.1.0",
+		"rollup-plugin-copy": "^3.4.0",
+		"rollup-plugin-import-css": "^3.1.0",
+		"rollup-plugin-node-resolve": "^5.2.0",
+		"rollup-plugin-replace": "^2.2.0"
+	}
+}

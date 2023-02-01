@@ -1,0 +1,33 @@
+<!-- 
+  Copyright (c) Meta Platforms, Inc. and affiliates.
+
+  This source code is licensed under the MIT license found in the
+  LICENSE file in the root directory of this source tree.
+-->
+
+<div class="card controller-card">
+	<div class="card-header">
+		<img src="./assets/images/auto-return.png" class="control-icon" />
+		<span class="control-label">Session Player</span>
+	</div>
+	<div class="card-body">
+		<input type="file" id="session-file" name="session-file" accept=".txt" />
+		<div id="playback-control">
+			<button id="play-btn" class="playback-action-button">
+				<img src="./assets/images/play.png" class="action-icon" />
+			</button>
+			<button id="reset-btn" class="playback-action-button">
+				<img src="./assets/images/reset.png" class="action-icon" />
+			</button>
+			<input
+				disabled
+				id="play-progress"
+				type="range"
+				min="0"
+				max="1000"
+				value="0"
+				class="session-progress-bar"
+			/>
+		</div>
+	</div>
+</div>

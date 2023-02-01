@@ -1,0 +1,40 @@
+{
+	"name": "Immersive Web Emulator",
+	"short_name": "IWE",
+	"version": "1.0.0",
+	"minimum_chrome_version": "88",
+	"devtools_page": "dist/devtools.html",
+	"description": "WebXR Emulator for Meta Quest devices",
+	"author": "Felix Zhang (fe1ix@meta.com)",
+	"icons": {
+		"16": "icons/icon16.png",
+		"48": "icons/icon48.png",
+		"128": "icons/icon128.png"
+	},
+	"background": {
+		"service_worker": "dist/service-worker.js"
+	},
+	"permissions": ["storage", "scripting", "tabs"],
+	"host_permissions": ["http://*/*", "https://*/*"],
+	"content_scripts": [
+		{
+			"matches": ["http://*/*", "https://*/*"],
+			"js": ["dist/content.js"],
+			"run_at": "document_start",
+			"all_frames": true
+		}
+	],
+	"action": {
+		"default_icon": {
+			"16": "icons/icon16.png",
+			"48": "icons/icon48.png",
+			"128": "icons/icon128.png"
+		},
+		"default_popup": "dist/popup.html"
+	},
+	"manifest_version": 3,
+	"web_accessible_resources": [],
+	"content_security_policy": {
+		"extension_pages": "script-src 'self'; object-src 'self'"
+	}
+}

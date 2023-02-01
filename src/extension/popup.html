@@ -1,0 +1,61 @@
+<!-- 
+  Copyright (c) Meta Platforms, Inc. and affiliates.
+
+  This source code is licensed under the MIT license found in the
+  LICENSE file in the root directory of this source tree.
+-->
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+	</head>
+	<style>
+		body {
+			width: 180px;
+			background-color: #2a2a2a;
+			color: #e4e6eb;
+			font-family: sans-serif;
+		}
+
+		button {
+			height: 2.1em;
+			width: 100%;
+			border-radius: 6px;
+			border-style: none;
+			padding: 4px 6px 4px 6px;
+			margin-top: 5px;
+			font-size: medium;
+			background-color: #3b3b3c;
+			color: #e4e6eb;
+			text-align: center;
+		}
+
+		button:hover {
+			background-color: #676767;
+			color: #e4e6eb;
+		}
+
+		#ext-name {
+			text-align: center;
+			width: 100%;
+			font-size: large;
+			margin-bottom: 4px;
+		}
+
+		#ext-version {
+			color: #a7a7a7;
+			text-align: center;
+			width: 100%;
+			margin-bottom: 5px;
+		}
+	</style>
+	<body>
+		<script src="popup.js"></script>
+		<div id="ext-name">Immersive Web Emulator</div>
+		<div id="ext-version"></div>
+		<button id="send-btn">Send Page to Device</button>
+		<button id="guide-btn">User Guide</button>
+		<button id="bug-btn">Report an Issue</button>
+	</body>
+</html>

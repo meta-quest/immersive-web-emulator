@@ -1,0 +1,9 @@
+{
+	"filepath": "./.eslintrc.js",
+	"endOfLine": "lf",
+	"useTabs": true,
+	"trailingComma": "all",
+	"arrowParens": "always",
+	"singleQuote": true,
+	"jsxSingleQuote": false
+}
