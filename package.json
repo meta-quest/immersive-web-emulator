@@ -13,7 +13,7 @@
 	"scripts": {
 		"build:devtool": "rollup -c --bundleConfigAsCjs",
 		"build:polyfill": "cd polyfill && npm run build",
-		"build": "rm -rf dist && npm run build:polyfill && npm run build:devtool",
+		"build": "rimraf dist && npm run build:polyfill && npm run build:devtool",
 		"lint": "eslint ./src",
 		"format": "prettier --write ./src/**/*",
 		"watch": "npm-watch"
@@ -32,6 +32,7 @@
 		"npm-watch": "^0.11.0",
 		"pre-commit": "^1.2.2",
 		"prettier": "^2.8.0",
+		"rimraf": "^4.1.2",
 		"rollup": "^3.6.0",
 		"rollup-plugin-cleanup": "^3.2.1",
 		"rollup-plugin-commonjs": "^10.1.0",
