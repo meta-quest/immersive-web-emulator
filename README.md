@@ -22,25 +22,21 @@ Inspired by the [official WebXR Emulator Extension by Mozilla Reality](https://g
 
 ## Installation
 
-This extension is built on [WebExtensions API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions). It works on Chrome, Microsoft Edge, and other browsers that support the API.
+This extension is built on [WebExtensions API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions) and implements [Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/). It works on Chrome, Microsoft Edge, and other browsers that support the API. The immersive Web Emulator can be installed from the following browser extension stores:
 
-The Immersive Web Emulator is still experimental. It will be published on the Chrome extension store once it is feature complete, but for now the extension source code must be downloaded/cloned to local and loaded to use it.
+- [Google Chrome Web Store Page](https://chrome.google.com/webstore/detail/immersive-web-emulator/cgffilbpcibhmcfbgggfhfolhkfbhmik)
+- [Microsoft Edge Add-ons Store Page](https://microsoftedge.microsoft.com/addons/detail/immersive-web-emulator/hhlkbhldhffpeibcfggfndbkfohndamj)
 
-### Installing on Chrome
+### Manual Installation
 
-Chrome's official guide for loading an unpacked extension can be found [here](https://developer.chrome.com/docs/extensions/mv3/getstarted/#unpacked). Here is the list of steps:
+For other Chromium-based browsers, you can download our latest release, and try to manually install the extension by:
 
-1. Open the **Extension Management** page by navigating to "chrome://extensions" in the URL bar.
-2. Enable developer mode by clicking the toggle next to **Developer Mode**.
-3. Click the **Load unpacked button** and select the extension's directory, which is the WebXRQuestEmulator folder that you cloned/downloaded.
+1. Download the latest release [here](https://github.com/meta-quest/immersive-web-emulator/releases), unpack it and note the unpacked directory.
+2. Open the Extensions page of the browser, it can typically be found in the browser menu, or you can try navigating to "chrome://extensions" in the URL bar if the browser is Chromium-based.
+3. Locate and Enable **developer mode** on the Extensions page.
+4. Locate and click on the **Load unpacked button** and select the unpacked directory from step 1.
 
-### Installing on Microsoft Edge
-
-Microsoft Edge's official guide for loading an unpacked extension can be found [here](https://learn.microsoft.com/en-us/microsoft-edge/extensions-chromium/getting-started/extension-sideloading). Here is the list of steps:
-
-1. Open the **Extensions** page by navigating to "edge://extensions".
-2. Enable developer mode by clicking the toggle next to **Developer mode**.
-3. Click the **Load unpacked** button and select the extension's directory, which is WebXRQuestEmulator directory that you cloned/downloaded.
+The process may vary for different browsers.
 
 ## Immersive Web Emulator Usage
 
