@@ -102,9 +102,9 @@ There are keyboard mapping built in for some important controller emulated contr
 
 Keyboard events other than those reserved for controller emulation are passed through to the main WebXR experience, you may wish to utilize this feature to build in some shortcuts for debugging purposes.
 
-### Record Session & Emulator Playback
+<!-- ### Record Session & Emulator Playback
 
-You can also use the session recording utility package to record input sessions from your WebXR experiences in headset, and replay the input session with the emulator
+You can also use the session recording utility package to record input sessions from your WebXR experiences in headset, and replay the input session with the emulator -->
 
 ## Note
 

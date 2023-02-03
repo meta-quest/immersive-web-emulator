@@ -44,9 +44,9 @@ const setupHeadsetComponentButtons = () => {
 		EmulatorSettings.instance.write();
 	});
 
-	document.getElementById('settings').onclick = function () {
-		alert('Emulator settings not yet available');
-	};
+	// document.getElementById('settings').onclick = function () {
+	// 	alert('Emulator settings not yet available');
+	// };
 
 	const deviceSelect = document.getElementById('vr-device-select');
 
@@ -108,16 +108,17 @@ EmulatorSettings.instance.load().then(() => {
 		controllerTabButton.onclick = () => {
 			controllerPanel.style.display = 'flex';
 			playerPanel.style.display = 'none';
-			controllerTabButton.classList.toggle('button-pressed');
-			playerTabButton.classList.toggle('button-pressed');
+			controllerTabButton.classList.toggle('button-pressed', true);
+			playerTabButton.classList.toggle('button-pressed', false);
 			onResize();
 		};
 		playerTabButton.onclick = () => {
-			controllerPanel.style.display = 'none';
-			playerPanel.style.display = 'flex';
-			controllerTabButton.classList.toggle('button-pressed');
-			playerTabButton.classList.toggle('button-pressed');
-			onResize();
+			// controllerPanel.style.display = 'none';
+			// playerPanel.style.display = 'flex';
+			// controllerTabButton.classList.toggle('button-pressed');
+			// playerTabButton.classList.toggle('button-pressed');
+			// onResize();
+			alert('Session recording/playback feature coming soon');
 		};
 	});
 

@@ -231,8 +231,8 @@ export const setupKeyboardControlButtons = () => {
       ButtonB: /
       `);
 	};
-	document.getElementById('keyboard-settings').onclick = function () {
-		alert('Keyboard control settings not yet available');
-	};
+	// document.getElementById('keyboard-settings').onclick = function () {
+	// 	alert('Keyboard control settings not yet available');
+	// };
 	window.addEventListener('blur', resetEmulatedJoysticks);
 };
