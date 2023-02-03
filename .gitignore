@@ -130,3 +130,6 @@ dist
 .pnp.*
 
 .DS_Store
+
+# release zip file
+iwe-release.zip

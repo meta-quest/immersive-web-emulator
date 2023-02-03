@@ -1,6 +1,6 @@
 {
 	"name": "immersive-web-emulator",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"watch": {
 		"build:devtool": {
 			"patterns": [
@@ -16,7 +16,8 @@
 		"build": "rimraf dist && npm run build:polyfill && npm run build:devtool",
 		"lint": "eslint ./src",
 		"format": "prettier --write ./src/**/*",
-		"watch": "npm-watch"
+		"watch": "npm-watch",
+		"zip": "npm run build && bestzip iwe-release.zip dist/* icons/* manifest.json LICENSE.md"
 	},
 	"pre-commit": [
 		"lint"
@@ -28,6 +29,7 @@
 		"three": "^0.147.0"
 	},
 	"devDependencies": {
+		"bestzip": "^2.2.1",
 		"eslint-config-prettier": "^8.5.0",
 		"npm-watch": "^0.11.0",
 		"pre-commit": "^1.2.2",

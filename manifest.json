@@ -1,7 +1,7 @@
 {
 	"name": "Immersive Web Emulator",
 	"short_name": "IWE",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"minimum_chrome_version": "88",
 	"devtools_page": "dist/devtools.html",
 	"description": "WebXR Emulator for Meta Quest devices",
