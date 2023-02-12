@@ -118,7 +118,7 @@ export const DEVICE_DEFINITIONS = {
 		id: 'Oculus Quest 2',
 		name: 'Oculus Quest 2',
 		profile: 'oculus-touch-v3',
-		modes: ['inline', 'immersive-vr'],
+		modes: ['inline', 'immersive-vr', 'immersive-ar'],
 		headset: {
 			hasPosition: true,
 			hasRotation: true,
@@ -154,7 +154,7 @@ export const DEVICE_DEFINITIONS = {
 		id: 'Meta Quest Pro',
 		name: 'Meta Quest Pro',
 		profile: 'meta-quest-touch-pro',
-		modes: ['inline', 'immersive-vr'],
+		modes: ['inline', 'immersive-vr', 'immersive-ar'],
 		headset: {
 			hasPosition: true,
 			hasRotation: true,

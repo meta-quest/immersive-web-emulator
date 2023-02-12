@@ -873,9 +873,9 @@ let SESSION_ID = 0;
 class Session {
 	constructor(mode, enabledFeatures) {
 		this.mode = mode;
-		this.immersive = mode == 'immersive-vr';
+		this.immersive = mode == 'immersive-vr' || mode == 'immersive-ar';
 		this.vr = mode === 'immersive-vr';
-		this.ar = false;
+		this.ar = mode == 'immersive-ar';
 		this.id = ++SESSION_ID;
 		this.baseLayer = null;
 		this.inlineVerticalFieldOfView = Math.PI * 0.5;
