@@ -145,10 +145,9 @@ export default class EmulatedXRDevice extends XRDevice {
 		if (!this.isSessionSupported(mode)) {
 			return Promise.reject();
 		}
-		const immersive = mode === 'immersive-vr';
 		const session = new Session(mode, enabledFeatures);
 		this.sessions.set(session.id, session);
-		if (immersive) {
+		if (session.immersive) {
 			this.dispatchEvent('@@webxr-polyfill/vr-present-start', session.id);
 			this._notifyEnterImmersive();
 		}
@@ -201,7 +200,7 @@ export default class EmulatedXRDevice extends XRDevice {
 			context.clearStencil(currentClearStencil);
 		}
 
-		if (session.vr) {
+		if (session.vr || (session.ar && session.immersive)) {
 			// @TODO: proper FOV
 			const aspect = (width * (this.stereoEffectEnabled ? 0.5 : 1.0)) / height;
 			mat4.perspective(
@@ -219,6 +218,7 @@ export default class EmulatedXRDevice extends XRDevice {
 				far,
 			);
 		} else if (session.ar) {
+			// @TODO: support mobile AR
 			// @TODO: proper FOV
 			const aspect = this.deviceSize.width / this.deviceSize.height;
 			mat4.perspective(this.projectionMatrix, Math.PI / 2, aspect, near, far);
@@ -232,7 +232,7 @@ export default class EmulatedXRDevice extends XRDevice {
 				far,
 			);
 		}
-		if (session.ar) {
+		if (session.ar && !session.immersive) {
 			mat4.fromRotationTranslationScale(
 				this.matrix,
 				this.gamepads[1].pose.orientation,
@@ -389,7 +389,7 @@ export default class EmulatedXRDevice extends XRDevice {
 		const canvas = session.baseLayer.context.canvas;
 		const width = canvas.width;
 		const height = canvas.height;
-		if (session.ar) {
+		if (session.ar && !session.immersive) {
 			// Currently the polyfill let any immersive mode has two ViewSpaces left and right.
 			// Return the same viewport for any eye type so far.
 			// @TODO: Send feedback to webxr-polyfill.js about one 'none' view option
@@ -873,6 +873,7 @@ let SESSION_ID = 0;
 class Session {
 	constructor(mode, enabledFeatures) {
 		this.mode = mode;
+		// @TODO support mobile non-immersive
 		this.immersive = mode == 'immersive-vr' || mode == 'immersive-ar';
 		this.vr = mode === 'immersive-vr';
 		this.ar = mode == 'immersive-ar';
