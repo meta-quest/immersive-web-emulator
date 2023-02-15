@@ -1,6 +1,5 @@
 {
 	"name": "immersive-web-emulator",
-	"version": "1.0.1",
 	"watch": {
 		"build:devtool": {
 			"patterns": [
