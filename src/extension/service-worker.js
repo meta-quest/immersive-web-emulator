@@ -53,6 +53,7 @@ chrome.scripting.registerContentScripts([
 		id: 'polyfill-injection' + generateUUID(),
 		matches: ['http://*/*', 'https://*/*'],
 		js: ['dist/webxr-polyfill.js'],
+		allFrames: true,
 		runAt: 'document_start',
 		world: 'MAIN',
 	},
