@@ -17,6 +17,7 @@
 		"lint": "eslint ./src",
 		"format": "prettier --write ./src/**/*",
 		"watch": "npm-watch",
+		"postinstall": "cd polyfill && npm install",
 		"zip": "npm run build && bestzip iwe-release.zip dist/* icons/* manifest.json LICENSE.md"
 	},
 	"pre-commit": [
