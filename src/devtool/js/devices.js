@@ -19,8 +19,12 @@ export const DEVICE_DEFINITIONS = {
 			{
 				id: 'Oculus Touch (Left)',
 				buttonNum: 7,
-				primaryButtonIndex: 0,
-				primarySqueezeButtonIndex: 1,
+				/**
+				 * this is not the index in gamepad.buttons, but the index used for input remapping in WebXR Polyfill
+				 * @see https://github.com/immersive-web/webxr-polyfill/blob/main/src/devices/GamepadMappings.js
+				 */
+				primaryButtonIndex: 1,
+				primarySqueezeButtonIndex: 2,
 				hasPosition: true,
 				hasRotation: true,
 				hasSqueezeButton: true,
@@ -29,8 +33,8 @@ export const DEVICE_DEFINITIONS = {
 			{
 				id: 'Oculus Touch (Right)',
 				buttonNum: 7,
-				primaryButtonIndex: 0,
-				primarySqueezeButtonIndex: 1,
+				primaryButtonIndex: 1,
+				primarySqueezeButtonIndex: 2,
 				hasPosition: true,
 				hasRotation: true,
 				hasSqueezeButton: true,
@@ -55,8 +59,8 @@ export const DEVICE_DEFINITIONS = {
 			{
 				id: 'Oculus Touch V2 (Left)',
 				buttonNum: 7,
-				primaryButtonIndex: 0,
-				primarySqueezeButtonIndex: 1,
+				primaryButtonIndex: 1,
+				primarySqueezeButtonIndex: 2,
 				hasPosition: true,
 				hasRotation: true,
 				hasSqueezeButton: true,
@@ -65,8 +69,8 @@ export const DEVICE_DEFINITIONS = {
 			{
 				id: 'Oculus Touch V2 (Right)',
 				buttonNum: 7,
-				primaryButtonIndex: 0,
-				primarySqueezeButtonIndex: 1,
+				primaryButtonIndex: 1,
+				primarySqueezeButtonIndex: 2,
 				hasPosition: true,
 				hasRotation: true,
 				hasSqueezeButton: true,
@@ -91,8 +95,8 @@ export const DEVICE_DEFINITIONS = {
 			{
 				id: 'Oculus Touch V2 (Left)',
 				buttonNum: 7,
-				primaryButtonIndex: 0,
-				primarySqueezeButtonIndex: 1,
+				primaryButtonIndex: 1,
+				primarySqueezeButtonIndex: 2,
 				hasPosition: true,
 				hasRotation: true,
 				hasSqueezeButton: true,
@@ -101,8 +105,8 @@ export const DEVICE_DEFINITIONS = {
 			{
 				id: 'Oculus Touch V2 (Right)',
 				buttonNum: 7,
-				primaryButtonIndex: 0,
-				primarySqueezeButtonIndex: 1,
+				primaryButtonIndex: 1,
+				primarySqueezeButtonIndex: 2,
 				hasPosition: true,
 				hasRotation: true,
 				hasSqueezeButton: true,
@@ -127,8 +131,8 @@ export const DEVICE_DEFINITIONS = {
 			{
 				id: 'Oculus Touch V3 (Left)',
 				buttonNum: 7,
-				primaryButtonIndex: 0,
-				primarySqueezeButtonIndex: 1,
+				primaryButtonIndex: 1,
+				primarySqueezeButtonIndex: 2,
 				hasPosition: true,
 				hasRotation: true,
 				hasSqueezeButton: true,
@@ -137,8 +141,8 @@ export const DEVICE_DEFINITIONS = {
 			{
 				id: 'Oculus Touch V3 (Right)',
 				buttonNum: 7,
-				primaryButtonIndex: 0,
-				primarySqueezeButtonIndex: 1,
+				primaryButtonIndex: 1,
+				primarySqueezeButtonIndex: 2,
 				hasPosition: true,
 				hasRotation: true,
 				hasSqueezeButton: true,
@@ -163,8 +167,8 @@ export const DEVICE_DEFINITIONS = {
 			{
 				id: 'Meta Quest Touch Pro (Left)',
 				buttonNum: 7,
-				primaryButtonIndex: 0,
-				primarySqueezeButtonIndex: 1,
+				primaryButtonIndex: 1,
+				primarySqueezeButtonIndex: 2,
 				hasPosition: true,
 				hasRotation: true,
 				hasSqueezeButton: true,
@@ -173,8 +177,8 @@ export const DEVICE_DEFINITIONS = {
 			{
 				id: 'Meta Quest Touch Pro (Right)',
 				buttonNum: 7,
-				primaryButtonIndex: 0,
-				primarySqueezeButtonIndex: 1,
+				primaryButtonIndex: 1,
+				primarySqueezeButtonIndex: 2,
 				hasPosition: true,
 				hasRotation: true,
 				hasSqueezeButton: true,
