@@ -136,6 +136,8 @@ export default class EmulatedXRDevice extends XRDevice {
 				return false;
 			case 'dom-overlay':
 				return true;
+			case 'anchors':
+				return true;
 			default:
 				return false; // @TODO: Throw an error?
 		}

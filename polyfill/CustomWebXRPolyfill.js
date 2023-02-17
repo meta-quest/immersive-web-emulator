@@ -1,3 +1,7 @@
+import { XRAnchor, XRAnchorSet } from './api/XRAnchor';
+import XRFrame, {
+	PRIVATE as XRFRAME_PRIVATE,
+} from 'webxr-polyfill/src/api/XRFrame';
 import XRSession, {
 	PRIVATE as XRSESSION_PRIVATE,
 } from 'webxr-polyfill/src/api/XRSession';
@@ -7,15 +11,16 @@ import EX_API from './api/index';
 import EmulatedXRDevice from './EmulatedXRDevice';
 import { POLYFILL_ACTIONS } from '../src/devtool/js/actions';
 import WebXRPolyfill from 'webxr-polyfill/src/WebXRPolyfill';
-import XRFrame from 'webxr-polyfill/src/api/XRFrame';
 import XRHitTestResult from './api/XRHitTestResult';
 import XRHitTestSource from './api/XRHitTestSource';
 import XRReferenceSpace from 'webxr-polyfill/src/api/XRReferenceSpace';
 import XRRigidTransform from 'webxr-polyfill/src/api/XRRigidTransform';
+import XRSpace from 'webxr-polyfill/src/api/XRSpace';
 import XRSystem from 'webxr-polyfill/src/api/XRSystem';
 import XRTransientInputHitTestResult from './api/XRTransientInputHitTestResult';
 import XRTransientInputHitTestSource from './api/XRTransientInputHitTestSource';
 import { XR_COMPATIBLE } from 'webxr-polyfill/src/constants';
+import { mat4 } from 'gl-matrix';
 
 export default class CustomWebXRPolyfill extends WebXRPolyfill {
 	constructor() {
@@ -91,6 +96,78 @@ export default class CustomWebXRPolyfill extends WebXRPolyfill {
 			device.addHitTestSourceForTransientInput(source);
 			return Promise.resolve(source);
 		};
+
+		XRSession.prototype.addTrackedAnchor = function (anchor) {
+			if (this.trackedAnchors == null) this.trackedAnchors = new Set();
+			this.trackedAnchors.add(anchor);
+		};
+
+		XRSession.prototype.getTrackedAnchors = function () {
+			return this.trackedAnchors;
+		};
+
+		XRSession.prototype.hasTrackedAnchor = function (anchor) {
+			return this.trackedAnchors.has(anchor);
+		};
+
+		XRSession.prototype.deleteTrackedAnchor = function (anchor) {
+			if (this.trackedAnchors != null) {
+				this.trackedAnchors.delete(anchor);
+			}
+		};
+
+		/**
+		 * @param {import('webxr-polyfill/src/api/XRRigidTransform').default} pose
+		 * @param {import('webxr-polyfill/src/api/XRSpace').default} space
+		 * @see https://immersive-web.github.io/anchors/#dom-xrframe-createanchor
+		 */
+		XRFrame.prototype.createAnchor = async function (pose, space) {
+			const session = this[XRFRAME_PRIVATE].session;
+			const localRefSpace = await session.requestReferenceSpace('local');
+
+			const device = this[XRFRAME_PRIVATE].device;
+			let currentSpaceTransform = null;
+			if (
+				space._specialType === 'target-ray' ||
+				space._specialType === 'grip'
+			) {
+				currentSpaceTransform = device.getInputPose(
+					space._inputSource,
+					localRefSpace,
+					space._specialType,
+				).transform;
+			} else {
+				space._ensurePoseUpdated(device, this[XRFRAME_PRIVATE].id);
+				localRefSpace._ensurePoseUpdated(device, this[XRFRAME_PRIVATE].id);
+				currentSpaceTransform = localRefSpace._getSpaceRelativeTransform(space);
+			}
+			if (!currentSpaceTransform) throw 'error creating anchor';
+
+			const currentSpaceBaseSpaceMatrix = new Float32Array(16);
+			mat4.multiply(
+				currentSpaceBaseSpaceMatrix,
+				localRefSpace._baseMatrix,
+				currentSpaceTransform.matrix,
+			);
+			const anchorSpaceBaseSpaceMatrix = new Float32Array(16);
+			mat4.multiply(
+				anchorSpaceBaseSpaceMatrix,
+				currentSpaceBaseSpaceMatrix,
+				pose.matrix,
+			);
+			const anchorSpace = new XRSpace();
+			anchorSpace._baseMatrix = anchorSpaceBaseSpaceMatrix;
+			const anchor = new XRAnchor(session, anchorSpace);
+			session.addTrackedAnchor(anchor);
+			return anchor;
+		};
+
+		Object.defineProperty(XRFrame.prototype, 'trackedAnchors', {
+			get: function () {
+				const session = this[XRFRAME_PRIVATE].session;
+				return new XRAnchorSet(session.getTrackedAnchors());
+			},
+		});
 
 		XRFrame.prototype.getHitTestResults = function (hitTestSource) {
 			const device = this.session[XRSESSION_PRIVATE].device;
