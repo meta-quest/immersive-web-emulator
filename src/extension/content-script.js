@@ -77,6 +77,12 @@ const connection = {
 						new KeyboardEvent(message.eventType, message.eventOptions),
 					);
 					break;
+
+				case EMULATOR_ACTIONS.ROOM_DIMENSION_CHANGE:
+					triggerPolyfillAction(POLYFILL_ACTIONS.ROOM_DIMENSION_CHANGE, {
+						dimension: message.dimension,
+					});
+					break;
 			}
 		});
 		connection.port.onDisconnect.addListener(connection.connect);
@@ -122,6 +128,9 @@ EmulatorSettings.instance.load().then(() => {
 	triggerPolyfillAction(POLYFILL_ACTIONS.DEVICE_INIT, {
 		deviceDefinition: DEVICE_DEFINITIONS[EmulatorSettings.instance.deviceKey],
 		stereoEffect: EmulatorSettings.instance.stereoOn,
+	});
+	triggerPolyfillAction(POLYFILL_ACTIONS.ROOM_DIMENSION_CHANGE, {
+		dimension: EmulatorSettings.instance.roomDimension,
 	});
 	sendActionToEmulator(CLIENT_ACTIONS.ENTER_IMMERSIVE);
 });

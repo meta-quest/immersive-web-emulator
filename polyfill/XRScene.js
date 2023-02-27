@@ -194,6 +194,10 @@ export default class XRScene {
 		this.camera.quaternion.fromArray(quaternionArray);
 	}
 
+	createRoom(dimension) {
+		this.roomFactory.createRoom(dimension.x, dimension.y, dimension.z);
+	}
+
 	get xrPlanes() {
 		return this.roomFactory.xrPlanes;
 	}

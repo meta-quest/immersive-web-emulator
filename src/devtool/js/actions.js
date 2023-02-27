@@ -17,6 +17,7 @@ export const EMULATOR_ACTIONS = {
 	STEREO_TOGGLE: 'ea-stereo-toggle',
 	KEYBOARD_EVENT: 'ea-keyboard-event',
 	EXIT_IMMERSIVE: 'ea-exit-immersive',
+	ROOM_DIMENSION_CHANGE: 'ea-room-dimension-change',
 };
 
 /**
@@ -32,6 +33,7 @@ export const POLYFILL_ACTIONS = {
 	KEYBOARD_EVENT: 'pa-keyboard-event',
 	EXIT_IMMERSIVE: 'pa-exit-immersive',
 	DEVICE_INIT: 'pa-device-init',
+	ROOM_DIMENSION_CHANGE: 'pa-room-dimension-change',
 };
 
 /**

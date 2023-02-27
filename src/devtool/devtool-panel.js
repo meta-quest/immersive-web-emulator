@@ -14,7 +14,11 @@ import {
 	notifyExitImmersive,
 	toggleStereoMode,
 } from './js/messenger';
-import { loadDeviceAsset, onResize } from './js/Inspector';
+import {
+	loadDeviceAsset,
+	onResize,
+	setupRoomDimensionSettings,
+} from './js/Inspector';
 import {
 	registerControllerButtonEvents,
 	setupJoystick,
@@ -72,6 +76,7 @@ EmulatorSettings.instance.load().then(() => {
 			loadDeviceAsset(DEVICE.HEADSET);
 			loadDeviceAsset(DEVICE.RIGHT_CONTROLLER);
 			loadDeviceAsset(DEVICE.LEFT_CONTROLLER);
+			setupRoomDimensionSettings();
 		},
 	);
 

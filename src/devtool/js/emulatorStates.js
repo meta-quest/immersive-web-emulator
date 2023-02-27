@@ -82,6 +82,7 @@ export class EmulatorSettings {
 		this.defaultPose = DEFAULT_TRANSFORMS;
 		this.deviceKey = 'Meta Quest Pro';
 		this.keyboardMappingOn = true;
+		this.roomDimension = { x: 6, y: 3, z: 6 };
 	}
 
 	load() {
@@ -95,6 +96,7 @@ export class EmulatorSettings {
 				this.defaultPose = settings?.defaultPose ?? DEFAULT_TRANSFORMS;
 				this.deviceKey = settings?.deviceKey ?? 'Meta Quest Pro';
 				this.keyboardMappingOn = settings?.keyboardMappingOn ?? true;
+				this.roomDimension = settings?.roomDimension ?? { x: 6, y: 3, z: 6 };
 				resolve(result);
 			});
 		});
@@ -108,6 +110,7 @@ export class EmulatorSettings {
 			defaultPose: this.defaultPose,
 			deviceKey: this.deviceKey,
 			keyboardMappingOn: this.keyboardMappingOn,
+			roomDimension: this.roomDimension,
 		});
 		return new Promise((resolve) => {
 			localStorage.set(settings, () => {

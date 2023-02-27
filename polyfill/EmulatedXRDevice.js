@@ -884,6 +884,11 @@ export default class EmulatedXRDevice extends XRDevice {
 			false,
 		);
 
+		window.addEventListener(POLYFILL_ACTIONS.ROOM_DIMENSION_CHANGE, (event) => {
+			const dimension = event.detail.dimension;
+			this.xrScene.createRoom(dimension);
+		});
+
 		window.addEventListener(POLYFILL_ACTIONS.STEREO_TOGGLE, (event) => {
 			this._updateStereoEffect(event.detail.enabled);
 		});

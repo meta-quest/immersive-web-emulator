@@ -7,8 +7,7 @@
 
 import { CLIENT_ACTIONS, EMULATOR_ACTIONS } from './actions';
 import { DEVICE, OBJECT_NAME } from './constants';
-
-import { emulatorStates } from './emulatorStates';
+import { EmulatorSettings, emulatorStates } from './emulatorStates';
 
 // eslint-disable-next-line no-undef
 const tabId = chrome.devtools.inspectedWindow.tabId;
@@ -124,4 +123,10 @@ export const applyAllPoseChanges = () => {
 
 export const notifyExitImmersive = () => {
 	executeAction(EMULATOR_ACTIONS.EXIT_IMMERSIVE);
+};
+
+export const changeRoomDimension = () => {
+	executeAction(EMULATOR_ACTIONS.ROOM_DIMENSION_CHANGE, {
+		dimension: EmulatorSettings.instance.roomDimension,
+	});
 };

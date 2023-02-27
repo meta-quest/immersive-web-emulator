@@ -9,8 +9,13 @@ import * as THREE from 'three';
 
 import { ASSET_PATH, DEVICE, OBJECT_NAME } from './constants';
 import { EmulatorSettings, emulatorStates } from './emulatorStates';
-import { applyAllPoseChanges, applyDevicePoseChange } from './messenger';
+import {
+	applyAllPoseChanges,
+	applyDevicePoseChange,
+	changeRoomDimension,
+} from './messenger';
 
+import { BoxLineGeometry } from 'three/examples/jsm/geometries/BoxLineGeometry';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls';
@@ -80,8 +85,25 @@ scene.add(light2);
 const ambientLight = new THREE.AmbientLight(0x404040, 2);
 scene.add(ambientLight);
 
-const gridHelper = new THREE.GridHelper(20, 20);
-scene.add(gridHelper);
+let roomObject = null;
+export const drawRoom = () => {
+	const dimension = EmulatorSettings.instance.roomDimension;
+	if (roomObject) scene.remove(roomObject);
+	roomObject = new THREE.LineSegments(
+		new BoxLineGeometry(
+			dimension.x,
+			dimension.y,
+			dimension.z,
+			Math.ceil(dimension.x * 2),
+			Math.ceil(dimension.y * 2),
+			Math.ceil(dimension.z * 2),
+		),
+		new THREE.LineBasicMaterial({ color: 0x808080 }),
+	);
+	roomObject.geometry.translate(0, dimension.y / 2, 0);
+	scene.add(roomObject);
+	render();
+};
 
 const orbitControls = new OrbitControls(camera, renderer.domElement);
 orbitControls.addEventListener('change', render);
@@ -235,6 +257,36 @@ export const loadDeviceAsset = (device) => {
 		onChange();
 		render();
 	});
+};
+
+export const setupRoomDimensionSettings = () => {
+	drawRoom();
+	const dimensionX = document.getElementById('room-width');
+	dimensionX.value = EmulatorSettings.instance.roomDimension.x;
+	dimensionX.onchange = () => {
+		EmulatorSettings.instance.roomDimension.x = parseFloat(dimensionX.value);
+		EmulatorSettings.instance.write();
+		drawRoom();
+		changeRoomDimension();
+	};
+
+	const dimensionY = document.getElementById('room-height');
+	dimensionY.value = EmulatorSettings.instance.roomDimension.y;
+	dimensionY.onchange = () => {
+		EmulatorSettings.instance.roomDimension.y = parseFloat(dimensionY.value);
+		EmulatorSettings.instance.write();
+		drawRoom();
+		changeRoomDimension();
+	};
+
+	const dimensionZ = document.getElementById('room-depth');
+	dimensionZ.value = EmulatorSettings.instance.roomDimension.z;
+	dimensionZ.onchange = () => {
+		EmulatorSettings.instance.roomDimension.z = parseFloat(dimensionZ.value);
+		EmulatorSettings.instance.write();
+		drawRoom();
+		changeRoomDimension();
+	};
 };
 
 const raycaster = new THREE.Raycaster();
