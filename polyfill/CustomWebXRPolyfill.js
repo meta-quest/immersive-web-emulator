@@ -172,7 +172,8 @@ export default class CustomWebXRPolyfill extends WebXRPolyfill {
 
 		Object.defineProperty(XRFrame.prototype, 'detectedPlanes', {
 			get: function () {
-				return new XRPlaneSet();
+				const device = this[XRFRAME_PRIVATE].device;
+				return new XRPlaneSet(device.xrScene.xrPlanes);
 			},
 		});
 

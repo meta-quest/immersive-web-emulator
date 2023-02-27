@@ -7,10 +7,92 @@ import {
 	Scene,
 	WebGLRenderer,
 } from 'three';
+import { XRPlane, XRPlaneOrientation } from './api/XRPlane';
 
 import { BoxLineGeometry } from 'three/examples/jsm/geometries/BoxLineGeometry';
+import XRSpace from 'webxr-polyfill/src/api/XRSpace';
+import { mat4 } from 'gl-matrix';
 
 const DEFAULT_CAMERA_POSITION = [0, 1.6, 0];
+const PLANE_CONFIG = {
+	FLOOR: {
+		orientation: XRPlaneOrientation.Horizontal,
+		quaternion: [0, 0, 0, 1],
+	},
+	CEILING: {
+		orientation: XRPlaneOrientation.Horizontal,
+		quaternion: [0, 0, 1, 0],
+	},
+	RIGHT: {
+		orientation: XRPlaneOrientation.Vertical,
+		quaternion: [0, 0, 0.7071068, 0.7071068],
+	},
+	LEFT: {
+		orientation: XRPlaneOrientation.Vertical,
+		quaternion: [0, 0, -0.7071068, 0.7071068],
+	},
+	FRONT: {
+		orientation: XRPlaneOrientation.Vertical,
+		quaternion: [0.7071068, 0, 0, 0.7071068],
+	},
+	BACK: {
+		orientation: XRPlaneOrientation.Vertical,
+		quaternion: [-0.7071068, 0, 0, 0.7071068],
+	},
+};
+const DEFAULT_ROOM_DIMENSION = {
+	x: 6,
+	y: 3,
+	z: 6,
+};
+
+const buildXRPlane = (width, length, position, planeConfig) => {
+	const planeMatrix = new Float32Array(16);
+	mat4.fromRotationTranslation(planeMatrix, planeConfig.quaternion, position);
+	const planeSpace = new XRSpace();
+	planeSpace._baseMatrix = planeMatrix;
+	const points = [
+		new DOMPointReadOnly(width, 0, length),
+		new DOMPointReadOnly(width, 0, -length),
+		new DOMPointReadOnly(-width, 0, -length),
+		new DOMPointReadOnly(-width, 0, length),
+		new DOMPointReadOnly(width, 0, length),
+	];
+	return new XRPlane(planeSpace, points, planeConfig.orientation);
+};
+
+class XRRoomFactory {
+	constructor(scene) {
+		this.scene = scene;
+		this.roomObject = null;
+		this.xrPlanes = [];
+	}
+
+	createRoom(x, y, z) {
+		if (this.roomObject) this.scene.remove(this.roomObject);
+		this.roomObject = new LineSegments(
+			new BoxLineGeometry(
+				x,
+				y,
+				z,
+				Math.ceil(x * 2),
+				Math.ceil(y * 2),
+				Math.ceil(z * 2),
+			),
+			new LineBasicMaterial({ color: 0x808080 }),
+		);
+		this.roomObject.geometry.translate(0, y / 2, 0);
+		this.scene.add(this.roomObject);
+		this.xrPlanes = [
+			buildXRPlane(x / 2, z / 2, [0, 0, 0], PLANE_CONFIG.FLOOR),
+			buildXRPlane(x / 2, z / 2, [0, y, 0], PLANE_CONFIG.CEILING),
+			buildXRPlane(y / 2, z / 2, [x / 2, y / 2, 0], PLANE_CONFIG.RIGHT),
+			buildXRPlane(y / 2, z / 2, [-x / 2, y / 2, 0], PLANE_CONFIG.LEFT),
+			buildXRPlane(x / 2, y / 2, [0, y / 2, z / 2], PLANE_CONFIG.BACK),
+			buildXRPlane(x / 2, y / 2, [0, y / 2, -z / 2], PLANE_CONFIG.FRONT),
+		];
+	}
+}
 
 export default class XRScene {
 	constructor() {
@@ -41,12 +123,12 @@ export default class XRScene {
 		const scene = new Scene();
 		scene.background = new Color(0x444444);
 
-		const room = new LineSegments(
-			new BoxLineGeometry(6, 3, 6, 10, 5, 10),
-			new LineBasicMaterial({ color: 0x808080 }),
+		this.roomFactory = new XRRoomFactory(scene);
+		this.roomFactory.createRoom(
+			DEFAULT_ROOM_DIMENSION.x,
+			DEFAULT_ROOM_DIMENSION.y,
+			DEFAULT_ROOM_DIMENSION.z,
 		);
-		room.geometry.translate(0, 1.5, 0);
-		scene.add(room);
 
 		const camera = new PerspectiveCamera(90, width / height, 0.001, 1000.0);
 		camera.position.fromArray(DEFAULT_CAMERA_POSITION);
@@ -110,5 +192,9 @@ export default class XRScene {
 	updateCameraTransform(positionArray, quaternionArray) {
 		this.camera.position.fromArray(positionArray);
 		this.camera.quaternion.fromArray(quaternionArray);
+	}
+
+	get xrPlanes() {
+		return this.roomFactory.xrPlanes;
 	}
 }
