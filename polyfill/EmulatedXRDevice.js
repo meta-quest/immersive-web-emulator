@@ -138,6 +138,8 @@ export default class EmulatedXRDevice extends XRDevice {
 				return true;
 			case 'anchors':
 				return true;
+			case 'plane-detection':
+				return true;
 			default:
 				return false; // @TODO: Throw an error?
 		}

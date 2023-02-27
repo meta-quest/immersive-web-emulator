@@ -13,6 +13,7 @@ import { POLYFILL_ACTIONS } from '../src/devtool/js/actions';
 import WebXRPolyfill from 'webxr-polyfill/src/WebXRPolyfill';
 import XRHitTestResult from './api/XRHitTestResult';
 import XRHitTestSource from './api/XRHitTestSource';
+import { XRPlaneSet } from './api/XRPlane';
 import XRReferenceSpace from 'webxr-polyfill/src/api/XRReferenceSpace';
 import XRRigidTransform from 'webxr-polyfill/src/api/XRRigidTransform';
 import XRSpace from 'webxr-polyfill/src/api/XRSpace';
@@ -166,6 +167,12 @@ export default class CustomWebXRPolyfill extends WebXRPolyfill {
 			get: function () {
 				const session = this[XRFRAME_PRIVATE].session;
 				return new XRAnchorSet(session.getTrackedAnchors());
+			},
+		});
+
+		Object.defineProperty(XRFrame.prototype, 'detectedPlanes', {
+			get: function () {
+				return new XRPlaneSet();
 			},
 		});
 
