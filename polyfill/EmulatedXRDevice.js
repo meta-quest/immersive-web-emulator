@@ -4,6 +4,7 @@ import { mat4, quat, vec3 } from 'gl-matrix';
 import GamepadMappings from 'webxr-polyfill/src/devices/GamepadMappings';
 import GamepadXRInputSource from 'webxr-polyfill/src/devices/GamepadXRInputSource';
 import XRDevice from 'webxr-polyfill/src/devices/XRDevice';
+import XRScene from './XRScene';
 
 const DEFAULT_MODES = ['inline'];
 
@@ -11,7 +12,8 @@ const DEFAULT_MODES = ['inline'];
 const DEFAULT_HEADSET_POSITION = [0, 1.6, 0];
 
 // 10000 is for AR Scene
-const DIV_Z_INDEX = '9999';
+const APP_CANVAS_Z_INDEX = '9999';
+const AR_CANVAS_Z_INDEX = '9998';
 const DOM_OVERLAY_Z_INDEX = '10001';
 
 // For AR
@@ -39,6 +41,7 @@ export default class EmulatedXRDevice extends XRDevice {
 
 		this.modes = config.modes || DEFAULT_MODES;
 		this.features = config.features || [];
+		this.xrScene = new XRScene();
 
 		// headset
 		this.position = vec3.copy(vec3.create(), DEFAULT_HEADSET_POSITION);
@@ -63,13 +66,20 @@ export default class EmulatedXRDevice extends XRDevice {
 		// @TODO: Edit this comment
 		// For case where baseLayer's canvas isn't in document.body
 
-		this.div = document.createElement('div');
-		this.div.style.position = 'absolute';
-		this.div.style.width = '100%';
-		this.div.style.height = '100%';
-		this.div.style.top = '0';
-		this.div.style.left = '0';
-		this.div.style.zIndex = DIV_Z_INDEX; // To override window overall
+		const createCanvasContainer = (zIndex) => {
+			const canvasContainer = document.createElement('div');
+			canvasContainer.style.position = 'fixed';
+			canvasContainer.style.width = '100%';
+			canvasContainer.style.height = '100%';
+			canvasContainer.style.top = '0';
+			canvasContainer.style.left = '0';
+			canvasContainer.style.zIndex = zIndex;
+			return canvasContainer;
+		};
+
+		this.appCanvasContainer = createCanvasContainer(APP_CANVAS_Z_INDEX);
+		this.arCanvasContainer = createCanvasContainer(AR_CANVAS_Z_INDEX);
+
 		this.originalCanvasParams = {
 			parentElement: null,
 			width: 0,
@@ -151,6 +161,10 @@ export default class EmulatedXRDevice extends XRDevice {
 		}
 		const session = new Session(mode, enabledFeatures);
 		this.sessions.set(session.id, session);
+		if (mode === 'immersive-ar') {
+			document.body.appendChild(this.arCanvasContainer);
+			this.xrScene.inject(this.arCanvasContainer);
+		}
 		if (session.immersive) {
 			this.dispatchEvent('@@webxr-polyfill/vr-present-start', session.id);
 			this._notifyEnterImmersive();
@@ -501,7 +515,7 @@ export default class EmulatedXRDevice extends XRDevice {
 		this.originalCanvasParams.width = canvas.width;
 		this.originalCanvasParams.height = canvas.height;
 
-		document.body.appendChild(this.div);
+		document.body.appendChild(this.appCanvasContainer);
 
 		// If canvas is OffscreenCanvas we don't further touch so far.
 		if (!(canvas instanceof HTMLCanvasElement)) {
@@ -511,7 +525,7 @@ export default class EmulatedXRDevice extends XRDevice {
 		this.originalCanvasParams.parentElement = canvas.parentElement;
 		canvas.width = window.innerWidth;
 		canvas.height = window.innerHeight;
-		this.div.appendChild(canvas);
+		this.appCanvasContainer.appendChild(canvas);
 
 		// DOM overlay API
 		// @TODO: Is this the best place to handle?
@@ -520,8 +534,8 @@ export default class EmulatedXRDevice extends XRDevice {
 		if (this.domOverlayRoot) {
 			const el = this.domOverlayRoot;
 			el.style._zIndex = el.style.zIndex; // Polluting is bad...
-			if (this.domOverlayRoot.contains(this.div)) {
-				this.div.style.zIndex = '';
+			if (this.domOverlayRoot.contains(this.appCanvasContainer)) {
+				this.appCanvasContainer.style.zIndex = '';
 			} else {
 				el.style.zIndex = DOM_OVERLAY_Z_INDEX;
 			}
@@ -538,11 +552,11 @@ export default class EmulatedXRDevice extends XRDevice {
 		// There may be a case where an application operates DOM elements
 		// in immersive mode. In such case, we don't restore DOM elements
 		// hierarchies so far.
-		if (this.div.parentElement === document.body) {
-			document.body.removeChild(this.div);
+		if (this.appCanvasContainer.parentElement === document.body) {
+			document.body.removeChild(this.appCanvasContainer);
 		}
-		if (canvas.parentElement === this.div) {
-			this.div.removeChild(canvas);
+		if (canvas.parentElement === this.appCanvasContainer) {
+			this.appCanvasContainer.removeChild(canvas);
 		}
 
 		// If canvas is OffscreenCanvas we don't touch so far.
@@ -561,7 +575,7 @@ export default class EmulatedXRDevice extends XRDevice {
 			const el = this.domOverlayRoot;
 			el.style.zIndex = el.style._zIndex;
 			delete el.style._zIndex;
-			this.div.style.zIndex = DIV_Z_INDEX;
+			this.appCanvasContainer.style.zIndex = APP_CANVAS_Z_INDEX;
 		}
 	}
 
@@ -797,6 +811,9 @@ export default class EmulatedXRDevice extends XRDevice {
 				const positionArray = event.detail.position;
 				const quaternionArray = event.detail.quaternion;
 				this._updatePose(positionArray, quaternionArray);
+				if (this.xrScene) {
+					this.xrScene.updateCameraTransform(positionArray, quaternionArray);
+				}
 			},
 			false,
 		);
