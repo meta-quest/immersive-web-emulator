@@ -150,6 +150,11 @@ export default class EmulatedXRDevice extends XRDevice {
 				return true;
 			case 'plane-detection':
 				return true;
+			case 'high-fixed-foveation-level':
+				console.warn(
+					'The high-fixed-foveation-level feature is non-standard and deprecated. Refer to the documentation at https://immersive-web.github.io/layers/#dom-xrprojectionlayer-fixedfoveation for the standard way to adjust fixed foveation level.',
+				);
+				return true;
 			default:
 				return false; // @TODO: Throw an error?
 		}
