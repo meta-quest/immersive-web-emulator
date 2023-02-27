@@ -117,6 +117,10 @@ export default class CustomWebXRPolyfill extends WebXRPolyfill {
 			}
 		};
 
+		XRSession.prototype.updateTargetFrameRate = function (frameRate) {
+			console.log('now targeting', frameRate, 'fps');
+		};
+
 		/**
 		 * @param {import('webxr-polyfill/src/api/XRRigidTransform').default} pose
 		 * @param {import('webxr-polyfill/src/api/XRSpace').default} space
