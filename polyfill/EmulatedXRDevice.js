@@ -727,15 +727,6 @@ export default class EmulatedXRDevice extends XRDevice {
 		gamepad.axes[axisIndex] = value;
 	}
 
-	_updateInputAxes(controllerIndex, x, y) {
-		if (controllerIndex >= this.gamepads.length) {
-			return;
-		}
-		const gamepad = this.gamepads[controllerIndex];
-		gamepad.axes[0] = x;
-		gamepad.axes[1] = y;
-	}
-
 	_initializeControllers(config) {
 		const hasController = config.controllers !== undefined;
 		const controllerNum = hasController ? config.controllers.length : 0;
