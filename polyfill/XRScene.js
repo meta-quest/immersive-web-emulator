@@ -1,10 +1,17 @@
 import {
+	BoxGeometry,
 	Color,
 	DirectionalLight,
+	DoubleSide,
 	LineBasicMaterial,
 	LineSegments,
+	Mesh,
+	MeshBasicMaterial,
+	Object3D,
 	PerspectiveCamera,
+	Raycaster,
 	Scene,
+	Vector3,
 	WebGLRenderer,
 } from 'three';
 import { XRPlane, XRPlaneOrientation } from './api/XRPlane';
@@ -65,11 +72,13 @@ class XRRoomFactory {
 	constructor(scene) {
 		this.scene = scene;
 		this.roomObject = null;
+		this.roomCollider = null;
 		this.xrPlanes = [];
 	}
 
 	createRoom(x, y, z) {
 		if (this.roomObject) this.scene.remove(this.roomObject);
+		if (this.roomCollider) this.scene.remove(this.roomCollider);
 		this.roomObject = new LineSegments(
 			new BoxLineGeometry(
 				x,
@@ -91,6 +100,15 @@ class XRRoomFactory {
 			buildXRPlane(x / 2, y / 2, [0, y / 2, z / 2], PLANE_CONFIG.BACK),
 			buildXRPlane(x / 2, y / 2, [0, y / 2, -z / 2], PLANE_CONFIG.FRONT),
 		];
+		this.roomCollider = new Mesh(
+			new BoxGeometry(x, y, z),
+			new MeshBasicMaterial({
+				side: DoubleSide,
+			}),
+		);
+		this.roomCollider.visible = false;
+		this.roomCollider.position.y = y / 2;
+		this.scene.add(this.roomCollider);
 	}
 }
 
@@ -100,6 +118,7 @@ export default class XRScene {
 		this.camera = null;
 
 		this.onCameraPoseUpdate = null;
+		this.hitTestTarget = null;
 
 		this._init();
 	}
@@ -166,6 +185,11 @@ export default class XRScene {
 		this.renderer = renderer;
 		this.scene = scene;
 		this.camera = camera;
+		this.raycaster = new Raycaster();
+		this.hitTestTarget = new Object3D();
+		this.hitTestMarker = new Object3D();
+		this.hitTestMarker.rotateX(Math.PI / 2);
+		this.hitTestTarget.add(this.hitTestMarker);
 	}
 
 	inject(canvasContainer) {
@@ -196,6 +220,32 @@ export default class XRScene {
 
 	createRoom(dimension) {
 		this.roomFactory.createRoom(dimension.x, dimension.y, dimension.z);
+	}
+
+	getHitTestResults(origin, direction) {
+		this.raycaster.set(
+			new Vector3().fromArray(origin),
+			new Vector3().fromArray(direction),
+		);
+		const targets = [];
+		if (this.roomFactory.roomCollider) {
+			targets.push(this.roomFactory.roomCollider);
+		}
+		const intersects = this.raycaster.intersectObjects(targets, true);
+
+		const results = [];
+		intersects.forEach((intersect) => {
+			this.hitTestTarget.position.copy(intersect.point);
+			this.hitTestTarget.lookAt(
+				new Vector3().addVectors(intersect.point, intersect.face.normal),
+			);
+			this.hitTestTarget.updateWorldMatrix(false, true);
+
+			results.push(
+				mat4.fromValues(...this.hitTestMarker.matrixWorld.toArray()),
+			);
+		});
+		return results;
 	}
 
 	get xrPlanes() {

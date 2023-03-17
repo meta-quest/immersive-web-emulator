@@ -4,7 +4,10 @@ import { mat4, quat, vec3 } from 'gl-matrix';
 import GamepadMappings from 'webxr-polyfill/src/devices/GamepadMappings';
 import GamepadXRInputSource from 'webxr-polyfill/src/devices/GamepadXRInputSource';
 import XRDevice from 'webxr-polyfill/src/devices/XRDevice';
+import { PRIVATE as XRINPUTSOURCE_PRIVATE } from 'webxr-polyfill/src/api/XRInputSource';
+import { PRIVATE as XRSESSION_PRIVATE } from 'webxr-polyfill/src/api/XRSession';
 import XRScene from './XRScene';
+import XRTransientInputHitTestSource from './api/XRTransientInputHitTestSource';
 
 const DEFAULT_MODES = ['inline'];
 
@@ -149,6 +152,8 @@ export default class EmulatedXRDevice extends XRDevice {
 			case 'anchors':
 				return true;
 			case 'plane-detection':
+				return true;
+			case 'hit-test':
 				return true;
 			case 'high-fixed-foveation-level':
 				console.warn(
@@ -335,12 +340,12 @@ export default class EmulatedXRDevice extends XRDevice {
 				}
 			}
 
-			// this._hitTest(sessionId, this.hitTestSources, this.hitTestResults);
-			// this._hitTest(
-			//   sessionId,
-			//   this.hitTestSourcesForTransientInput,
-			//   this.hitTestResultsForTransientInput
-			// );
+			this._hitTest(sessionId, this.hitTestSources, this.hitTestResults);
+			this._hitTest(
+				sessionId,
+				this.hitTestSourcesForTransientInput,
+				this.hitTestResultsForTransientInput,
+			);
 		}
 	}
 
@@ -504,6 +509,75 @@ export default class EmulatedXRDevice extends XRDevice {
 
 	getHitTestResultsForTransientInput(source) {
 		return this.hitTestResultsForTransientInput.get(source) || [];
+	}
+
+	_hitTest(sessionId, hitTestSources, hitTestResults) {
+		// Remove inactive sources first
+		let activeHitTestSourceNum = 0;
+		for (let i = 0; i < hitTestSources.length; i++) {
+			const source = hitTestSources[i];
+			if (source._active) {
+				hitTestSources[activeHitTestSourceNum++] = source;
+			}
+		}
+		hitTestSources.length = activeHitTestSourceNum;
+
+		// Do hit test next
+		hitTestResults.clear();
+		for (const source of hitTestSources) {
+			if (sessionId !== source._session[XRSESSION_PRIVATE].id) {
+				continue;
+			}
+
+			// Gets base matrix depending on hit test source type
+			let baseMatrix;
+			if (source instanceof XRTransientInputHitTestSource) {
+				if (!this.gamepadInputSources[0].active) {
+					continue;
+				}
+				if (!source._profile.includes('touch')) {
+					continue;
+				}
+				const gamepad = this.gamepads[0];
+				const matrix = mat4.identity(mat4.create());
+				matrix[12] = gamepad.axes[0];
+				matrix[13] = -gamepad.axes[1];
+				baseMatrix = mat4.multiply(matrix, this.matrix, matrix);
+			} else {
+				baseMatrix = source._space._baseMatrix;
+				if (!baseMatrix) {
+					continue;
+				}
+			}
+
+			// Calculates origin and direction used for hit test in AR scene
+			const offsetRay = source._offsetRay;
+			const origin = vec3.set(
+				vec3.create(),
+				offsetRay.origin.x,
+				offsetRay.origin.y,
+				offsetRay.origin.z,
+			);
+			const direction = vec3.set(
+				vec3.create(),
+				offsetRay.direction.x,
+				offsetRay.direction.y,
+				offsetRay.direction.z,
+			);
+			vec3.transformMat4(origin, origin, baseMatrix);
+			vec3.transformQuat(
+				direction,
+				direction,
+				mat4.getRotation(quat.create(), baseMatrix),
+			);
+
+			// Do hit test in AR scene and stores the result matrices
+			const arHitTestResults = this.xrScene.getHitTestResults(
+				origin,
+				direction,
+			);
+			hitTestResults.set(source, arHitTestResults);
+		}
 	}
 
 	// Private methods
@@ -679,6 +753,10 @@ export default class EmulatedXRDevice extends XRDevice {
 		for (let i = 0; i < 4; i++) {
 			pose.orientation[i] = quaternionArray[i];
 		}
+		this.gamepadInputSources[index].inputSource[
+			XRINPUTSOURCE_PRIVATE
+		].targetRaySpace._baseMatrix =
+			this.gamepadInputSources[index].basePoseMatrix;
 	}
 
 	_updateInputButtonPressed(pressed, controllerIndex, buttonIndex) {

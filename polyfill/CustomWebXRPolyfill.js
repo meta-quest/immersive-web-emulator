@@ -80,24 +80,6 @@ export default class CustomWebXRPolyfill extends WebXRPolyfill {
 			}
 		});
 
-		// Extending XRSession and XRFrame for AR hitting test API.
-
-		XRSession.prototype.requestHitTestSource = function (options) {
-			const source = new XRHitTestSource(this, options);
-			const device = this[XRSESSION_PRIVATE].device;
-			device.addHitTestSource(source);
-			return Promise.resolve(source);
-		};
-
-		XRSession.prototype.requestHitTestSourceForTransientInput = function (
-			options,
-		) {
-			const source = new XRTransientInputHitTestSource(this, options);
-			const device = this[XRSESSION_PRIVATE].device;
-			device.addHitTestSourceForTransientInput(source);
-			return Promise.resolve(source);
-		};
-
 		XRSession.prototype.addTrackedAnchor = function (anchor) {
 			if (this.trackedAnchors == null) this.trackedAnchors = new Set();
 			this.trackedAnchors.add(anchor);
@@ -180,6 +162,24 @@ export default class CustomWebXRPolyfill extends WebXRPolyfill {
 				return new XRPlaneSet(device.xrScene.xrPlanes);
 			},
 		});
+
+		// Extending XRSession and XRFrame for AR hitting test API.
+
+		XRSession.prototype.requestHitTestSource = function (options) {
+			const source = new XRHitTestSource(this, options);
+			const device = this[XRSESSION_PRIVATE].device;
+			device.addHitTestSource(source);
+			return Promise.resolve(source);
+		};
+
+		XRSession.prototype.requestHitTestSourceForTransientInput = function (
+			options,
+		) {
+			const source = new XRTransientInputHitTestSource(this, options);
+			const device = this[XRSESSION_PRIVATE].device;
+			device.addHitTestSourceForTransientInput(source);
+			return Promise.resolve(source);
+		};
 
 		XRFrame.prototype.getHitTestResults = function (hitTestSource) {
 			const device = this.session[XRSESSION_PRIVATE].device;
