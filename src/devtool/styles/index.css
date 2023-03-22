@@ -333,8 +333,23 @@ body {
 	margin: 8px 0px 0px 16px;
 }
 
-#save-default-pose {
+#save-pose {
 	margin-left: 10px;
+}
+
+#pose-selector {
+	appearance: button !important;
+	transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out,
+		box-shadow 0.15s ease-in-out;
+}
+
+#pose-selector:hover {
+	cursor: pointer;
+}
+
+#pose-selector:focus {
+	background-color: #3b3b3c;
+	outline: none;
 }
 
 .playback-action-button {

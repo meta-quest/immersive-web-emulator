@@ -6,15 +6,16 @@
  */
 
 import { EmulatorSettings, emulatorStates } from './emulatorStates';
+import { createNewDevicePose, resetDevicePose } from './Inspector';
 
 import { DEVICE } from './constants';
-import { resetDevicePose } from './Inspector';
 
 export const setupPoseButtons = () => {
-	const saveDefaultPose = document.getElementById('save-default-pose');
+	const savePose = document.getElementById('save-pose');
 	const poseReset = document.getElementById('pose-reset');
+	const poseSelector = document.getElementById('pose-selector');
 
-	saveDefaultPose.onclick = () => {
+	savePose.onclick = () => {
 		const deviceTransform = {};
 		Object.values(DEVICE).forEach((device) => {
 			deviceTransform[device] = {};
@@ -23,11 +24,35 @@ export const setupPoseButtons = () => {
 			deviceTransform[device].rotation =
 				emulatorStates.assetNodes[device].rotation.toArray();
 		});
-		EmulatorSettings.instance.defaultPose = deviceTransform;
+		EmulatorSettings.instance.poses[
+			EmulatorSettings.instance.selectedPoseIndex
+		] = deviceTransform;
 		EmulatorSettings.instance.write();
 	};
 
 	poseReset.onclick = () => {
 		resetDevicePose();
+	};
+
+	poseSelector.onchange = (e) => {
+		if (e.target.value === 'new') {
+			const newOption = document.createElement('option');
+			const newOptionIndex = EmulatorSettings.instance.poses.length;
+			const newOptionIndexString = String(
+				EmulatorSettings.instance.poses.length,
+			);
+			newOption.value = newOptionIndexString;
+			newOption.innerText = newOptionIndexString;
+			poseSelector.appendChild(newOption);
+			poseSelector.insertBefore(newOption, e.target.selectedOptions[0]);
+			e.target.value = newOptionIndexString;
+
+			createNewDevicePose(newOptionIndex);
+		} else {
+			EmulatorSettings.instance.selectedPoseIndex = parseInt(e.target.value);
+			EmulatorSettings.instance.write();
+			resetDevicePose();
+		}
+		poseSelector.blur();
 	};
 };

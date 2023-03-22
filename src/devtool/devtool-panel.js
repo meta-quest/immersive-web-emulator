@@ -17,6 +17,7 @@ import {
 import {
 	loadDeviceAsset,
 	onResize,
+	populatePoses,
 	setupRoomDimensionSettings,
 } from './js/Inspector';
 import {
@@ -104,6 +105,7 @@ EmulatorSettings.instance.load().then(() => {
 
 	$('#pose-component').load('./ui-components/pose-component.html', () => {
 		setupPoseButtons();
+		populatePoses();
 		const controllerTabButton = document.getElementById(
 			'controller-tab-button',
 		);

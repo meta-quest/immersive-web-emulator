@@ -178,7 +178,10 @@ const checkTransformDiff = (device) => {
 	const assetNode = emulatorStates.assetNodes[device];
 	if (!assetNode) return false;
 	const deviceName = OBJECT_NAME[device];
-	const checkpoint = EmulatorSettings.instance.defaultPose[device];
+	const checkpoint =
+		EmulatorSettings.instance.poses[
+			EmulatorSettings.instance.selectedPoseIndex
+		][device];
 	const position = assetNode.position;
 	const rotation = assetNode.rotation;
 	let diffExists = false;
@@ -216,7 +219,10 @@ export const updateDeviceTransformData = (device) => {
 	const assetNode = emulatorStates.assetNodes[device];
 	if (!assetNode) return;
 	const deviceName = OBJECT_NAME[device];
-	const checkpoint = EmulatorSettings.instance.defaultPose[device];
+	const checkpoint =
+		EmulatorSettings.instance.poses[
+			EmulatorSettings.instance.selectedPoseIndex
+		][device];
 	updateVec3Display(
 		deviceName + '-position',
 		assetNode.position,
@@ -235,10 +241,14 @@ export const loadDeviceAsset = (device) => {
 		const parent = new THREE.Object3D();
 		parent.scale.setScalar(2);
 		parent.position.fromArray(
-			EmulatorSettings.instance.defaultPose[device].position,
+			EmulatorSettings.instance.poses[
+				EmulatorSettings.instance.selectedPoseIndex
+			][device].position,
 		);
 		parent.rotation.fromArray(
-			EmulatorSettings.instance.defaultPose[device].rotation,
+			EmulatorSettings.instance.poses[
+				EmulatorSettings.instance.selectedPoseIndex
+			][device].rotation,
 		);
 		headset.rotation.y = -Math.PI;
 
@@ -401,16 +411,50 @@ export const resetDevicePose = () => {
 		const device = emulatorStates.assetNodes[key];
 
 		device.position.fromArray(
-			EmulatorSettings.instance.defaultPose[key].position,
+			EmulatorSettings.instance.poses[
+				EmulatorSettings.instance.selectedPoseIndex
+			][key].position,
 		);
 		device.rotation.fromArray(
-			EmulatorSettings.instance.defaultPose[key].rotation,
+			EmulatorSettings.instance.poses[
+				EmulatorSettings.instance.selectedPoseIndex
+			][key].rotation,
 		);
 
 		updateDeviceTransformData(key);
 	}
 	applyAllPoseChanges();
 	render();
+};
+
+export const createNewDevicePose = (index) => {
+	EmulatorSettings.instance.selectedPoseIndex = index;
+
+	const deviceTransform = {};
+	Object.values(DEVICE).forEach((device) => {
+		deviceTransform[device] = {};
+		deviceTransform[device].position =
+			emulatorStates.assetNodes[device].position.toArray();
+		deviceTransform[device].rotation =
+			emulatorStates.assetNodes[device].rotation.toArray();
+	});
+	EmulatorSettings.instance.poses.push(deviceTransform);
+	EmulatorSettings.instance.write();
+};
+
+export const populatePoses = () => {
+	const amountPoses = EmulatorSettings.instance.poses.length;
+	const poseSelector = document.getElementById('pose-selector');
+	const newPoseOption = poseSelector.children[0];
+	for (let i = 0; i < amountPoses; i++) {
+		const newOption = document.createElement('option');
+		const newOptionIndexString = String(i);
+		newOption.value = newOptionIndexString;
+		newOption.innerText = newOptionIndexString;
+		poseSelector.appendChild(newOption);
+		poseSelector.insertBefore(newOption, newPoseOption);
+	}
+	poseSelector.value = String(EmulatorSettings.instance.selectedPoseIndex);
 };
 
 export const serializeAllDeviceTransform = () => {
