@@ -188,7 +188,7 @@ export default class XRScene {
 		this.raycaster = new Raycaster();
 		this.hitTestTarget = new Object3D();
 		this.hitTestMarker = new Object3D();
-		this.hitTestMarker.rotateX(Math.PI / 2);
+		this.hitTestMarker.rotateX(-Math.PI / 2);
 		this.hitTestTarget.add(this.hitTestMarker);
 	}
 
