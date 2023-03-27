@@ -16,6 +16,7 @@
 	},
 	"dependencies": {
 		"gl-matrix": "^3.1.0",
+		"localforage": "^1.10.0",
 		"webxr-polyfill": "github:fe1ixz/webxr-polyfill#34acd8d1cb7f4527b69a6e64a7bc2cf38f757d55"
 	}
 }

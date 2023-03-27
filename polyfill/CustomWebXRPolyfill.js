@@ -1,4 +1,9 @@
-import { XRAnchor, XRAnchorSet } from './api/XRAnchor';
+import {
+	XRAnchor,
+	XRAnchorSet,
+	deletePersistentAnchor,
+	restorePersistentAnchors,
+} from './api/XRAnchor';
 import XRFrame, {
 	PRIVATE as XRFRAME_PRIVATE,
 } from 'webxr-polyfill/src/api/XRFrame';
@@ -55,6 +60,8 @@ export default class CustomWebXRPolyfill extends WebXRPolyfill {
 							device.setDomOverlayRoot(domOverlay.root);
 							session.domOverlayState = { type: 'screen' };
 						}
+
+						restorePersistentAnchors(session);
 					}
 					return session;
 				});
@@ -97,6 +104,66 @@ export default class CustomWebXRPolyfill extends WebXRPolyfill {
 			if (this.trackedAnchors != null) {
 				this.trackedAnchors.delete(anchor);
 			}
+		};
+
+		XRSession.prototype.addPersistentAnchor = function (uuid, anchor) {
+			if (this.persistentAnchorsMap == null) {
+				this.persistentAnchorsMap = new Map();
+			}
+			this.persistentAnchorsMap.set(uuid, anchor);
+		};
+
+		XRSession.prototype.getPersistentAnchorUUID = function (anchor) {
+			if (this.persistentAnchorsMap != null) {
+				let uuid;
+				this.persistentAnchorsMap.forEach((value, key) => {
+					if (value === anchor) {
+						uuid = key;
+					}
+				});
+				return uuid;
+			}
+		};
+
+		Object.defineProperty(XRSession.prototype, 'persistentAnchors', {
+			get: function () {
+				if (this.persistentAnchorsMap != null) {
+					return Object.freeze(Array.from(this.persistentAnchorsMap.keys()));
+				} else {
+					return [];
+				}
+			},
+		});
+
+		XRSession.prototype.restorePersistentAnchor = async function (uuid) {
+			if (!this.persistentAnchors.includes(uuid)) {
+				throw new DOMException(
+					'specified persistent anchor cannot be found',
+					'InvalidStateError',
+				);
+			}
+			if (this[XRSESSION_PRIVATE].ended) {
+				throw new DOMException('session ended', 'InvalidStateError');
+			}
+
+			const anchor = this.persistentAnchorsMap.get(uuid);
+			this.addTrackedAnchor(anchor);
+			this.addPersistentAnchor(uuid, anchor);
+			return anchor;
+		};
+
+		XRSession.prototype.deletePersistentAnchor = async function (uuid) {
+			if (!this.persistentAnchors.includes(uuid)) {
+				throw new DOMException(
+					'specified persistent anchor cannot be found',
+					'InvalidStateError',
+				);
+			}
+
+			const anchor = this.persistentAnchorsMap.get(uuid);
+			this.deleteTrackedAnchor(anchor);
+			this.persistentAnchorsMap.delete(uuid);
+			await deletePersistentAnchor(uuid);
 		};
 
 		XRSession.prototype.updateTargetFrameRate = function (frameRate) {
