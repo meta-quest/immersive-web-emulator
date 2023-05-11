@@ -6,6 +6,7 @@
  */
 
 import { EMULATOR_ACTIONS } from '../devtool/js/actions';
+import { EmulatorSettings } from '../devtool/js/emulatorStates';
 import { generateUUID } from 'three/src/math/MathUtils';
 
 const PORT_DESTINATION_MAPPING = {
@@ -31,14 +32,7 @@ chrome.runtime.onConnect.addListener((port) => {
 	if (Object.keys(PORT_DESTINATION_MAPPING).includes(port.name)) {
 		port.onMessage.addListener((message, sender) => {
 			if (message.action === EMULATOR_ACTIONS.EXCLUDE_POLYFILL) {
-				chrome.tabs.get(message.tabId, (tab) => {
-					const url = new URL(tab.url);
-					const urlMatchPattern = url.origin + '/*';
-					if (excludeMatches.has(urlMatchPattern)) {
-						excludeMatches.delete(urlMatchPattern);
-					} else {
-						excludeMatches.add(urlMatchPattern);
-					}
+				EmulatorSettings.instance.load().then(() => {
 					chrome.scripting.updateContentScripts(
 						[
 							{
@@ -48,7 +42,9 @@ chrome.runtime.onConnect.addListener((port) => {
 								allFrames: true,
 								runAt: 'document_start',
 								world: 'MAIN',
-								excludeMatches: Array.from(excludeMatches),
+								excludeMatches: Array.from(
+									EmulatorSettings.instance.polyfillExcludes,
+								),
 							},
 						],
 						() => {
@@ -77,14 +73,16 @@ chrome.runtime.onConnect.addListener((port) => {
 	}
 });
 
-// in MV3, only injecting here can properly inject the polyfill into the WebXR experience
-chrome.scripting.registerContentScripts([
-	{
-		id: injectionId,
-		matches: ['http://*/*', 'https://*/*'],
-		js: ['dist/webxr-polyfill.js'],
-		allFrames: true,
-		runAt: 'document_start',
-		world: 'MAIN',
-	},
-]);
+EmulatorSettings.instance.load().then(() => {
+	chrome.scripting.registerContentScripts([
+		{
+			id: injectionId,
+			matches: ['http://*/*', 'https://*/*'],
+			js: ['dist/webxr-polyfill.js'],
+			allFrames: true,
+			runAt: 'document_start',
+			world: 'MAIN',
+			excludeMatches: Array.from(EmulatorSettings.instance.polyfillExcludes),
+		},
+	]);
+});

@@ -134,3 +134,18 @@ export const changeRoomDimension = () => {
 export const notifyExcludePolyfill = () => {
 	executeAction(EMULATOR_ACTIONS.EXCLUDE_POLYFILL);
 };
+
+export const togglePolyfill = () => {
+	chrome.tabs.get(tabId, (tab) => {
+		const url = new URL(tab.url);
+		const urlMatchPattern = url.origin + '/*';
+		if (EmulatorSettings.instance.polyfillExcludes.has(urlMatchPattern)) {
+			EmulatorSettings.instance.polyfillExcludes.delete(urlMatchPattern);
+		} else {
+			EmulatorSettings.instance.polyfillExcludes.add(urlMatchPattern);
+		}
+		EmulatorSettings.instance.write().then(() => {
+			executeAction(EMULATOR_ACTIONS.EXCLUDE_POLYFILL);
+		});
+	});
+};

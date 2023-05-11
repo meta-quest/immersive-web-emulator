@@ -13,6 +13,7 @@ import {
 	changeEmulatedDeviceType,
 	notifyExcludePolyfill,
 	notifyExitImmersive,
+	togglePolyfill,
 	toggleStereoMode,
 } from './js/messenger';
 import {
@@ -37,9 +38,29 @@ const setupHeadsetComponentButtons = () => {
 		.getElementById('exit-webxr')
 		.addEventListener('click', notifyExitImmersive, false);
 
-	document
-		.getElementById('settings')
-		.addEventListener('click', notifyExcludePolyfill, false);
+	const polyfillToggle = document.getElementById('polyfill-toggle');
+	const updatePolyfillButton = (tab) => {
+		const url = new URL(tab.url);
+		const urlMatchPattern = url.origin + '/*';
+		polyfillToggle.classList.toggle(
+			'button-pressed',
+			!EmulatorSettings.instance.polyfillExcludes.has(urlMatchPattern),
+		);
+	};
+	// check every time navigation happens on the tab
+	chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+		if (
+			tabId === chrome.devtools.inspectedWindow.tabId &&
+			changeInfo.status === 'complete'
+		) {
+			updatePolyfillButton(tab);
+		}
+	});
+	// check on start up
+	chrome.tabs.get(chrome.devtools.inspectedWindow.tabId, (tab) => {
+		updatePolyfillButton(tab);
+	});
+	polyfillToggle.addEventListener('click', togglePolyfill, false);
 
 	const stereoToggle = document.getElementById('stereo-toggle');
 	stereoToggle.classList.toggle(

@@ -83,6 +83,7 @@ export class EmulatorSettings {
 		this.deviceKey = 'Meta Quest Pro';
 		this.keyboardMappingOn = true;
 		this.roomDimension = { x: 6, y: 3, z: 6 };
+		this.polyfillExcludes = new Set();
 	}
 
 	load() {
@@ -97,6 +98,7 @@ export class EmulatorSettings {
 				this.deviceKey = settings?.deviceKey ?? 'Meta Quest Pro';
 				this.keyboardMappingOn = settings?.keyboardMappingOn ?? true;
 				this.roomDimension = settings?.roomDimension ?? { x: 6, y: 3, z: 6 };
+				this.polyfillExcludes = new Set(settings?.polyfillExcludes ?? []);
 				resolve(result);
 			});
 		});
@@ -111,6 +113,7 @@ export class EmulatorSettings {
 			deviceKey: this.deviceKey,
 			keyboardMappingOn: this.keyboardMappingOn,
 			roomDimension: this.roomDimension,
+			polyfillExcludes: Array.from(this.polyfillExcludes),
 		});
 		return new Promise((resolve) => {
 			localStorage.set(settings, () => {
