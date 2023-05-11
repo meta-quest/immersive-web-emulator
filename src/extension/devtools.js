@@ -5,9 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// eslint-disable-next-line no-undef
 chrome.runtime.connect(null, { name: 'devtools' });
-// eslint-disable-next-line no-undef
 chrome.devtools.panels.create(
 	'WebXR',
 	'/icons/icon128.png',

@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { EMULATOR_ACTIONS } from '../devtool/js/actions';
 import { generateUUID } from 'three/src/math/MathUtils';
 
 const PORT_DESTINATION_MAPPING = {
@@ -14,6 +15,10 @@ const PORT_DESTINATION_MAPPING = {
 
 const connectedTabs = {};
 
+const injectionId = 'polyfill-injection' + generateUUID();
+
+const excludeMatches = new Set();
+
 const relayMessage = (tabId, port, message) => {
 	const destinationPorts =
 		connectedTabs[tabId][PORT_DESTINATION_MAPPING[port.name]];
@@ -22,10 +27,36 @@ const relayMessage = (tabId, port, message) => {
 	});
 };
 
-// eslint-disable-next-line no-undef
 chrome.runtime.onConnect.addListener((port) => {
 	if (Object.keys(PORT_DESTINATION_MAPPING).includes(port.name)) {
 		port.onMessage.addListener((message, sender) => {
+			if (message.action === EMULATOR_ACTIONS.EXCLUDE_POLYFILL) {
+				chrome.tabs.get(message.tabId, (tab) => {
+					const url = new URL(tab.url);
+					const urlMatchPattern = url.origin + '/*';
+					if (excludeMatches.has(urlMatchPattern)) {
+						excludeMatches.delete(urlMatchPattern);
+					} else {
+						excludeMatches.add(urlMatchPattern);
+					}
+					chrome.scripting.updateContentScripts(
+						[
+							{
+								id: injectionId,
+								matches: ['http://*/*', 'https://*/*'],
+								js: ['dist/webxr-polyfill.js'],
+								allFrames: true,
+								runAt: 'document_start',
+								world: 'MAIN',
+								excludeMatches: Array.from(excludeMatches),
+							},
+						],
+						() => {
+							chrome.tabs.reload(tabId);
+						},
+					);
+				});
+			}
 			const tabId = message.tabId ?? sender.sender.tab.id;
 			if (!connectedTabs[tabId]) {
 				connectedTabs[tabId] = {};
@@ -47,10 +78,9 @@ chrome.runtime.onConnect.addListener((port) => {
 });
 
 // in MV3, only injecting here can properly inject the polyfill into the WebXR experience
-// eslint-disable-next-line no-undef
 chrome.scripting.registerContentScripts([
 	{
-		id: 'polyfill-injection' + generateUUID(),
+		id: injectionId,
 		matches: ['http://*/*', 'https://*/*'],
 		js: ['dist/webxr-polyfill.js'],
 		allFrames: true,

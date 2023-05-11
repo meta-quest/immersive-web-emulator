@@ -14,13 +14,10 @@ import {
 import { DEVICE_DEFINITIONS } from '../devtool/js/devices';
 import { EmulatorSettings } from '../devtool/js/emulatorStates';
 
-// eslint-disable-next-line no-undef
-const browser = chrome;
-
 const connection = {
 	port: null,
 	connect: () => {
-		connection.port = browser.runtime.connect({ name: 'iwe_app' });
+		connection.port = chrome.runtime.connect({ name: 'iwe_app' });
 		connection.port.onMessage.addListener((message) => {
 			switch (message.action) {
 				case EMULATOR_ACTIONS.DEVICE_TYPE_CHANGE:

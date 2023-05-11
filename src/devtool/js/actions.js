@@ -18,6 +18,7 @@ export const EMULATOR_ACTIONS = {
 	KEYBOARD_EVENT: 'ea-keyboard-event',
 	EXIT_IMMERSIVE: 'ea-exit-immersive',
 	ROOM_DIMENSION_CHANGE: 'ea-room-dimension-change',
+	EXCLUDE_POLYFILL: 'ea-exclude-polyfill',
 };
 
 /**

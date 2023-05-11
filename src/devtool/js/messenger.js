@@ -130,3 +130,7 @@ export const changeRoomDimension = () => {
 		dimension: EmulatorSettings.instance.roomDimension,
 	});
 };
+
+export const notifyExcludePolyfill = () => {
+	executeAction(EMULATOR_ACTIONS.EXCLUDE_POLYFILL);
+};

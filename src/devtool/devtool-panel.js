@@ -11,6 +11,7 @@ import 'bootstrap';
 import { DEVICE, OBJECT_NAME } from './js/constants';
 import {
 	changeEmulatedDeviceType,
+	notifyExcludePolyfill,
 	notifyExitImmersive,
 	toggleStereoMode,
 } from './js/messenger';
@@ -35,6 +36,10 @@ const setupHeadsetComponentButtons = () => {
 	document
 		.getElementById('exit-webxr')
 		.addEventListener('click', notifyExitImmersive, false);
+
+	document
+		.getElementById('settings')
+		.addEventListener('click', notifyExcludePolyfill, false);
 
 	const stereoToggle = document.getElementById('stereo-toggle');
 	stereoToggle.classList.toggle(
