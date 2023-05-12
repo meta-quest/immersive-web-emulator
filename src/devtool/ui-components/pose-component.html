@@ -12,19 +12,26 @@
 				<img src="./assets/images/pose.png" class="control-icon" />
 				<div>
 					<button
-						id="save-default-pose"
+						id="save-pose"
 						type="button"
 						class="btn pose-action-button button-leftmost"
 					>
-						Save as default pose
+						Save pose
 					</button>
 					<button
 						id="pose-reset"
 						type="button"
-						class="btn pose-action-button button-rightmost"
+						class="btn pose-action-button button-middle"
 					>
 						<img src="./assets/images/reset.png" class="action-icon" />
 					</button>
+					<select
+						name="poses"
+						id="pose-selector"
+						class="pose-action-button button-rightmost"
+					>
+						<option value="new">+</option>
+					</select>
 				</div>
 			</div>
 

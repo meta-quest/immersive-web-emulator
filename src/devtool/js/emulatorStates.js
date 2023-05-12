@@ -79,7 +79,8 @@ export class EmulatorSettings {
 	constructor() {
 		this.stereoOn = false;
 		this.actionMappingOn = true;
-		this.defaultPose = DEFAULT_TRANSFORMS;
+		this.selectedPoseIndex = 0;
+		this.poses = [DEFAULT_TRANSFORMS];
 		this.deviceKey = 'Meta Quest Pro';
 		this.keyboardMappingOn = true;
 		this.roomDimension = { x: 6, y: 3, z: 6 };
@@ -94,7 +95,8 @@ export class EmulatorSettings {
 					: null;
 				this.stereoOn = settings?.stereoOn ?? false;
 				this.actionMappingOn = settings?.actionMappingOn ?? true;
-				this.defaultPose = settings?.defaultPose ?? DEFAULT_TRANSFORMS;
+				this.selectedPoseIndex = settings?.selectedPoseIndex ?? 0;
+				this.poses = settings?.poses ?? [DEFAULT_TRANSFORMS];
 				this.deviceKey = settings?.deviceKey ?? 'Meta Quest Pro';
 				this.keyboardMappingOn = settings?.keyboardMappingOn ?? true;
 				this.roomDimension = settings?.roomDimension ?? { x: 6, y: 3, z: 6 };
@@ -109,7 +111,8 @@ export class EmulatorSettings {
 		settings[STORAGE_KEY] = JSON.stringify({
 			stereoOn: this.stereoOn,
 			actionMappingOn: this.actionMappingOn,
-			defaultPose: this.defaultPose,
+			selectedPoseIndex: this.selectedPoseIndex,
+			poses: this.poses,
 			deviceKey: this.deviceKey,
 			keyboardMappingOn: this.keyboardMappingOn,
 			roomDimension: this.roomDimension,
