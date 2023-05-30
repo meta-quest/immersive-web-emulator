@@ -2,9 +2,10 @@ import { CLIENT_ACTIONS, POLYFILL_ACTIONS } from '../src/devtool/js/actions';
 import { mat4, quat, vec3 } from 'gl-matrix';
 
 import GamepadMappings from 'webxr-polyfill/src/devices/GamepadMappings';
-import GamepadXRInputSource from 'webxr-polyfill/src/devices/GamepadXRInputSource';
+import GamepadXRInputSource from './api/XRGamepadInput';
+import HandXRInputSource from './api/XRHandInput';
 import XRDevice from 'webxr-polyfill/src/devices/XRDevice';
-import { PRIVATE as XRINPUTSOURCE_PRIVATE } from 'webxr-polyfill/src/api/XRInputSource';
+import { PRIVATE as XRINPUTSOURCE_PRIVATE } from './api/XRInputSource';
 import { PRIVATE as XRSESSION_PRIVATE } from 'webxr-polyfill/src/api/XRSession';
 import XRScene from './XRScene';
 import XRTransientInputHitTestSource from './api/XRTransientInputHitTestSource';
@@ -58,9 +59,18 @@ export default class EmulatedXRDevice extends XRDevice {
 		this.leftViewMatrix = mat4.create();
 		this.rightViewMatrix = mat4.create();
 
+		this.handMode = true;
+		window.toggleHands = () => {
+			this.handMode = !this.handMode;
+		};
+
 		// controllers
 		this.gamepads = [];
 		this.gamepadInputSources = [];
+
+		// hands
+		this.handGamepads = [];
+		this.handInputSources = [];
 
 		// other configurations
 		this.stereoEffectEnabled =
@@ -111,6 +121,7 @@ export default class EmulatedXRDevice extends XRDevice {
 
 		//
 		this._initializeControllers(config);
+		this._initializeHands();
 		this._setupEventListeners();
 	}
 
@@ -295,7 +306,9 @@ export default class EmulatedXRDevice extends XRDevice {
 			for (let i = 0; i < this.gamepads.length; ++i) {
 				const gamepad = this.gamepads[i];
 				const inputSourceImpl = this.gamepadInputSources[i];
+				const handInputImpl = this.handInputSources[i];
 				inputSourceImpl.updateFromGamepad(gamepad);
+				handInputImpl.updateFromGamepad(gamepad);
 				if (inputSourceImpl.primaryButtonIndex !== -1) {
 					const primaryActionPressed =
 						gamepad.buttons[inputSourceImpl.primaryButtonIndex].pressed;
@@ -464,16 +477,22 @@ export default class EmulatedXRDevice extends XRDevice {
 
 	getInputSources() {
 		const inputSources = [];
-		for (const inputSourceImpl of this.gamepadInputSources) {
+		for (const inputSourceImpl of this.handMode
+			? this.handInputSources
+			: this.gamepadInputSources) {
 			if (inputSourceImpl.active) {
 				inputSources.push(inputSourceImpl.inputSource);
 			}
 		}
+
 		return inputSources;
 	}
 
 	getInputPose(inputSource, coordinateSystem, poseType) {
-		for (const inputSourceImpl of this.gamepadInputSources) {
+		for (const inputSourceImpl of [].concat(
+			this.gamepadInputSources,
+			this.handInputSources,
+		)) {
 			if (inputSourceImpl.inputSource === inputSource) {
 				const pose = inputSourceImpl.getXRPose(coordinateSystem, poseType);
 
@@ -837,6 +856,15 @@ export default class EmulatedXRDevice extends XRDevice {
 			imputSourceImpl.profilesOverride =
 				GamepadMappings[controller.id].profiles;
 			this.gamepadInputSources.push(imputSourceImpl);
+		}
+	}
+
+	_initializeHands() {
+		this.handInputSources.length = 0;
+		for (let i = 0; i < 2; i++) {
+			const handInputImpl = new HandXRInputSource(this);
+			handInputImpl.active = true;
+			this.handInputSources.push(handInputImpl);
 		}
 	}
 

@@ -10,14 +10,18 @@ import XRFrame, {
 import XRSession, {
 	PRIVATE as XRSESSION_PRIVATE,
 } from 'webxr-polyfill/src/api/XRSession';
+import { mat4, quat, vec3 } from 'gl-matrix';
 
 import API from 'webxr-polyfill/src/api/index';
 import EX_API from './api/index';
 import EmulatedXRDevice from './EmulatedXRDevice';
 import { POLYFILL_ACTIONS } from '../src/devtool/js/actions';
 import WebXRPolyfill from 'webxr-polyfill/src/WebXRPolyfill';
+import { PRIVATE as XRHAND_PRIVATE } from './api/XRHand';
 import XRHitTestResult from './api/XRHitTestResult';
 import XRHitTestSource from './api/XRHitTestSource';
+import { PRIVATE as XRJOINTSPACE_PRIVATE } from './api/XRJointSpace';
+import { XRJointPose } from './api/XRJointPose';
 import { XRPlaneSet } from './api/XRPlane';
 import XRReferenceSpace from 'webxr-polyfill/src/api/XRReferenceSpace';
 import XRRigidTransform from 'webxr-polyfill/src/api/XRRigidTransform';
@@ -26,7 +30,9 @@ import XRSystem from 'webxr-polyfill/src/api/XRSystem';
 import XRTransientInputHitTestResult from './api/XRTransientInputHitTestResult';
 import XRTransientInputHitTestSource from './api/XRTransientInputHitTestSource';
 import { XR_COMPATIBLE } from 'webxr-polyfill/src/constants';
-import { mat4 } from 'gl-matrix';
+import { handPose } from './api/handPose';
+
+const handMatrixInvert = [1, -1, -1, 0, -1, 1, 1, 0, -1, 1, 1, 0, -1, 1, 1, 1];
 
 export default class CustomWebXRPolyfill extends WebXRPolyfill {
 	constructor() {
@@ -77,9 +83,11 @@ export default class CustomWebXRPolyfill extends WebXRPolyfill {
 		};
 
 		// add event listener for onreset event, but do nothing since we cannot re-center in emulator
-		XRReferenceSpace.prototype.addEventListener = () => {};
+		XRReferenceSpace.prototype.addEventListener = () => {
+			// do nothing
+		};
 
-		window.addEventListener(POLYFILL_ACTIONS.EXIT_IMMERSIVE, (_event) => {
+		window.addEventListener(POLYFILL_ACTIONS.EXIT_IMMERSIVE, () => {
 			if (activeImmersiveSession && !activeImmersiveSession.ended) {
 				activeImmersiveSession.end().then(() => {
 					activeImmersiveSession = null;
@@ -229,6 +237,35 @@ export default class CustomWebXRPolyfill extends WebXRPolyfill {
 				return new XRPlaneSet(device.xrScene.xrPlanes);
 			},
 		});
+
+		XRFrame.prototype.getJointPose = function (joint, baseSpace) {
+			const xrhand = joint[XRJOINTSPACE_PRIVATE].xrhand;
+			const xrInputSource = xrhand[XRHAND_PRIVATE].inputSource;
+			const handedness = xrInputSource.handedness;
+
+			// the joints transforms are sampled with gripSpace as the reference space
+			const gripMatrix = new Float32Array(16);
+			if (baseSpace == xrInputSource.gripSpace) {
+				mat4.fromRotationTranslation(gripMatrix, quat.create(), vec3.create());
+			} else {
+				const gripPose = this.getPose(xrInputSource.gripSpace, baseSpace);
+				mat4.copy(gripMatrix, gripPose.transform.matrix);
+			}
+
+			const out = new Float32Array(16);
+			const rawTransform = [...handPose[joint.jointName].transform];
+			if (handedness == 'right') {
+				for (let i = 0; i < 16; i++) {
+					rawTransform[i] = rawTransform[i] * handMatrixInvert[i];
+				}
+			}
+			const jointTransform = new Float32Array(rawTransform);
+			mat4.multiply(out, gripMatrix, jointTransform);
+			return new XRJointPose(
+				new XRRigidTransform(out),
+				handPose[joint.jointName].radius,
+			);
+		};
 
 		// Extending XRSession and XRFrame for AR hitting test API.
 
