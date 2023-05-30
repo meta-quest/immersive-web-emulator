@@ -84,6 +84,7 @@ export class EmulatorSettings {
 		this.keyboardMappingOn = true;
 		this.roomDimension = { x: 6, y: 3, z: 6 };
 		this.polyfillExcludes = new Set();
+		this.inputMode = 'controllers';
 	}
 
 	load() {
@@ -99,6 +100,7 @@ export class EmulatorSettings {
 				this.keyboardMappingOn = settings?.keyboardMappingOn ?? true;
 				this.roomDimension = settings?.roomDimension ?? { x: 6, y: 3, z: 6 };
 				this.polyfillExcludes = new Set(settings?.polyfillExcludes ?? []);
+				this.inputMode = settings?.inputMode ?? 'controllers';
 				resolve(result);
 			});
 		});
@@ -114,6 +116,7 @@ export class EmulatorSettings {
 			keyboardMappingOn: this.keyboardMappingOn,
 			roomDimension: this.roomDimension,
 			polyfillExcludes: Array.from(this.polyfillExcludes),
+			inputMode: this.inputMode,
 		});
 		return new Promise((resolve) => {
 			localStorage.set(settings, () => {

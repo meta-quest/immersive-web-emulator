@@ -135,6 +135,12 @@ export const notifyExcludePolyfill = () => {
 	executeAction(EMULATOR_ACTIONS.EXCLUDE_POLYFILL);
 };
 
+export const changeInputMode = () => {
+	executeAction(EMULATOR_ACTIONS.INPUT_MODE_CHANGE, {
+		inputMode: EmulatorSettings.instance.inputMode,
+	});
+};
+
 export const togglePolyfill = () => {
 	chrome.tabs.get(tabId, (tab) => {
 		const url = new URL(tab.url);

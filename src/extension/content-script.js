@@ -80,6 +80,11 @@ const connection = {
 						dimension: message.dimension,
 					});
 					break;
+
+				case EMULATOR_ACTIONS.INPUT_MODE_CHANGE:
+					triggerPolyfillAction(POLYFILL_ACTIONS.INPUT_MODE_CHANGE, {
+						inputMode: message.inputMode,
+					});
 			}
 		});
 		connection.port.onDisconnect.addListener(connection.connect);

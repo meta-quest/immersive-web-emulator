@@ -11,6 +11,7 @@ import 'bootstrap';
 import { DEVICE, OBJECT_NAME } from './js/constants';
 import {
 	changeEmulatedDeviceType,
+	changeInputMode,
 	notifyExcludePolyfill,
 	notifyExitImmersive,
 	togglePolyfill,
@@ -130,31 +131,62 @@ EmulatorSettings.instance.load().then(() => {
 
 	$('#pose-component').load('./ui-components/pose-component.html', () => {
 		setupPoseButtons();
+		changeInputMode();
 		const controllerTabButton = document.getElementById(
 			'controller-tab-button',
 		);
-		const playerTabButton = document.getElementById('player-tab-button');
+		const handsTabButton = document.getElementById('hands-tab-button');
 		const controllerPanel = document.getElementById('controller-panel');
-		const playerPanel = document.getElementById('player-panel');
-		controllerTabButton.onclick = () => {
-			controllerPanel.style.display = 'flex';
-			playerPanel.style.display = 'none';
-			controllerTabButton.classList.toggle('button-pressed', true);
-			playerTabButton.classList.toggle('button-pressed', false);
+		const handsPanel = document.getElementById('hands-panel');
+
+		const updateInputModeUI = () => {
+			const inputMode = EmulatorSettings.instance.inputMode;
+			controllerPanel.style.display =
+				inputMode === 'controllers' ? 'flex' : 'none';
+			handsPanel.style.display = inputMode === 'hands' ? 'flex' : 'none';
+			controllerTabButton.classList.toggle(
+				'button-pressed',
+				inputMode === 'controllers',
+			);
+			handsTabButton.classList.toggle('button-pressed', inputMode === 'hands');
 			onResize();
 		};
-		playerTabButton.onclick = () => {
-			// controllerPanel.style.display = 'none';
-			// playerPanel.style.display = 'flex';
-			// controllerTabButton.classList.toggle('button-pressed');
-			// playerTabButton.classList.toggle('button-pressed');
-			// onResize();
-			alert('Session recording/playback feature coming soon');
+
+		updateInputModeUI();
+
+		controllerTabButton.onclick = () => {
+			EmulatorSettings.instance.inputMode = 'controllers';
+			EmulatorSettings.instance.write();
+			changeInputMode();
+			updateInputModeUI();
 		};
+
+		handsTabButton.onclick = () => {
+			EmulatorSettings.instance.inputMode = 'hands';
+			EmulatorSettings.instance.write();
+			changeInputMode();
+			updateInputModeUI();
+		};
+
+		setupKeyboardControlButtons();
+
+		// hiding player tab button logic for now
+
+		// const playerTabButton = document.getElementById('player-tab-button');
+		// const playerPanel = document.getElementById('player-panel');
+
+		// playerTabButton.onclick = () => {
+		// 	// controllerPanel.style.display = 'none';
+		// 	// playerPanel.style.display = 'flex';
+		// 	// controllerTabButton.classList.toggle('button-pressed');
+		// 	// playerTabButton.classList.toggle('button-pressed');
+		// 	// onResize();
+		// 	alert('Session recording/playback feature coming soon');
+		// };
 	});
 
-	$('#keyboard-control-component').load(
-		'./ui-components/keyboard-control-component.html',
-		setupKeyboardControlButtons,
-	);
+	// $('#keyboard-control-component').load(
+	// 	'./ui-components/keyboard-control-component.html',
+	// 	setupKeyboardControlButtons,
+	// );
 });

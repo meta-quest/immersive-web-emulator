@@ -214,23 +214,23 @@ export const setupKeyboardControlButtons = () => {
 			'button-pressed',
 			EmulatorSettings.instance.actionMappingOn,
 		);
-	document.getElementById('keyboard-mapping').onclick = function () {
-		alert(`
-      Left Controller Mapping:
-      Joystick: WASD
-      Trigger: E
-      Grip: Q
-      ButtonX: X
-      ButtonY: Z
-      ---------------------------
-      Right Controller Mapping:
-      Joystick: Arrow keys
-      Trigger: Enter
-      Grip: Shift
-      ButtonA: '
-      ButtonB: /
-      `);
-	};
+	// document.getElementById('keyboard-mapping').onclick = function () {
+	// 	alert(`
+	//     Left Controller Mapping:
+	//     Joystick: WASD
+	//     Trigger: E
+	//     Grip: Q
+	//     ButtonX: X
+	//     ButtonY: Z
+	//     ---------------------------
+	//     Right Controller Mapping:
+	//     Joystick: Arrow keys
+	//     Trigger: Enter
+	//     Grip: Shift
+	//     ButtonA: '
+	//     ButtonB: /
+	//     `);
+	// };
 	// document.getElementById('keyboard-settings').onclick = function () {
 	// 	alert('Keyboard control settings not yet available');
 	// };

@@ -996,6 +996,10 @@ export default class EmulatedXRDevice extends XRDevice {
 		window.addEventListener(POLYFILL_ACTIONS.STEREO_TOGGLE, (event) => {
 			this._updateStereoEffect(event.detail.enabled);
 		});
+
+		window.addEventListener(POLYFILL_ACTIONS.INPUT_MODE_CHANGE, (event) => {
+			this.handMode = event.detail.inputMode === 'hands';
+		});
 	}
 }
 

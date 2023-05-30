@@ -6,13 +6,8 @@ module.exports = {
 		browser: true,
 		es2021: true,
 	},
-	extends: [
-		'eslint:recommended',
-		'plugin:@typescript-eslint/recommended',
-		'prettier',
-	],
-	parser: '@typescript-eslint/parser',
-	plugins: ['@typescript-eslint'],
+	extends: ['eslint:recommended', 'prettier'],
+	parser: "@typescript-eslint/parser",
 	parserOptions: {
 		ecmaVersion: 12,
 		sourceType: 'module',
@@ -32,6 +27,8 @@ module.exports = {
 			'warn',
 			{ vars: 'all', args: 'all', argsIgnorePattern: '^_' },
 		],
+		"prefer-const": true,
 		'lines-between-class-members': ['warn', 'always'],
+		indent: ['error', 'tab', { SwitchCase: 1, ignoreComments: true }],
 	},
 };

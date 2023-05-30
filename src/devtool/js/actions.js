@@ -19,6 +19,7 @@ export const EMULATOR_ACTIONS = {
 	EXIT_IMMERSIVE: 'ea-exit-immersive',
 	ROOM_DIMENSION_CHANGE: 'ea-room-dimension-change',
 	EXCLUDE_POLYFILL: 'ea-exclude-polyfill',
+	INPUT_MODE_CHANGE: 'ea-input-mode-change',
 };
 
 /**
@@ -35,6 +36,7 @@ export const POLYFILL_ACTIONS = {
 	EXIT_IMMERSIVE: 'pa-exit-immersive',
 	DEVICE_INIT: 'pa-device-init',
 	ROOM_DIMENSION_CHANGE: 'pa-room-dimension-change',
+	INPUT_MODE_CHANGE: 'pa-input-mode-change',
 };
 
 /**
