@@ -267,6 +267,46 @@ export default class CustomWebXRPolyfill extends WebXRPolyfill {
 			);
 		};
 
+		/**
+		 * @param {IterableIterator<import('./api/XRJointSpace').XRJointSpace>} jointSpaces
+		 * @param {Float32Array} radii
+		 */
+		XRFrame.prototype.fillJointRadii = function (jointSpaces, radii) {
+			const spaces = Array.from(jointSpaces);
+			if (spaces.length > radii.length) {
+				throw new TypeError('radii array size insufficient');
+			}
+			spaces.forEach((jointSpace, i) => {
+				const jointName = jointSpace.jointName;
+				radii[i] = handPose[jointName].radius;
+			});
+			return true;
+		};
+
+		/**
+		 * @param {IterableIterator<XRSpace>} spaces
+		 * @param {XRSpace} baseSpace
+		 * @param {Float32Array} transforms
+		 */
+		XRFrame.prototype.fillPoses = function (spaces, baseSpace, transforms) {
+			const spacesArray = Array.from(spaces);
+			if (transforms.length < spaces.length * 16) {
+				throw new TypeError('transforms array size insufficient');
+			}
+			spacesArray.forEach((space, i) => {
+				let pose;
+				if (space.jointName) {
+					pose = this.getJointPose(space, baseSpace);
+				} else {
+					pose = this.getPose(space, baseSpace);
+				}
+				for (let j = 0; j < 16; j++) {
+					transforms[i * 16 + j] = pose.transform.matrix[j];
+				}
+			});
+			return true;
+		};
+
 		// Extending XRSession and XRFrame for AR hitting test API.
 
 		XRSession.prototype.requestHitTestSource = function (options) {

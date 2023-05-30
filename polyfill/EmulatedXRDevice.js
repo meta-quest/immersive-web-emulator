@@ -171,6 +171,8 @@ export default class EmulatedXRDevice extends XRDevice {
 					'The high-fixed-foveation-level feature is non-standard and deprecated. Refer to the documentation at https://immersive-web.github.io/layers/#dom-xrprojectionlayer-fixedfoveation for the standard way to adjust fixed foveation level.',
 				);
 				return true;
+			case 'hand-tracking':
+				return true;
 			default:
 				return false; // @TODO: Throw an error?
 		}
