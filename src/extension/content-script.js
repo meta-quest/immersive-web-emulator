@@ -93,6 +93,13 @@ const connection = {
 						pose: message.pose,
 					});
 					break;
+
+				case EMULATOR_ACTIONS.PINCH_VALUE_CHANGE:
+					triggerPolyfillAction(POLYFILL_ACTIONS.PINCH_VALUE_CHANGE, {
+						handedness: message.handedness,
+						value: message.value,
+					});
+					break;
 			}
 		});
 		connection.port.onDisconnect.addListener(connection.connect);

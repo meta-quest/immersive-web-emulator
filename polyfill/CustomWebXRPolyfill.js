@@ -33,6 +33,43 @@ import XRTransientInputHitTestSource from './api/XRTransientInputHitTestSource';
 import { XR_COMPATIBLE } from 'webxr-polyfill/src/constants';
 
 const handMatrixInvert = [1, -1, -1, 0, -1, 1, 1, 0, -1, 1, 1, 0, -1, 1, 1, 1];
+const getJointMatrix = (handPose, jointName, handedness) => {
+	const rawTransform = [...handPose[jointName].transform];
+	if (handedness == 'right') {
+		for (let i = 0; i < 16; i++) {
+			rawTransform[i] = rawTransform[i] * handMatrixInvert[i];
+		}
+	}
+	return mat4.fromValues(...rawTransform);
+};
+const interpolateMatrix = (fromMatrix, toMatrix, alpha) => {
+	const fromPosition = vec3.create();
+	mat4.getTranslation(fromPosition, fromMatrix);
+	const fromQuaternion = quat.create();
+	mat4.getRotation(fromQuaternion, fromMatrix);
+	const fromScale = vec3.create();
+	mat4.getScaling(fromScale, fromMatrix);
+	const toPosition = vec3.create();
+	mat4.getTranslation(toPosition, toMatrix);
+	const toQuaternion = quat.create();
+	mat4.getRotation(toQuaternion, toMatrix);
+	const toScale = vec3.create();
+	mat4.getScaling(toScale, toMatrix);
+	const interpolatedPosition = vec3.create();
+	vec3.lerp(interpolatedPosition, fromPosition, toPosition, alpha);
+	const interpolatedQuaternion = quat.create();
+	quat.slerp(interpolatedQuaternion, fromQuaternion, toQuaternion, alpha);
+	const interpolatedScale = vec3.create();
+	vec3.lerp(interpolatedScale, fromScale, toScale, alpha);
+	const out = mat4.create();
+	mat4.fromRotationTranslationScale(
+		out,
+		interpolatedQuaternion,
+		interpolatedPosition,
+		interpolatedScale,
+	);
+	return out;
+};
 
 export default class CustomWebXRPolyfill extends WebXRPolyfill {
 	constructor() {
@@ -244,7 +281,9 @@ export default class CustomWebXRPolyfill extends WebXRPolyfill {
 			const handedness = xrInputSource.handedness;
 			const device = this[XRFRAME_PRIVATE].device;
 			const poseId = device.handPoseData[handedness].poseId;
+			const pinchValue = device.handPoseData[handedness].pinchValue;
 			const handPose = HAND_POSES[poseId];
+			const pinchPose = HAND_POSES.pinch;
 
 			// the joints transforms are sampled with gripSpace as the reference space
 			const gripMatrix = new Float32Array(16);
@@ -255,15 +294,23 @@ export default class CustomWebXRPolyfill extends WebXRPolyfill {
 				mat4.copy(gripMatrix, gripPose.transform.matrix);
 			}
 
+			const jointMatrix = getJointMatrix(handPose, joint.jointName, handedness);
+			const pinchMatrix = getJointMatrix(
+				pinchPose,
+				joint.jointName,
+				handedness,
+			);
+			const isPinchJoint =
+				joint.jointName.startsWith('thumb') ||
+				joint.jointName.startsWith('index');
+			const interpolatedMatrix = interpolateMatrix(
+				jointMatrix,
+				pinchMatrix,
+				isPinchJoint ? pinchValue : 0,
+			);
+
 			const out = new Float32Array(16);
-			const rawTransform = [...handPose[joint.jointName].transform];
-			if (handedness == 'right') {
-				for (let i = 0; i < 16; i++) {
-					rawTransform[i] = rawTransform[i] * handMatrixInvert[i];
-				}
-			}
-			const jointTransform = new Float32Array(rawTransform);
-			mat4.multiply(out, gripMatrix, jointTransform);
+			mat4.multiply(out, gripMatrix, interpolatedMatrix);
 			return new XRJointPose(
 				new XRRigidTransform(out),
 				handPose[joint.jointName].radius,

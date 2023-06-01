@@ -66,6 +66,10 @@ export const emulatorStates = {
 		},
 	},
 	playbackInProgress: false,
+	pinchValues: {
+		'left-hand': 0,
+		'right-hand': 0,
+	},
 };
 
 export class EmulatorSettings {

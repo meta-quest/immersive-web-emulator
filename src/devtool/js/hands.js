@@ -6,16 +6,27 @@
  */
 
 import { EmulatorSettings, emulatorStates } from './emulatorStates';
+import { changeHandPose, updatePinchValue } from './messenger';
 
 import { HAND_NAME } from './constants';
-import { changeHandPose } from './messenger';
+import { pressAndReleaseAnalogButton } from './controllers';
 
 export const registerGestureControls = (deviceId) => {
 	const handName = HAND_NAME[deviceId];
-	const gestureSelect = document.getElementById(handName + '-gesture');
-	gestureSelect.addEventListener('change', function (_event) {
-		EmulatorSettings.instance.handPoses[handName] = gestureSelect.value;
+	const poseSelect = document.getElementById(handName + '-gesture');
+	poseSelect.addEventListener('change', function (_event) {
+		EmulatorSettings.instance.handPoses[handName] = poseSelect.value;
 		EmulatorSettings.instance.write();
 		changeHandPose(deviceId);
 	});
+	const pinchValue = document.getElementById(handName + '-pinch-value');
+	pinchValue.value = emulatorStates.pinchValues[handName];
+	pinchValue.oninput = () => {
+		emulatorStates.pinchValues[handName] = pinchValue.value / 100;
+		updatePinchValue(deviceId);
+	};
+	const pinchButton = document.getElementById(handName + '-pinch');
+	pinchButton.onclick = () => {
+		pressAndReleaseAnalogButton(pinchButton, pinchValue);
+	};
 };

@@ -21,6 +21,7 @@ export const EMULATOR_ACTIONS = {
 	EXCLUDE_POLYFILL: 'ea-exclude-polyfill',
 	INPUT_MODE_CHANGE: 'ea-input-mode-change',
 	HAND_POSE_CHANGE: 'ea-hand-pose-change',
+	PINCH_VALUE_CHANGE: 'ea-pinch-value-change',
 };
 
 /**
@@ -39,6 +40,7 @@ export const POLYFILL_ACTIONS = {
 	ROOM_DIMENSION_CHANGE: 'pa-room-dimension-change',
 	INPUT_MODE_CHANGE: 'pa-input-mode-change',
 	HAND_POSE_CHANGE: 'pa-hand-pose-change',
+	PINCH_VALUE_CHANGE: 'pa-pinch-value-change',
 };
 
 /**

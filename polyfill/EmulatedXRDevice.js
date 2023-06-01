@@ -61,8 +61,8 @@ export default class EmulatedXRDevice extends XRDevice {
 
 		this.handMode = true;
 		this.handPoseData = {
-			left: { poseId: 'relaxed', pinchAlpha: 0 },
-			right: { poseId: 'relaxed', pinchAlpha: 0 },
+			left: { poseId: 'relaxed', pinchValue: 0, prevPinchValue: 0 },
+			right: { poseId: 'relaxed', pinchValue: 0, prevPinchValue: 0 },
 		};
 
 		// controllers
@@ -354,6 +354,26 @@ export default class EmulatedXRDevice extends XRDevice {
 					inputSourceImpl.primarySqueezeActionPressed =
 						primarySqueezeActionPressed;
 				}
+				if (
+					this.handPoseData[gamepad.hand].pinchValue == 1 &&
+					this.handPoseData[gamepad.hand].prevPinchValue != 1
+				) {
+					this.dispatchEvent('@@webxr-polyfill/input-select-start', {
+						sessionId: session.id,
+						inputSource: handInputImpl.inputSource,
+					});
+				}
+				if (
+					this.handPoseData[gamepad.hand].pinchValue != 1 &&
+					this.handPoseData[gamepad.hand].prevPinchValue == 1
+				) {
+					this.dispatchEvent('@@webxr-polyfill/input-select-end', {
+						sessionId: session.id,
+						inputSource: handInputImpl.inputSource,
+					});
+				}
+				this.handPoseData[gamepad.hand].prevPinchValue =
+					this.handPoseData[gamepad.hand].pinchValue;
 			}
 
 			this._hitTest(sessionId, this.hitTestSources, this.hitTestResults);
@@ -1006,6 +1026,12 @@ export default class EmulatedXRDevice extends XRDevice {
 			const handedness = event.detail.handedness;
 			const poseId = event.detail.pose;
 			this.handPoseData[handedness].poseId = poseId;
+		});
+
+		window.addEventListener(POLYFILL_ACTIONS.PINCH_VALUE_CHANGE, (event) => {
+			const handedness = event.detail.handedness;
+			const pinchValue = event.detail.value;
+			this.handPoseData[handedness].pinchValue = pinchValue;
 		});
 	}
 }

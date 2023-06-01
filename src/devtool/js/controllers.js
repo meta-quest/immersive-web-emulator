@@ -80,7 +80,7 @@ const pressAndReleaseButton = (deviceId, inputId) => {
 	}, PRESS_AND_RELEASE_DURATION);
 };
 
-const pressAndReleaseAnalogButton = (pressButton, rangeInput) => {
+export const pressAndReleaseAnalogButton = (pressButton, rangeInput) => {
 	const step = 10;
 	const interval = 10;
 	const holdTime = 50;

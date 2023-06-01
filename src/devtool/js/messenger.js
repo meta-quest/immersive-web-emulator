@@ -149,6 +149,14 @@ export const changeHandPose = (deviceId) => {
 	});
 };
 
+export const updatePinchValue = (deviceId) => {
+	const handName = HAND_NAME[deviceId];
+	executeAction(EMULATOR_ACTIONS.PINCH_VALUE_CHANGE, {
+		handedness: deviceId === DEVICE.LEFT_CONTROLLER ? 'left' : 'right',
+		value: emulatorStates.pinchValues[handName],
+	});
+};
+
 export const togglePolyfill = () => {
 	chrome.tabs.get(tabId, (tab) => {
 		const url = new URL(tab.url);

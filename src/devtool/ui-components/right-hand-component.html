@@ -5,7 +5,7 @@
   LICENSE file in the root directory of this source tree.
 -->
 
-<div class="card controller-card">
+<div class="card controller-card hand-card">
 	<div class="card-header">
 		<img src="./assets/images/hand-right.png" class="control-icon" />
 		<span class="control-label">Right Hand</span>
@@ -19,17 +19,27 @@
 				<div>
 					<select
 						id="right-hand-gesture"
-						class="form-select btn special-button button-leftmost"
+						class="form-select btn special-button"
 					>
 						<option value="relaxed">relaxed</option>
 						<option value="point">point</option>
 					</select>
+				</div>
+			</div>
+		</div>
+		<div class="row" style="margin: 2%">
+			<div class="col-3 d-flex align-items-center">
+				<span class="control-label">Pinch</span>
+			</div>
+			<div class="col-9 d-flex justify-content-end">
+				<div>
+					<input id="right-hand-pinch-value" type="range" class="form-range" />
 					<button
 						id="right-hand-pinch"
 						type="button"
-						class="btn special-button button-rightmost"
+						class="btn special-button"
 					>
-						Pinch
+						<img src="./assets/images/hand-pose.png" style="width: 1.2em" />
 					</button>
 				</div>
 			</div>
