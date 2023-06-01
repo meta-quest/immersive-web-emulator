@@ -15,6 +15,7 @@ import { mat4, quat, vec3 } from 'gl-matrix';
 import API from 'webxr-polyfill/src/api/index';
 import EX_API from './api/index';
 import EmulatedXRDevice from './EmulatedXRDevice';
+import { HAND_POSES } from './api/handPose';
 import { POLYFILL_ACTIONS } from '../src/devtool/js/actions';
 import WebXRPolyfill from 'webxr-polyfill/src/WebXRPolyfill';
 import { PRIVATE as XRHAND_PRIVATE } from './api/XRHand';
@@ -30,7 +31,6 @@ import XRSystem from 'webxr-polyfill/src/api/XRSystem';
 import XRTransientInputHitTestResult from './api/XRTransientInputHitTestResult';
 import XRTransientInputHitTestSource from './api/XRTransientInputHitTestSource';
 import { XR_COMPATIBLE } from 'webxr-polyfill/src/constants';
-import { handPose } from './api/handPose';
 
 const handMatrixInvert = [1, -1, -1, 0, -1, 1, 1, 0, -1, 1, 1, 0, -1, 1, 1, 1];
 
@@ -242,6 +242,9 @@ export default class CustomWebXRPolyfill extends WebXRPolyfill {
 			const xrhand = joint[XRJOINTSPACE_PRIVATE].xrhand;
 			const xrInputSource = xrhand[XRHAND_PRIVATE].inputSource;
 			const handedness = xrInputSource.handedness;
+			const device = this[XRFRAME_PRIVATE].device;
+			const poseId = device.handPoseData[handedness].poseId;
+			const handPose = HAND_POSES[poseId];
 
 			// the joints transforms are sampled with gripSpace as the reference space
 			const gripMatrix = new Float32Array(16);

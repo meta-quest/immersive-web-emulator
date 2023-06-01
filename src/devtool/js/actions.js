@@ -20,6 +20,7 @@ export const EMULATOR_ACTIONS = {
 	ROOM_DIMENSION_CHANGE: 'ea-room-dimension-change',
 	EXCLUDE_POLYFILL: 'ea-exclude-polyfill',
 	INPUT_MODE_CHANGE: 'ea-input-mode-change',
+	HAND_POSE_CHANGE: 'ea-hand-pose-change',
 };
 
 /**
@@ -37,6 +38,7 @@ export const POLYFILL_ACTIONS = {
 	DEVICE_INIT: 'pa-device-init',
 	ROOM_DIMENSION_CHANGE: 'pa-room-dimension-change',
 	INPUT_MODE_CHANGE: 'pa-input-mode-change',
+	HAND_POSE_CHANGE: 'pa-hand-pose-change',
 };
 
 /**

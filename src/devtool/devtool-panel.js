@@ -8,7 +8,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 
-import { DEVICE, OBJECT_NAME } from './js/constants';
+import { DEVICE, HAND_NAME, OBJECT_NAME } from './js/constants';
 import {
 	changeEmulatedDeviceType,
 	changeInputMode,
@@ -30,6 +30,7 @@ import {
 import $ from 'jquery';
 import { DEVICE_DEFINITIONS } from './js/devices';
 import { EmulatorSettings } from './js/emulatorStates';
+import { registerGestureControls } from './js/hands';
 import { setupKeyboardControlButtons } from './js/keyboard';
 import { setupPoseButtons } from './js/poses';
 import { setupReplay } from './js/player';
@@ -119,6 +120,14 @@ EmulatorSettings.instance.load().then(() => {
 			() => {
 				setupJoystick(deviceId);
 				registerControllerButtonEvents(deviceId);
+				onResize();
+			},
+		);
+		const handName = HAND_NAME[deviceId];
+		$('#' + handName + '-component').load(
+			'./ui-components/' + handName + '-component.html',
+			() => {
+				registerGestureControls(deviceId);
 				onResize();
 			},
 		);

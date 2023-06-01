@@ -1,0 +1,38 @@
+<!-- 
+  Copyright (c) Meta Platforms, Inc. and affiliates.
+
+  This source code is licensed under the MIT license found in the
+  LICENSE file in the root directory of this source tree.
+-->
+
+<div class="card controller-card">
+	<div class="card-header">
+		<img src="./assets/images/hand-right.png" class="control-icon" />
+		<span class="control-label">Right Hand</span>
+	</div>
+	<div class="card-body">
+		<div class="row" style="margin: 2%">
+			<div class="col-4 d-flex align-items-center">
+				<span class="control-label">Gesture:</span>
+			</div>
+			<div class="col-8 d-flex justify-content-end">
+				<div>
+					<select
+						id="right-hand-gesture"
+						class="form-select btn special-button button-leftmost"
+					>
+						<option value="relaxed">relaxed</option>
+						<option value="point">point</option>
+					</select>
+					<button
+						id="right-hand-pinch"
+						type="button"
+						class="btn special-button button-rightmost"
+					>
+						Pinch
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

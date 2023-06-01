@@ -85,6 +85,10 @@ export class EmulatorSettings {
 		this.roomDimension = { x: 6, y: 3, z: 6 };
 		this.polyfillExcludes = new Set();
 		this.inputMode = 'controllers';
+		this.handPoses = {
+			'left-hand': 'relaxed',
+			'right-hand': 'relaxed',
+		};
 	}
 
 	load() {
@@ -101,6 +105,7 @@ export class EmulatorSettings {
 				this.roomDimension = settings?.roomDimension ?? { x: 6, y: 3, z: 6 };
 				this.polyfillExcludes = new Set(settings?.polyfillExcludes ?? []);
 				this.inputMode = settings?.inputMode ?? 'controllers';
+				this.handPoses = settings?.handPoses ?? this.handPoses;
 				resolve(result);
 			});
 		});
@@ -117,6 +122,7 @@ export class EmulatorSettings {
 			roomDimension: this.roomDimension,
 			polyfillExcludes: Array.from(this.polyfillExcludes),
 			inputMode: this.inputMode,
+			handPoses: this.handPoses,
 		});
 		return new Promise((resolve) => {
 			localStorage.set(settings, () => {

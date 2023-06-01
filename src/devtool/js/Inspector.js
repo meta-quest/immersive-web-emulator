@@ -112,7 +112,6 @@ orbitControls.update();
 
 const createTransformControls = (target, onChange) => {
 	const controls = new TransformControls(camera, renderer.domElement);
-	controls.setSpace('local');
 	controls.attach(target);
 	controls.enabled = false;
 	controls.visible = false;

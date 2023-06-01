@@ -6,7 +6,7 @@
  */
 
 import { CLIENT_ACTIONS, EMULATOR_ACTIONS } from './actions';
-import { DEVICE, OBJECT_NAME } from './constants';
+import { DEVICE, HAND_NAME, OBJECT_NAME } from './constants';
 import { EmulatorSettings, emulatorStates } from './emulatorStates';
 
 // eslint-disable-next-line no-undef
@@ -138,6 +138,14 @@ export const notifyExcludePolyfill = () => {
 export const changeInputMode = () => {
 	executeAction(EMULATOR_ACTIONS.INPUT_MODE_CHANGE, {
 		inputMode: EmulatorSettings.instance.inputMode,
+	});
+};
+
+export const changeHandPose = (deviceId) => {
+	const handName = HAND_NAME[deviceId];
+	executeAction(EMULATOR_ACTIONS.HAND_POSE_CHANGE, {
+		handedness: deviceId === DEVICE.LEFT_CONTROLLER ? 'left' : 'right',
+		pose: EmulatorSettings.instance.handPoses[handName],
 	});
 };
 

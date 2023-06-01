@@ -60,8 +60,9 @@ export default class EmulatedXRDevice extends XRDevice {
 		this.rightViewMatrix = mat4.create();
 
 		this.handMode = true;
-		window.toggleHands = () => {
-			this.handMode = !this.handMode;
+		this.handPoseData = {
+			left: { poseId: 'relaxed', pinchAlpha: 0 },
+			right: { poseId: 'relaxed', pinchAlpha: 0 },
 		};
 
 		// controllers
@@ -999,6 +1000,12 @@ export default class EmulatedXRDevice extends XRDevice {
 
 		window.addEventListener(POLYFILL_ACTIONS.INPUT_MODE_CHANGE, (event) => {
 			this.handMode = event.detail.inputMode === 'hands';
+		});
+
+		window.addEventListener(POLYFILL_ACTIONS.HAND_POSE_CHANGE, (event) => {
+			const handedness = event.detail.handedness;
+			const poseId = event.detail.pose;
+			this.handPoseData[handedness].poseId = poseId;
 		});
 	}
 }

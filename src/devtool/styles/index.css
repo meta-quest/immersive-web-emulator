@@ -368,3 +368,7 @@ body {
 	right: 22px;
 	background-color: #a7a7a7;
 }
+
+.controller-card .form-select {
+	width: 60px;
+}

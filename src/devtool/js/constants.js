@@ -31,6 +31,10 @@ OBJECT_NAME[DEVICE.HEADSET] = 'headset';
 OBJECT_NAME[DEVICE.LEFT_CONTROLLER] = 'left-controller';
 OBJECT_NAME[DEVICE.RIGHT_CONTROLLER] = 'right-controller';
 
+export const HAND_NAME = {};
+HAND_NAME[DEVICE.LEFT_CONTROLLER] = 'left-hand';
+HAND_NAME[DEVICE.RIGHT_CONTROLLER] = 'right-hand';
+
 export const DEFAULT_TRANSFORMS = {};
 DEFAULT_TRANSFORMS[DEVICE.HEADSET] = {
 	position: [0, 1.7, 0],
