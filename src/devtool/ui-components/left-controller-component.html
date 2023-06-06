@@ -13,8 +13,7 @@
 	<div class="card-body">
 		<div class="row" style="margin: 2%">
 			<div class="col-4 d-flex align-items-center">
-				<img src="./assets/images/joystick.png" class="control-icon" />
-				<span class="control-label">Joystick</span>
+				<div id="left-controller-joystick" class="joystick-panel"></div>
 			</div>
 			<div class="col-8 d-flex justify-content-end">
 				<div>
@@ -45,26 +44,21 @@
 		<div class="row" style="margin: 2%">
 			<div class="col-12 d-flex justify-content-end">
 				<div>
-					<div id="left-controller-joystick" class="joystick-panel">
-						<button
-							id="left-controller-joystick-sticky"
-							type="button"
-							class="btn special-button joystick-button"
-							style="top: 75px"
-						>
-							<img src="./assets/images/sticky.png" class="action-icon" />
-							Sticky
-						</button>
-						<button
-							id="left-controller-joystick-reset"
-							type="button"
-							class="btn special-button joystick-button"
-							style="top: 108px"
-						>
-							<img src="./assets/images/reset.png" class="action-icon" />
-							Reset
-						</button>
-					</div>
+					<button
+						id="left-controller-joystick-sticky"
+						type="button"
+						class="btn special-button button-leftmost"
+					>
+						<img src="./assets/images/sticky.png" class="action-icon" />
+						Sticky
+					</button>
+					<button
+						id="left-controller-joystick-reset"
+						type="button"
+						class="btn special-button button-rightmost"
+					>
+						<img src="./assets/images/reset.png" class="action-icon" />
+					</button>
 				</div>
 			</div>
 		</div>

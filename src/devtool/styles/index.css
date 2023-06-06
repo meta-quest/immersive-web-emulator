@@ -17,6 +17,16 @@ body {
 	flex-direction: column;
 	height: 100%;
 	font-family: sans-serif;
+	overflow: hidden;
+}
+
+.row {
+	margin: 0px;
+}
+
+.row > * {
+	padding-left: 5px;
+	padding-right: 5px;
 }
 
 .component {
@@ -24,10 +34,8 @@ body {
 	flex-direction: column;
 }
 
-.main-component {
-	height: 50%;
-	flex: 1;
-	margin: 0;
+.card {
+	border: 0px;
 }
 
 .component-container {
@@ -35,26 +43,37 @@ body {
 	z-index: 1;
 }
 
-.ui-panel {
-	border-radius: 20px 20px 0 0;
-	padding: 2px 0px 5px 20px;
+.root-panel {
+	border-radius: 10px;
 	color: #a7a7a7;
 }
 
-.viewport-header-panel {
-	border-radius: 20px 20px 0 0;
-	padding: 5px 0px 1px 20px;
-	color: #a7a7a7;
+.inspector-panel {
+	flex: 1 1 auto;
+	display: flex;
+	flex-direction: column;
 }
 
-.viewport-footer-panel {
-	border-radius: 0px 0px 20px 20px;
-	padding: 1px 0px 1px 20px;
-	color: #a7a7a7;
+.controls-panel {
+	flex: 0 1 auto;
+}
+
+.inspector-panel .row {
+	flex: 1 1 auto;
+}
+
+.inspector-panel .row:first-child,
+.inspector-panel .row:last-child {
+	flex: 0 1 auto;
+}
+
+#scene-container {
+	width: 100%;
+	height: 100%;
 }
 
 .headset-action-button {
-	height: 2.1em;
+	height: 24px;
 	border-radius: 6px;
 	border-style: none;
 	padding: 4px 6px 4px 6px;
@@ -170,7 +189,7 @@ body {
 	padding-left: 5px;
 }
 
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 450px) {
 	.control-label {
 		display: none;
 	}
@@ -213,21 +232,35 @@ body {
 
 .controller-card .card-header {
 	border-bottom-width: 2px;
-	padding-top: 4px;
-	padding-bottom: 4px;
+	padding: 2px 5px;
 }
 
 .controller-card .card-body {
-	padding: 0 0 10px 0;
+	padding: 0 0 1px 0;
 }
 
 .joystick-panel {
-	width: 150px;
+	width: 125px;
+	position: absolute;
+	top: 28;
+	left: 0;
+}
+
+#render-component {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+#transform-component {
+	position: absolute;
 }
 
 .transform-card {
 	color: white;
-	margin: 5px;
+	margin: 2px !important;
+	width: 137px;
+	font-size: 10px;
+	line-height: 1.2em;
 }
 
 .transform-icon {
@@ -238,12 +271,12 @@ body {
 
 .transform-body {
 	background-color: #252526;
-	width: 160px;
+	width: 110px;
 	opacity: 50%;
 	color: white;
 	border-radius: 2px 10px 10px 2px;
 	padding: 0px;
-	margin-left: 3px;
+	margin-left: 2px;
 }
 
 .value {
@@ -292,7 +325,6 @@ body {
 }
 
 #mask {
-	font-size: x-large;
 	background-color: #3b3b3c;
 	color: #e4e6eb;
 	position: absolute;
@@ -302,13 +334,14 @@ body {
 }
 
 .prompt {
-	width: calc(100% - 20px);
-	height: calc(100% - 20px);
+	width: calc(100% - 10px);
+	height: calc(100% - 10px);
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	margin: 10px;
-	border-width: 5px;
+	margin: 5px;
+	border-radius: 3px;
+	border-width: 3px;
 	border-style: dashed;
 }
 
@@ -316,11 +349,21 @@ body {
 	border-radius: 10px;
 	background-color: #252526;
 	color: #a7a7a7;
-	margin: 0px 5px 5px 5px;
 }
 
 .alternative-control-card .card-body {
 	padding: 5px 0px 5px 0px;
+}
+
+.resize-warning-card {
+	background-color: #252526;
+	color: #a7a7a7;
+	align-items: center;
+	margin: 0px 5px 0px 5px;
+	border: 3px dashed;
+	border-bottom: none;
+	border-radius: 10px 10px 0px 0px;
+	padding: 5px;
 }
 
 .session-progress-bar {
@@ -359,14 +402,18 @@ body {
 }
 
 #room-dimension-settings input {
-	width: 60px;
-	height: 20px;
+	width: 35px;
+	height: 15px;
 	padding: 1px 5px;
 	position: absolute;
 	border-radius: 8px;
 	border: 0px;
-	right: 22px;
+	right: 8px;
 	background-color: #a7a7a7;
+}
+
+#room-dimension-settings .row {
+	height: 15px;
 }
 
 .controller-card .form-select {
@@ -381,4 +428,8 @@ body {
 .hand-card .special-button {
 	margin: 0px 0px 0px 4px;
 	padding: 4px 8px;
+}
+
+#size-warning-component {
+	padding-top: 5px;
 }

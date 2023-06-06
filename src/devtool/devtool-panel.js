@@ -12,7 +12,6 @@ import { DEVICE, HAND_NAME, OBJECT_NAME } from './js/constants';
 import {
 	changeEmulatedDeviceType,
 	changeInputMode,
-	notifyExcludePolyfill,
 	notifyExitImmersive,
 	togglePolyfill,
 	toggleStereoMode,
@@ -20,6 +19,7 @@ import {
 import {
 	loadDeviceAsset,
 	onResize,
+	setupDeviceNodeButtons,
 	setupRoomDimensionSettings,
 } from './js/Inspector';
 import {
@@ -105,13 +105,15 @@ EmulatorSettings.instance.load().then(() => {
 			loadDeviceAsset(DEVICE.RIGHT_CONTROLLER);
 			loadDeviceAsset(DEVICE.LEFT_CONTROLLER);
 			setupRoomDimensionSettings();
+			setupDeviceNodeButtons();
+			onResize();
 		},
 	);
 
-	$('#headset-component').load(
-		'./ui-components/headset-component.html',
-		setupHeadsetComponentButtons,
-	);
+	$('#headset-component').load('./ui-components/headset-component.html', () => {
+		setupHeadsetComponentButtons();
+		onResize();
+	});
 
 	[DEVICE.LEFT_CONTROLLER, DEVICE.RIGHT_CONTROLLER].forEach((deviceId) => {
 		const deviceName = OBJECT_NAME[deviceId];
@@ -133,10 +135,10 @@ EmulatorSettings.instance.load().then(() => {
 		);
 	});
 
-	$('#session-player-component').load(
-		'./ui-components/session-player-component.html',
-		setupReplay,
-	);
+	// $('#session-player-component').load(
+	// 	'./ui-components/session-player-component.html',
+	// 	setupReplay,
+	// );
 
 	$('#pose-component').load('./ui-components/pose-component.html', () => {
 		setupPoseButtons();
@@ -145,7 +147,7 @@ EmulatorSettings.instance.load().then(() => {
 			'controller-tab-button',
 		);
 		const handsTabButton = document.getElementById('hands-tab-button');
-		const controllerPanel = document.getElementById('controller-panel');
+		const controllerPanel = document.getElementById('controllers-panel');
 		const handsPanel = document.getElementById('hands-panel');
 
 		const updateInputModeUI = () => {
@@ -178,6 +180,7 @@ EmulatorSettings.instance.load().then(() => {
 		};
 
 		setupKeyboardControlButtons();
+		onResize();
 
 		// hiding player tab button logic for now
 

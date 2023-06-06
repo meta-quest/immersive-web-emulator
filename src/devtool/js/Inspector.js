@@ -35,32 +35,56 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(1, 1);
 renderer.domElement.style.position = 'absolute';
-renderer.domElement.style.paddingLeft = '13px';
-document.getElementById('renderComponent').appendChild(renderer.domElement);
+document.getElementById('scene-container').appendChild(renderer.domElement);
+
+const MIN_PANEL_WIDTH = 327;
+const MIN_PANEL_HEIGHT = 256;
+const MIN_INPUT_PANEL_WIDTH = 458;
+const MIN_INPUT_PANEL_HEIGHTS = {
+	controllers: 452,
+	hands: 327,
+};
 
 export const onResize = () => {
-	if (document.body.offsetHeight < 600) {
-		document.getElementById('mask').style.display = 'block';
-		document.getElementById('mask-text').innerHTML =
-			'Not Enough Vertical Space';
-	} else if (document.body.offsetWidth < 550) {
-		document.getElementById('mask').style.display = 'block';
-		document.getElementById('mask-text').innerHTML =
-			'Not Enough Horizontal Space';
+	const globalMask = document.getElementById('mask');
+	globalMask.style.display = 'none';
+	const globalMaskText = document.getElementById('mask-text');
+	const inputControlsMask = document.getElementById('size-warning-component');
+	inputControlsMask.style.display = 'none';
+	const inputControlMaskText = inputControlsMask.children[0];
+	if (document.body.offsetHeight < MIN_PANEL_HEIGHT) {
+		globalMask.style.display = 'block';
+		globalMaskText.innerHTML = 'Not Enough Vertical Space';
+	} else if (document.body.offsetWidth < MIN_PANEL_WIDTH) {
+		globalMask.style.display = 'block';
+		globalMaskText.innerHTML = 'Not Enough Horizontal Space';
 	} else {
-		document.getElementById('mask').style.display = 'none';
+		globalMask.style.display = 'none';
+		const inputMode = EmulatorSettings.instance.inputMode;
+		const inputPanel = document.getElementById(inputMode + '-panel');
+		if (document.body.offsetWidth < MIN_INPUT_PANEL_WIDTH) {
+			inputPanel.style.display = 'none';
+			inputControlsMask.style.display = 'block';
+			inputControlMaskText.innerHTML = 'Not Enough Horizontal Space';
+		} else if (
+			document.body.offsetHeight < MIN_INPUT_PANEL_HEIGHTS[inputMode]
+		) {
+			inputPanel.style.display = 'none';
+			inputControlsMask.style.display = 'block';
+			inputControlMaskText.innerHTML = 'Not Enough Vertical Space';
+		} else {
+			inputPanel.style.display = 'flex';
+			inputControlsMask.style.display = 'none';
+		}
 	}
 
-	const div = document.getElementById('renderComponent');
-	renderer.setSize(1, 1);
-	setTimeout(() => {
-		const width = div.offsetWidth;
-		const height = div.offsetHeight;
-		camera.aspect = width / height;
-		camera.updateProjectionMatrix();
-		renderer.setSize(width - 5, height);
-		render();
-	}, 50);
+	const parent = renderer.domElement.parentElement;
+	const width = parent.clientWidth;
+	const height = parent.clientHeight;
+	camera.aspect = width / height;
+	camera.updateProjectionMatrix();
+	renderer.setSize(width, height);
+	render();
 };
 
 const scene = new THREE.Scene();
@@ -288,6 +312,26 @@ export const setupRoomDimensionSettings = () => {
 	};
 };
 
+export const setupDeviceNodeButtons = () => {
+	const headsetButton = document.getElementById('headset-node-button');
+	const leftControllerButton = document.getElementById(
+		'left-controller-node-button',
+	);
+	const rightControllerButton = document.getElementById(
+		'right-controller-node-button',
+	);
+
+	headsetButton.onclick = () => {
+		toggleControlMode(DEVICE.HEADSET, true);
+	};
+	leftControllerButton.onclick = () => {
+		toggleControlMode(DEVICE.LEFT_CONTROLLER, true);
+	};
+	rightControllerButton.onclick = () => {
+		toggleControlMode(DEVICE.RIGHT_CONTROLLER, true);
+	};
+};
+
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 let mousedownTime = null;
@@ -377,8 +421,16 @@ renderer.domElement.addEventListener(
 
 window.addEventListener('resize', onResize, false);
 
-const toggleControlMode = (key) => {
-	const controls = transformControls[key];
+const toggleControlMode = (deviceId, clearOthers = false) => {
+	if (clearOthers) {
+		Object.entries(transformControls).forEach(([key, controls]) => {
+			if (key != deviceId) {
+				controls.enabled = false;
+				controls.visible = false;
+			}
+		});
+	}
+	const controls = transformControls[deviceId];
 	if (!controls) {
 		return;
 	}
