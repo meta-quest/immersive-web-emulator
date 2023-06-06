@@ -14,6 +14,8 @@ import {
 import { DEVICE_DEFINITIONS } from '../devtool/js/devices';
 import { EmulatorSettings } from '../devtool/js/emulatorStates';
 
+let pingJob = null;
+
 const connection = {
 	port: null,
 	connect: () => {
@@ -129,6 +131,15 @@ window.addEventListener(
 	CLIENT_ACTIONS.ENTER_IMMERSIVE,
 	() => {
 		sendActionToEmulator(CLIENT_ACTIONS.ENTER_IMMERSIVE);
+		if (!pingJob) {
+			// client does not actively send messages to the service worker by itself
+			// a disconnection from the service worker will not be noticed unless it
+			// periodically send ping messages to keep the connection alive
+			// we don't want to do this until we know that this is a XR site
+			pingJob = setInterval(() => {
+				sendActionToEmulator('ping');
+			}, 5000);
+		}
 	},
 	false,
 );
@@ -158,5 +169,4 @@ EmulatorSettings.instance.load().then(() => {
 			pose: EmulatorSettings.instance.handPoses[handedness + '-hand'],
 		});
 	});
-	sendActionToEmulator(CLIENT_ACTIONS.ENTER_IMMERSIVE);
 });

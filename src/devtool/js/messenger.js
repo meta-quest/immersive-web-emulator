@@ -9,13 +9,11 @@ import { CLIENT_ACTIONS, EMULATOR_ACTIONS } from './actions';
 import { DEVICE, HAND_NAME, OBJECT_NAME } from './constants';
 import { EmulatorSettings, emulatorStates } from './emulatorStates';
 
-// eslint-disable-next-line no-undef
 const tabId = chrome.devtools.inspectedWindow.tabId;
 
 const connection = {
 	port: null,
 	connect: () => {
-		// eslint-disable-next-line no-undef
 		connection.port = chrome.runtime.connect(null, { name: 'iwe_devtool' });
 		connection.port.onMessage.addListener((payload) => {
 			switch (payload.action) {
@@ -129,10 +127,6 @@ export const changeRoomDimension = () => {
 	executeAction(EMULATOR_ACTIONS.ROOM_DIMENSION_CHANGE, {
 		dimension: EmulatorSettings.instance.roomDimension,
 	});
-};
-
-export const notifyExcludePolyfill = () => {
-	executeAction(EMULATOR_ACTIONS.EXCLUDE_POLYFILL);
 };
 
 export const changeInputMode = () => {
