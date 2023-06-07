@@ -327,6 +327,12 @@ export default class CustomWebXRPolyfill extends WebXRPolyfill {
 				throw new TypeError('radii array size insufficient');
 			}
 			spaces.forEach((jointSpace, i) => {
+				const xrhand = jointSpace[XRJOINTSPACE_PRIVATE].xrhand;
+				const xrInputSource = xrhand[XRHAND_PRIVATE].inputSource;
+				const handedness = xrInputSource.handedness;
+				const device = this[XRFRAME_PRIVATE].device;
+				const poseId = device.handPoseData[handedness].poseId;
+				const handPose = HAND_POSES[poseId];
 				const jointName = jointSpace.jointName;
 				radii[i] = handPose[jointName].radius;
 			});
