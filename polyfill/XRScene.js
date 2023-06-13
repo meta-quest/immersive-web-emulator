@@ -16,7 +16,7 @@ import {
 } from 'three';
 import { XRPlane, XRPlaneOrientation } from './api/XRPlane';
 
-import { BoxLineGeometry } from 'three/examples/jsm/geometries/BoxLineGeometry';
+import { BoxLineGeometry } from 'three/examples/jsm/geometries/BoxLineGeometry.js';
 import XRSpace from 'webxr-polyfill/src/api/XRSpace';
 import { mat4 } from 'gl-matrix';
 

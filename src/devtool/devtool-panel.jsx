@@ -33,7 +33,6 @@ import { EmulatorSettings } from './js/emulatorStates';
 import { registerGestureControls } from './js/hands';
 import { setupKeyboardControlButtons } from './js/keyboard';
 import { setupPoseButtons } from './js/poses';
-import { setupReplay } from './js/player';
 
 const setupHeadsetComponentButtons = () => {
 	document

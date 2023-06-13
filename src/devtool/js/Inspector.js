@@ -15,10 +15,10 @@ import {
 	changeRoomDimension,
 } from './messenger';
 
-import { BoxLineGeometry } from 'three/examples/jsm/geometries/BoxLineGeometry';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { TransformControls } from 'three/examples/jsm/controls/TransformControls';
+import { BoxLineGeometry } from 'three/examples/jsm/geometries/BoxLineGeometry.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 
 export const setupEmulatorScene = () => {};
 
