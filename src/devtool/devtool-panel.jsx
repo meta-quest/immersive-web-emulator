@@ -10,35 +10,23 @@ import 'bootstrap';
 
 import { DEVICE, HAND_NAME, OBJECT_NAME } from './js/constants';
 import {
-	loadDeviceAsset,
-	onResize,
-	setupDeviceNodeButtons,
-	setupRoomDimensionSettings,
-} from './js/Inspector';
-import {
 	registerControllerButtonEvents,
 	setupJoystick,
 } from './js/controllers';
 
 import $ from 'jquery';
 import { EmulatorSettings } from './js/emulatorStates';
-import HeadsetBar from '../jsx/headset.jsx';
-import PoseBar from '../jsx/pose.jsx';
+import HeadsetBar from './jsx/headset.jsx';
+import Inspector from './js/emulatedDevice';
+import PoseBar from './jsx/pose.jsx';
 import { createRoot } from 'react-dom/client';
 import { registerGestureControls } from './js/hands';
+import { syncDevicePose } from './js/messenger';
 
 EmulatorSettings.instance.load().then(() => {
-	$('#transform-component').load(
-		'./ui-components/transform-component.html',
-		() => {
-			loadDeviceAsset(DEVICE.HEADSET);
-			loadDeviceAsset(DEVICE.RIGHT_CONTROLLER);
-			loadDeviceAsset(DEVICE.LEFT_CONTROLLER);
-			setupRoomDimensionSettings();
-			setupDeviceNodeButtons();
-			onResize();
-		},
-	);
+	const inspector = new Inspector();
+	inspector.on('pose', syncDevicePose);
+	document.getElementById('scene-container').appendChild(inspector.canvas);
 
 	const domNode = document.getElementById('headset-component');
 	const root = createRoot(domNode);
@@ -46,7 +34,7 @@ EmulatorSettings.instance.load().then(() => {
 
 	const poseNode = document.getElementById('pose-component');
 	const poseRoot = createRoot(poseNode);
-	poseRoot.render(<PoseBar />);
+	poseRoot.render(<PoseBar inspector={inspector} />);
 
 	[DEVICE.LEFT_CONTROLLER, DEVICE.RIGHT_CONTROLLER].forEach((deviceId) => {
 		const deviceName = OBJECT_NAME[deviceId];
@@ -55,7 +43,7 @@ EmulatorSettings.instance.load().then(() => {
 			() => {
 				setupJoystick(deviceId);
 				registerControllerButtonEvents(deviceId);
-				onResize();
+				inspector.render();
 			},
 		);
 		const handName = HAND_NAME[deviceId];
@@ -63,7 +51,7 @@ EmulatorSettings.instance.load().then(() => {
 			'./ui-components/' + handName + '-component.html',
 			() => {
 				registerGestureControls(deviceId);
-				onResize();
+				inspector.render();
 			},
 		);
 	});

@@ -19,7 +19,6 @@ const connection = {
 			switch (payload.action) {
 				case CLIENT_ACTIONS.ENTER_IMMERSIVE:
 					emulatorStates.inImmersive = true;
-					applyAllPoseChanges();
 					break;
 				case CLIENT_ACTIONS.EXIT_IMMERSIVE:
 					emulatorStates.inImmersive = false;
@@ -41,21 +40,18 @@ const executeAction = (action, payload = {}) => {
 	}
 };
 
-const applyHeadsetPoseChange = (node) => {
-	executeAction(EMULATOR_ACTIONS.HEADSET_POSE_CHANGE, {
-		position: node.position.toArray(),
-		quaternion: node.quaternion.toArray(),
-	});
-};
-
-export const applyDevicePoseChange = (key, node) => {
-	if (key === DEVICE.HEADSET) {
-		applyHeadsetPoseChange(node);
+export const syncDevicePose = (event) => {
+	const { deviceKey, position, quaternion } = event;
+	if (deviceKey === DEVICE.HEADSET) {
+		executeAction(EMULATOR_ACTIONS.HEADSET_POSE_CHANGE, {
+			position,
+			quaternion,
+		});
 	} else {
 		executeAction(EMULATOR_ACTIONS.CONTROLLER_POSE_CHANGE, {
-			objectName: OBJECT_NAME[key],
-			position: node.position.toArray(),
-			quaternion: node.quaternion.toArray(),
+			objectName: OBJECT_NAME[deviceKey],
+			position,
+			quaternion,
 		});
 	}
 };
@@ -105,18 +101,6 @@ export const relayKeyboardEvent = (eventType, eventOptions) => {
 		eventType,
 		eventOptions,
 	});
-};
-
-export const applyAllPoseChanges = () => {
-	for (const key in emulatorStates.assetNodes) {
-		if (emulatorStates.assetNodes[key]) {
-			if (key === DEVICE.HEADSET) {
-				applyHeadsetPoseChange(emulatorStates.assetNodes[key]);
-			} else {
-				applyDevicePoseChange(key, emulatorStates.assetNodes[key]);
-			}
-		}
-	}
 };
 
 export const notifyExitImmersive = () => {

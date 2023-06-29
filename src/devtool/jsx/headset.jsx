@@ -10,10 +10,10 @@ import {
 	notifyExitImmersive,
 	togglePolyfill,
 	toggleStereoMode,
-} from '../devtool/js/messenger';
+} from '../js/messenger';
 
-import { DEVICE_DEFINITIONS } from '../devtool/js/devices';
-import { EmulatorSettings } from '../devtool/js/emulatorStates';
+import { DEVICE_DEFINITIONS } from '../js/devices';
+import { EmulatorSettings } from '../js/emulatorStates';
 import { useRef } from 'react';
 
 export default function HeadsetBar() {

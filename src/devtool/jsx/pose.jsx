@@ -5,15 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { EmulatorSettings, emulatorStates } from '../devtool/js/emulatorStates';
-import { onResize, resetDevicePose } from '../devtool/js/Inspector';
+import { EmulatorSettings, emulatorStates } from '../js/emulatorStates';
 
-import { DEVICE } from '../devtool/js/constants';
-import { changeInputMode } from '../devtool/js/messenger';
-import initKeyboardControl from '../devtool/js/keyboard';
+import { DEVICE } from '../js/constants';
+import { changeInputMode } from '../js/messenger';
+import initKeyboardControl from '../js/keyboard';
 import { useRef } from 'react';
 
-export default function PoseBar() {
+export default function PoseBar({ inspector }) {
 	const saveDefaultPoseRef = useRef();
 	const resetPoseRef = useRef();
 	const actionMappingToggleRef = useRef();
@@ -50,7 +49,7 @@ export default function PoseBar() {
 		controllerPanel.style.display =
 			inputMode === 'controllers' ? 'flex' : 'none';
 		handsPanel.style.display = inputMode === 'hands' ? 'flex' : 'none';
-		onResize();
+		inspector.render();
 	}
 
 	changeInputMode();
@@ -91,7 +90,9 @@ export default function PoseBar() {
 								ref={resetPoseRef}
 								type="button"
 								class="btn pose-action-button button-rightmost"
-								onClick={resetDevicePose}
+								onClick={() => {
+									inspector.resetPose();
+								}}
 							>
 								<img src="./assets/images/reset.png" class="action-icon" />
 							</button>
