@@ -18,7 +18,7 @@ import { TransformControls } from 'three/examples/jsm/controls/TransformControls
 
 const SELECTION_MOUSE_DOWN_THRESHOLD = 300;
 
-export default class Inspector extends EventEmitter {
+export default class EmulatedDevice extends EventEmitter {
 	constructor() {
 		super();
 		this._renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -73,11 +73,7 @@ export default class Inspector extends EventEmitter {
 			controls.addEventListener('mouseDown', () => (oc.enabled = false));
 			controls.addEventListener('mouseUp', () => (oc.enabled = true));
 			controls.addEventListener('change', () => {
-				this.emit('pose', {
-					deviceKey,
-					position: node.position.toArray(),
-					quaternion: node.quaternion.toArray(),
-				});
+				this._emitPoseEvent(deviceKey);
 				this.render();
 			});
 			this._transformControls[deviceKey] = controls;
@@ -108,6 +104,16 @@ export default class Inspector extends EventEmitter {
 
 		this.updateRoom();
 		window.addEventListener('resize', this.render.bind(this));
+	}
+
+	_emitPoseEvent(deviceKey) {
+		const node = this.getDeviceNode(deviceKey);
+		this.emit('pose', {
+			deviceKey,
+			position: node.position.toArray(),
+			rotation: node.rotation.toArray(),
+			quaternion: node.quaternion.toArray(),
+		});
 	}
 
 	_findSelectedDeviceNode(mouseEvent) {
@@ -155,6 +161,12 @@ export default class Inspector extends EventEmitter {
 		return emulatorStates.assetNodes[deviceKey];
 	}
 
+	forceEmitPose() {
+		Object.values(DEVICE).forEach((deviceKey) => {
+			this._emitPoseEvent(deviceKey);
+		});
+	}
+
 	toggleControlMode(deviceKey, clearOthers = false) {
 		if (clearOthers) {
 			Object.entries(this._transformControls).forEach(([key, controls]) => {
@@ -187,11 +199,7 @@ export default class Inspector extends EventEmitter {
 			deviceNode.rotation.fromArray(
 				EmulatorSettings.instance.defaultPose[deviceKey].rotation,
 			);
-			this.emit('pose', {
-				deviceKey,
-				position: deviceNode.position.toArray(),
-				quaternion: deviceNode.quaternion.toArray(),
-			});
+			this._emitPoseEvent(deviceKey);
 		});
 		this.render();
 	}
@@ -199,8 +207,8 @@ export default class Inspector extends EventEmitter {
 	render() {
 		const parent = this.canvas.parentElement;
 		if (!parent) return;
-		const width = parent.clientWidth;
-		const height = parent.clientHeight;
+		const width = parent.offsetWidth;
+		const height = parent.offsetHeight;
 		if (width != this._lastWidth || height != this._lastHeight) {
 			this._camera.aspect = width / height;
 			this._camera.updateProjectionMatrix();

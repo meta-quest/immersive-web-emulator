@@ -15,26 +15,30 @@ import {
 } from './js/controllers';
 
 import $ from 'jquery';
+import EmulatedDevice from './js/emulatedDevice';
 import { EmulatorSettings } from './js/emulatorStates';
 import HeadsetBar from './jsx/headset.jsx';
-import Inspector from './js/emulatedDevice';
+import Inspector from './jsx/inspector.jsx';
 import PoseBar from './jsx/pose.jsx';
 import { createRoot } from 'react-dom/client';
 import { registerGestureControls } from './js/hands';
 import { syncDevicePose } from './js/messenger';
 
 EmulatorSettings.instance.load().then(() => {
-	const inspector = new Inspector();
-	inspector.on('pose', syncDevicePose);
-	document.getElementById('scene-container').appendChild(inspector.canvas);
+	const device = new EmulatedDevice();
+	device.on('pose', syncDevicePose);
 
 	const domNode = document.getElementById('headset-component');
 	const root = createRoot(domNode);
 	root.render(<HeadsetBar />);
 
+	const inspectorNode = document.getElementById('render-component');
+	const inspectorRoot = createRoot(inspectorNode);
+	inspectorRoot.render(<Inspector device={device} />);
+
 	const poseNode = document.getElementById('pose-component');
 	const poseRoot = createRoot(poseNode);
-	poseRoot.render(<PoseBar inspector={inspector} />);
+	poseRoot.render(<PoseBar device={device} />);
 
 	[DEVICE.LEFT_CONTROLLER, DEVICE.RIGHT_CONTROLLER].forEach((deviceId) => {
 		const deviceName = OBJECT_NAME[deviceId];
@@ -43,7 +47,7 @@ EmulatorSettings.instance.load().then(() => {
 			() => {
 				setupJoystick(deviceId);
 				registerControllerButtonEvents(deviceId);
-				inspector.render();
+				device.render();
 			},
 		);
 		const handName = HAND_NAME[deviceId];
@@ -51,7 +55,7 @@ EmulatorSettings.instance.load().then(() => {
 			'./ui-components/' + handName + '-component.html',
 			() => {
 				registerGestureControls(deviceId);
-				inspector.render();
+				device.render();
 			},
 		);
 	});

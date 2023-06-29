@@ -12,7 +12,7 @@ import { changeInputMode } from '../js/messenger';
 import initKeyboardControl from '../js/keyboard';
 import { useRef } from 'react';
 
-export default function PoseBar({ inspector }) {
+export default function PoseBar({ device }) {
 	const saveDefaultPoseRef = useRef();
 	const resetPoseRef = useRef();
 	const actionMappingToggleRef = useRef();
@@ -49,7 +49,7 @@ export default function PoseBar({ inspector }) {
 		controllerPanel.style.display =
 			inputMode === 'controllers' ? 'flex' : 'none';
 		handsPanel.style.display = inputMode === 'hands' ? 'flex' : 'none';
-		inspector.render();
+		device.render();
 	}
 
 	changeInputMode();
@@ -91,7 +91,7 @@ export default function PoseBar({ inspector }) {
 								type="button"
 								class="btn pose-action-button button-rightmost"
 								onClick={() => {
-									inspector.resetPose();
+									device.resetPose();
 								}}
 							>
 								<img src="./assets/images/reset.png" class="action-icon" />
