@@ -83,11 +83,9 @@ export default function HeadsetBar() {
 						</select>
 					</div>
 					<div class="col-8 d-flex justify-content-end align-items-center">
-						<div>
+						<div class="control-button-group">
 							<button
-								id="polyfill-toggle"
-								type="button"
-								class="btn headset-action-button button-leftmost"
+								class="btn headset-action-button"
 								ref={polyfillToggleRef}
 								onClick={togglePolyfill}
 							>
@@ -98,12 +96,10 @@ export default function HeadsetBar() {
 								Polyfill
 							</button>
 							<button
-								id="stereo-toggle"
-								type="button"
 								class={
 									EmulatorSettings.instance.stereoOn
-										? 'btn headset-action-button button-middle button-pressed'
-										: 'btn headset-action-button button-middle'
+										? 'btn headset-action-button button-pressed'
+										: 'btn headset-action-button'
 								}
 								ref={stereoToggleRef}
 								onClick={onToggleStereo}
@@ -112,9 +108,7 @@ export default function HeadsetBar() {
 								Stereo
 							</button>
 							<button
-								id="exit-webxr"
-								type="button"
-								class="btn headset-action-button button-rightmost"
+								class="btn headset-action-button"
 								onClick={notifyExitImmersive}
 							>
 								<img src="./assets/images/exit.png" class="action-icon" />

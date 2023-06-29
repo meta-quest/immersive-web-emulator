@@ -195,21 +195,21 @@ body {
 	padding-left: 5px;
 }
 
-.control-button-group button {
+.control-button-group * {
 	border-radius: 2px !important;
 	margin: 0px 2px 0px 0px;
 }
 
-.control-button-group button:first-child {
+.control-button-group *:first-child {
 	border-radius: 6px 2px 2px 6px !important;
 }
 
-.control-button-group button:last-child {
+.control-button-group *:last-child {
 	border-radius: 2px 6px 6px 2px !important;
 	margin: 0px;
 }
 
-@media only screen and (max-width: 450px) {
+@media only screen and (max-width: 420px) {
 	.control-label {
 		display: none;
 	}
@@ -228,8 +228,14 @@ body {
 	margin: 5px 5px 0px 5px;
 }
 
-.headset-card .card-body {
+.headset-card .card-body,
+.pose-card .card-body {
 	padding: 5px 0px 5px 0px;
+}
+
+.headset-card .row > *,
+.pose-card .row > * {
+	padding-right: 0px;
 }
 
 .controller-panel {
@@ -318,8 +324,26 @@ body {
 }
 
 .form-range {
-	max-width: 60px;
-	margin-left: 8px;
+	max-width: 50px;
+	vertical-align: middle;
+}
+
+.form-range:hover {
+	background-color: #3b3b3c;
+}
+
+.form-range::-webkit-slider-runnable-track {
+	height: 1.4em;
+	border-radius: 5px;
+}
+
+.form-range::-webkit-slider-thumb {
+	-webkit-appearance: none; /* Override default look */
+	appearance: none;
+	margin-top: -0.35em; /* Centers thumb on the track */
+	border-radius: 2px;
+	height: 2.1em;
+	width: 8px;
 }
 
 .pose-left-full {
@@ -347,10 +371,6 @@ body {
 	background-color: #252526;
 	color: #a7a7a7;
 	margin: 0px 5px 0px 5px;
-}
-
-.pose-card .card-body {
-	padding: 5px 0px 5px 0px;
 }
 
 #mask {

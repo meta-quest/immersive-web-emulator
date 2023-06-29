@@ -77,11 +77,11 @@ export default function PoseBar({ device }) {
 				<div class="row">
 					<div class="col-8 d-flex justify-content-start align-items-center">
 						<img src="./assets/images/pose.png" class="control-icon" />
-						<div>
+						<div class="control-button-group">
 							<button
 								ref={saveDefaultPoseRef}
 								type="button"
-								class="btn pose-action-button button-leftmost"
+								class="btn pose-action-button"
 								onClick={onSaveDefaultPose}
 							>
 								Save as default pose
@@ -89,7 +89,7 @@ export default function PoseBar({ device }) {
 							<button
 								ref={resetPoseRef}
 								type="button"
-								class="btn pose-action-button button-rightmost"
+								class="btn pose-action-button"
 								onClick={() => {
 									device.resetPose();
 								}}
@@ -100,14 +100,14 @@ export default function PoseBar({ device }) {
 					</div>
 
 					<div class="col-4 d-flex justify-content-end align-items-center">
-						<div>
+						<div class="control-button-group">
 							<button
 								ref={actionMappingToggleRef}
 								type="button"
 								class={
 									EmulatorSettings.instance.actionMappingOn
-										? 'btn pose-action-button button-leftmost button-pressed'
-										: 'btn pose-action-button button-leftmost'
+										? 'btn pose-action-button button-pressed'
+										: 'btn pose-action-button'
 								}
 								title="Keyboard Action Mapping"
 								onClick={onActionMappingToggle}
@@ -119,8 +119,8 @@ export default function PoseBar({ device }) {
 								type="button"
 								class={
 									EmulatorSettings.instance.inputMode === 'controllers'
-										? 'btn pose-action-button button-middle button-pressed'
-										: 'btn pose-action-button button-middle'
+										? 'btn pose-action-button button-pressed'
+										: 'btn pose-action-button'
 								}
 								title="Controller Mode"
 								onClick={() => {
@@ -134,8 +134,8 @@ export default function PoseBar({ device }) {
 								type="button"
 								class={
 									EmulatorSettings.instance.inputMode === 'hands'
-										? 'btn pose-action-button button-rightmost button-pressed'
-										: 'btn pose-action-button button-rightmost'
+										? 'btn pose-action-button button-pressed'
+										: 'btn pose-action-button'
 								}
 								title="Hands Mode"
 								onClick={() => {

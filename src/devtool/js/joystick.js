@@ -8,7 +8,7 @@
 import { EventEmitter } from 'events';
 
 const CIRCUMFERENCE = 2 * Math.PI;
-const LINEWIDTH = 6;
+const LINEWIDTH = 4;
 const OUTER_STROKE_COLOR = '#e4e6eb';
 const INNER_FILL_COLOR = '#317BEF';
 

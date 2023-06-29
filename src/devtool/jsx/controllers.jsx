@@ -106,41 +106,30 @@ function ControlButtonGroup({ isAnalog, deviceKey, buttonKey }) {
 	}
 
 	return (
-		<>
-			<div class="control-button-group">
-				<button
-					class="btn special-button"
-					ref={touchRef}
-					onClick={onTouchToggle}
-				>
-					<img src="./assets/images/press.png" />
-				</button>
-				<button
-					class="btn special-button"
-					ref={pressRef}
-					onClick={isAnalog ? onPressAnalog : onPressBinary}
-				>
-					Press
-				</button>
-				{!isAnalog && (
-					<button
-						class="btn special-button"
-						ref={holdRef}
-						onClick={onHoldToggle}
-					>
-						<img src="./assets/images/lock.png" />
-					</button>
-				)}
-			</div>
-			{isAnalog && (
+		<div class="control-button-group">
+			<button class="btn special-button" ref={touchRef} onClick={onTouchToggle}>
+				<img src="./assets/images/press.png" />
+			</button>
+			<button
+				class="btn special-button"
+				ref={pressRef}
+				onClick={isAnalog ? onPressAnalog : onPressBinary}
+			>
+				Press
+			</button>
+			{isAnalog ? (
 				<input
 					ref={rangeRef}
 					type="range"
-					class="form-range"
+					class="form-range special-button"
 					onInput={onRangeInput}
 				/>
+			) : (
+				<button class="btn special-button" ref={holdRef} onClick={onHoldToggle}>
+					<img src="./assets/images/lock.png" />
+				</button>
 			)}
-		</>
+		</div>
 	);
 }
 
