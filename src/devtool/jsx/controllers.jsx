@@ -1,3 +1,10 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 import {
 	BUTTON_POLYFILL_INDEX_MAPPING,
 	CONTROLLER_STRINGS,
@@ -58,36 +65,6 @@ function ControlButtonGroup({ isAnalog, deviceKey, buttonKey }) {
 		}, PRESS_AND_RELEASE_DURATION);
 	}
 
-	function onPressAnalog() {
-		const step = 10;
-		const interval = 10;
-		const holdTime = 50;
-		pressRef.current.disabled = true;
-		let rangeValue = 0;
-		const pressIntervalId = setInterval(() => {
-			if (rangeRef.current.value >= 100) {
-				rangeRef.current.value = 100;
-				clearInterval(pressIntervalId);
-				setTimeout(() => {
-					const depressIntervalId = setInterval(() => {
-						if (rangeRef.current.value <= 0) {
-							rangeRef.current.value = 0;
-							clearInterval(depressIntervalId);
-							pressRef.current.disabled = false;
-						} else {
-							rangeRef.current.value -= step;
-						}
-						onRangeInput();
-					}, interval);
-				}, holdTime);
-			} else {
-				rangeValue += step;
-				rangeRef.current.value = rangeValue;
-			}
-			onRangeInput();
-		}, interval);
-	}
-
 	function onRangeInput() {
 		const inputValue = rangeRef.current.value / 100;
 		applyControllerButtonChanged(
@@ -99,9 +76,16 @@ function ControlButtonGroup({ isAnalog, deviceKey, buttonKey }) {
 		);
 	}
 
+	const onPressAnalog = createAnalogPressFunction(
+		pressRef,
+		rangeRef,
+		onRangeInput,
+	);
+
 	if (isAnalog) {
 		React.useEffect(() => {
 			rangeRef.current.value = 0;
+			onRangeInput();
 		});
 	}
 
@@ -275,4 +259,36 @@ export default function ControllerPanel({ deviceKey }) {
 			</div>
 		</div>
 	);
+}
+
+export function createAnalogPressFunction(pressRef, rangeRef, onRangeInput) {
+	return function () {
+		const step = 10;
+		const interval = 10;
+		const holdTime = 50;
+		pressRef.current.disabled = true;
+		let rangeValue = 0;
+		const pressIntervalId = setInterval(() => {
+			if (rangeRef.current.value >= 100) {
+				rangeRef.current.value = 100;
+				clearInterval(pressIntervalId);
+				setTimeout(() => {
+					const depressIntervalId = setInterval(() => {
+						if (rangeRef.current.value <= 0) {
+							rangeRef.current.value = 0;
+							clearInterval(depressIntervalId);
+							pressRef.current.disabled = false;
+						} else {
+							rangeRef.current.value -= step;
+						}
+						onRangeInput();
+					}, interval);
+				}, holdTime);
+			} else {
+				rangeValue += step;
+				rangeRef.current.value = rangeValue;
+			}
+			onRangeInput();
+		}, interval);
+	};
 }

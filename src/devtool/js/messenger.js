@@ -6,7 +6,7 @@
  */
 
 import { CLIENT_ACTIONS, EMULATOR_ACTIONS } from './actions';
-import { DEVICE, HAND_NAME, OBJECT_NAME } from './constants';
+import { DEVICE, HAND_STRINGS, OBJECT_NAME } from './constants';
 import { EmulatorSettings, emulatorStates } from './emulatorStates';
 
 const tabId = chrome.devtools.inspectedWindow.tabId;
@@ -120,7 +120,7 @@ export const changeInputMode = () => {
 };
 
 export const changeHandPose = (deviceId) => {
-	const handName = HAND_NAME[deviceId];
+	const handName = HAND_STRINGS[deviceId].name;
 	executeAction(EMULATOR_ACTIONS.HAND_POSE_CHANGE, {
 		handedness: deviceId === DEVICE.LEFT_CONTROLLER ? 'left' : 'right',
 		pose: EmulatorSettings.instance.handPoses[handName],
@@ -128,7 +128,7 @@ export const changeHandPose = (deviceId) => {
 };
 
 export const updatePinchValue = (deviceId) => {
-	const handName = HAND_NAME[deviceId];
+	const handName = HAND_STRINGS[deviceId].name;
 	executeAction(EMULATOR_ACTIONS.PINCH_VALUE_CHANGE, {
 		handedness: deviceId === DEVICE.LEFT_CONTROLLER ? 'left' : 'right',
 		value: emulatorStates.pinchValues[handName],

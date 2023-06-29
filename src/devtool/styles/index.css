@@ -466,7 +466,12 @@ body {
 }
 
 .controller-card .form-select {
-	width: 120px;
+	width: 105px;
+}
+
+.controller-card .form-select:focus {
+	color: #fff;
+	background-color: #3b3b3c;
 }
 
 .controller-card .card-body .row {
@@ -474,13 +479,7 @@ body {
 }
 
 .hand-card .form-range {
-	vertical-align: middle;
 	max-width: 78px;
-}
-
-.hand-card .special-button {
-	margin: 0px 0px 0px 4px;
-	padding: 4px 8px;
 }
 
 .component-container.row {

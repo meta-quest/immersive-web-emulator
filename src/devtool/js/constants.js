@@ -31,10 +31,6 @@ OBJECT_NAME[DEVICE.HEADSET] = 'headset';
 OBJECT_NAME[DEVICE.LEFT_CONTROLLER] = 'left-controller';
 OBJECT_NAME[DEVICE.RIGHT_CONTROLLER] = 'right-controller';
 
-export const HAND_NAME = {};
-HAND_NAME[DEVICE.LEFT_CONTROLLER] = 'left-hand';
-HAND_NAME[DEVICE.RIGHT_CONTROLLER] = 'right-hand';
-
 export const DEFAULT_TRANSFORMS = {};
 DEFAULT_TRANSFORMS[DEVICE.HEADSET] = {
 	position: [0, 1.7, 0],
@@ -63,6 +59,18 @@ CONTROLLER_STRINGS[DEVICE.RIGHT_CONTROLLER] = {
 	handedness: 'right',
 	button1: 'ButtonA',
 	button2: 'ButtonB',
+};
+
+export const HAND_STRINGS = {};
+HAND_STRINGS[DEVICE.LEFT_CONTROLLER] = {
+	name: 'left-hand',
+	displayName: 'Left Hand',
+	handedness: 'left',
+};
+HAND_STRINGS[DEVICE.RIGHT_CONTROLLER] = {
+	name: 'right-hand',
+	displayName: 'Right Hand',
+	handedness: 'right',
 };
 
 export const KEYBOARD_CONTROL_MAPPING = {

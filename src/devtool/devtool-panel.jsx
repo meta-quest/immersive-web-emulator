@@ -8,17 +8,16 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 
-import { DEVICE, HAND_NAME } from './js/constants';
-
-import $ from 'jquery';
 import ControllerPanel from './jsx/controllers.jsx';
+import { DEVICE } from './js/constants';
 import EmulatedDevice from './js/emulatedDevice';
 import { EmulatorSettings } from './js/emulatorStates';
+import HandPanel from './jsx/hands.jsx';
 import HeadsetBar from './jsx/headset.jsx';
 import Inspector from './jsx/inspector.jsx';
 import PoseBar from './jsx/pose.jsx';
+import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { registerGestureControls } from './js/hands';
 import { syncDevicePose } from './js/messenger';
 
 EmulatorSettings.instance.load().then(() => {
@@ -42,19 +41,18 @@ EmulatorSettings.instance.load().then(() => {
 	controllersRoot.render(
 		<>
 			{[DEVICE.LEFT_CONTROLLER, DEVICE.RIGHT_CONTROLLER].map((deviceKey) => (
-				<ControllerPanel deviceKey={deviceKey} />
+				<ControllerPanel key={deviceKey} deviceKey={deviceKey} />
 			))}
 		</>,
 	);
 
-	[DEVICE.LEFT_CONTROLLER, DEVICE.RIGHT_CONTROLLER].forEach((deviceId) => {
-		const handName = HAND_NAME[deviceId];
-		$('#' + handName + '-component').load(
-			'./ui-components/' + handName + '-component.html',
-			() => {
-				registerGestureControls(deviceId);
-				device.render();
-			},
-		);
-	});
+	const handsNode = document.getElementById('hands-panel');
+	const handsRoot = createRoot(handsNode);
+	handsRoot.render(
+		<>
+			{[DEVICE.LEFT_CONTROLLER, DEVICE.RIGHT_CONTROLLER].map((deviceKey) => (
+				<HandPanel key={deviceKey} deviceKey={deviceKey} />
+			))}
+		</>,
+	);
 });
