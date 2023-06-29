@@ -8,13 +8,10 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 
-import { DEVICE, HAND_NAME, OBJECT_NAME } from './js/constants';
-import {
-	registerControllerButtonEvents,
-	setupJoystick,
-} from './js/controllers';
+import { DEVICE, HAND_NAME } from './js/constants';
 
 import $ from 'jquery';
+import ControllerPanel from './jsx/controllers.jsx';
 import EmulatedDevice from './js/emulatedDevice';
 import { EmulatorSettings } from './js/emulatorStates';
 import HeadsetBar from './jsx/headset.jsx';
@@ -40,16 +37,17 @@ EmulatorSettings.instance.load().then(() => {
 	const poseRoot = createRoot(poseNode);
 	poseRoot.render(<PoseBar device={device} />);
 
+	const controllersNode = document.getElementById('controllers-panel');
+	const controllersRoot = createRoot(controllersNode);
+	controllersRoot.render(
+		<>
+			{[DEVICE.LEFT_CONTROLLER, DEVICE.RIGHT_CONTROLLER].map((deviceKey) => (
+				<ControllerPanel deviceKey={deviceKey} />
+			))}
+		</>,
+	);
+
 	[DEVICE.LEFT_CONTROLLER, DEVICE.RIGHT_CONTROLLER].forEach((deviceId) => {
-		const deviceName = OBJECT_NAME[deviceId];
-		$('#' + deviceName + '-component').load(
-			'./ui-components/' + deviceName + '-component.html',
-			() => {
-				setupJoystick(deviceId);
-				registerControllerButtonEvents(deviceId);
-				device.render();
-			},
-		);
 		const handName = HAND_NAME[deviceId];
 		$('#' + handName + '-component').load(
 			'./ui-components/' + handName + '-component.html',

@@ -9,7 +9,36 @@ import { EmulatorSettings, emulatorStates } from './emulatorStates';
 import { changeHandPose, updatePinchValue } from './messenger';
 
 import { HAND_NAME } from './constants';
-import { pressAndReleaseAnalogButton } from './controllers';
+
+const pressAndReleaseAnalogButton = (pressButton, rangeInput) => {
+	const step = 10;
+	const interval = 10;
+	const holdTime = 50;
+	pressButton.disabled = true;
+	let rangeValue = 0;
+	const pressIntervalId = setInterval(() => {
+		if (rangeInput.value >= 100) {
+			rangeInput.value = 100;
+			clearInterval(pressIntervalId);
+			setTimeout(() => {
+				const depressIntervalId = setInterval(() => {
+					if (rangeInput.value <= 0) {
+						rangeInput.value = 0;
+						clearInterval(depressIntervalId);
+						pressButton.disabled = false;
+					} else {
+						rangeInput.value -= step;
+					}
+					rangeInput.oninput();
+				}, interval);
+			}, holdTime);
+		} else {
+			rangeValue += step;
+			rangeInput.value = rangeValue;
+		}
+		rangeInput.oninput();
+	}, interval);
+};
 
 export const registerGestureControls = (deviceId) => {
 	const handName = HAND_NAME[deviceId];

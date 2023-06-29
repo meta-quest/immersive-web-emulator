@@ -49,6 +49,22 @@ DEFAULT_TRANSFORMS[DEVICE.LEFT_CONTROLLER] = {
 	rotation: [0, 0, 0, 'XYZ'],
 };
 
+export const CONTROLLER_STRINGS = {};
+CONTROLLER_STRINGS[DEVICE.LEFT_CONTROLLER] = {
+	name: 'left-controller',
+	displayName: 'Left Controller',
+	handedness: 'left',
+	button1: 'ButtonX',
+	button2: 'ButtonY',
+};
+CONTROLLER_STRINGS[DEVICE.RIGHT_CONTROLLER] = {
+	name: 'right-controller',
+	displayName: 'Right Controller',
+	handedness: 'right',
+	button1: 'ButtonA',
+	button2: 'ButtonB',
+};
+
 export const KEYBOARD_CONTROL_MAPPING = {
 	left: {
 		joystickLeft: 'a',

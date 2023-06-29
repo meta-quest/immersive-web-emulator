@@ -6,12 +6,12 @@
  */
 
 import { DEVICE, KEYBOARD_CONTROL_MAPPING, OBJECT_NAME } from './constants';
+import { EmulatorSettings, emulatorStates } from './emulatorStates';
 
-import { EmulatorSettings } from './emulatorStates';
-import { JOYSTICKS } from './controllers';
 import { relayKeyboardEvent } from './messenger';
 
 const emulatedJoysticks = {};
+const JOYSTICKS = emulatorStates.joysticks;
 
 const resetEmulatedJoysticks = () => {
 	emulatedJoysticks.left = {

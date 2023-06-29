@@ -5,13 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { EventEmitter } from 'events';
+
 const CIRCUMFERENCE = 2 * Math.PI;
 const LINEWIDTH = 6;
 const OUTER_STROKE_COLOR = '#e4e6eb';
 const INNER_FILL_COLOR = '#317BEF';
 
-export class Joystick {
+export class Joystick extends EventEmitter {
 	constructor(size, autoReturn, renderScale = 2) {
+		super();
 		this._renderScale = renderScale;
 		this._autoReturn = autoReturn;
 
@@ -125,9 +128,7 @@ export class Joystick {
 	}
 
 	_dispatchEvent() {
-		this._canvas.parentElement.dispatchEvent(
-			new Event('joystickmove', { joystick: this }),
-		);
+		this.emit('joystickmove');
 	}
 
 	overrideMove(x, y) {

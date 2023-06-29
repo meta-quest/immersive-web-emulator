@@ -118,6 +118,10 @@ body {
 	color: #e4e6eb;
 }
 
+.special-button img {
+	width: 1.2em;
+}
+
 .pose-action-button {
 	height: 2em;
 	display: inline-block;
@@ -187,7 +191,22 @@ body {
 }
 
 .control-label {
+	text-transform: capitalize;
 	padding-left: 5px;
+}
+
+.control-button-group button {
+	border-radius: 2px !important;
+	margin: 0px 2px 0px 0px;
+}
+
+.control-button-group button:first-child {
+	border-radius: 6px 2px 2px 6px !important;
+}
+
+.control-button-group button:last-child {
+	border-radius: 2px 6px 6px 2px !important;
+	margin: 0px;
 }
 
 @media only screen and (max-width: 450px) {
@@ -196,16 +215,10 @@ body {
 	}
 }
 
-.control-row {
-	margin-top: 8px;
-	margin-bottom: 8px;
-}
-
 .controller-card {
 	border-radius: 10px;
 	background-color: #252526;
 	color: #a7a7a7;
-	margin: 5px;
 }
 
 .headset-card {
@@ -220,7 +233,8 @@ body {
 }
 
 .controller-panel {
-	max-width: 100%;
+	width: 100%;
+	padding: 5px 5px 0px 5px;
 }
 
 .controller-panel .row {
@@ -229,6 +243,14 @@ body {
 
 .controller-panel .col {
 	padding: 0;
+}
+
+.controller-panel .col:first-child {
+	margin-right: 2.5px;
+}
+
+.controller-panel .col:last-child {
+	margin-left: 2.5px;
 }
 
 .controller-card .card-header {
@@ -427,6 +449,10 @@ body {
 	width: 120px;
 }
 
+.controller-card .card-body .row {
+	margin: 2%;
+}
+
 .hand-card .form-range {
 	vertical-align: middle;
 	max-width: 78px;
@@ -435,10 +461,6 @@ body {
 .hand-card .special-button {
 	margin: 0px 0px 0px 4px;
 	padding: 4px 8px;
-}
-
-#size-warning-component {
-	padding-top: 5px;
 }
 
 .component-container.row {
