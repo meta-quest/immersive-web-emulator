@@ -41,12 +41,6 @@ const getReservedKeyAction = (key) => {
 };
 
 const onReservedKeyDown = (handKey, action) => {
-	const rangeInput = document.getElementById(
-		handKey + '-controller-' + action + '-value',
-	);
-	const pressButton = document.getElementById(
-		handKey + '-controller-' + action + '-press',
-	);
 	switch (action) {
 		case 'joystickLeft':
 			emulatedJoysticks[handKey].left = true;
@@ -62,24 +56,16 @@ const onReservedKeyDown = (handKey, action) => {
 			break;
 		case 'trigger':
 		case 'grip':
-			rangeInput.value = 100;
-			document.getElementById(
-				handKey + '-controller-' + action + '-press',
-			).disabled = true;
-			rangeInput.oninput();
+			emulatorStates.sliders[handKey][action].value = 100;
+			emulatorStates.buttons[handKey][action].disabled = true;
+			emulatorStates.sliders[handKey][action].onInputFunc();
 			break;
 		default:
-			pressButton.click();
+			emulatorStates.buttons[handKey][action].click();
 	}
 };
 
 const onReservedKeyUp = (handKey, action) => {
-	const rangeInput = document.getElementById(
-		handKey + '-controller-' + action + '-value',
-	);
-	const pressButton = document.getElementById(
-		handKey + '-controller-' + action + '-press',
-	);
 	switch (action) {
 		case 'joystickLeft':
 			emulatedJoysticks[handKey].left = false;
@@ -95,14 +81,12 @@ const onReservedKeyUp = (handKey, action) => {
 			break;
 		case 'trigger':
 		case 'grip':
-			rangeInput.value = 0;
-			document.getElementById(
-				handKey + '-controller-' + action + '-press',
-			).disabled = false;
-			rangeInput.oninput();
+			emulatorStates.sliders[handKey][action].value = 0;
+			emulatorStates.buttons[handKey][action].disabled = false;
+			emulatorStates.sliders[handKey][action].onInputFunc();
 			break;
 		default:
-			pressButton.click();
+			emulatorStates.buttons[handKey][action].click();
 	}
 };
 

@@ -82,12 +82,22 @@ function ControlButtonGroup({ isAnalog, deviceKey, buttonKey }) {
 		onRangeInput,
 	);
 
-	if (isAnalog) {
-		React.useEffect(() => {
+	React.useEffect(() => {
+		const handedness = CONTROLLER_STRINGS[deviceKey].handedness;
+		if (isAnalog) {
 			rangeRef.current.value = 0;
 			onRangeInput();
-		});
-	}
+			if (!emulatorStates.sliders[handedness]) {
+				emulatorStates.sliders[handedness] = {};
+			}
+			rangeRef.current.onInputFunc = onRangeInput;
+			emulatorStates.sliders[handedness][buttonKey] = rangeRef.current;
+		}
+		if (!emulatorStates.buttons[handedness]) {
+			emulatorStates.buttons[handedness] = {};
+		}
+		emulatorStates.buttons[handedness][buttonKey] = pressRef.current;
+	});
 
 	return (
 		<div className="control-button-group">
@@ -156,6 +166,7 @@ export default function ControllerPanel({ deviceKey }) {
 	React.useEffect(() => {
 		joystick.addToParent(joystickContainerRef.current);
 	}, []);
+
 	return (
 		<div className="col">
 			<div className="component-container">

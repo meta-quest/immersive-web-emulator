@@ -71,6 +71,8 @@ export const emulatorStates = {
 		'right-hand': 0,
 	},
 	joysticks: {},
+	buttons: {},
+	sliders: {},
 };
 
 export class EmulatorSettings {

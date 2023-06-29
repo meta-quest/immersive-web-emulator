@@ -42,9 +42,6 @@ export default function PoseBar({ device, setInputMode }) {
 		EmulatorSettings.instance.write();
 	}
 
-	changeInputMode();
-	initKeyboardControl();
-
 	function onInputModeChange(inputMode) {
 		EmulatorSettings.instance.inputMode = inputMode;
 		EmulatorSettings.instance.write();
@@ -59,6 +56,11 @@ export default function PoseBar({ device, setInputMode }) {
 		);
 		setInputMode(inputMode);
 	}
+
+	React.useEffect(() => {
+		changeInputMode();
+		initKeyboardControl();
+	}, []);
 
 	return (
 		<div className="card pose-card">
