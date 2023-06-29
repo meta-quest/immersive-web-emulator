@@ -59,9 +59,9 @@ export default class HandXRInputSource {
 
 	updateBasePoseMatrix() {
 		if (this.nativeGamepad && this.nativeGamepad.pose) {
-			let pose = this.nativeGamepad.pose;
-			let position = pose.position;
-			let orientation = pose.orientation;
+			const pose = this.nativeGamepad.pose;
+			const position = pose.position;
+			const orientation = pose.orientation;
 			// On initialization, we might not have any values
 			if (!position && !orientation) {
 				return;

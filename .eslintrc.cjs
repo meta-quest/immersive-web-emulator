@@ -1,20 +1,19 @@
-/* eslint-disable no-undef */
-// See https://github.com/eslint/eslint/issues/14137
-// for why this cannot be an ECMA module.
+/* eslint-env node */
 module.exports = {
 	env: {
 		browser: true,
 		es2021: true,
+		webextensions: true,
 	},
-	extends: ['eslint:recommended', 'prettier'],
-	parser: "@typescript-eslint/parser",
+	extends: ['eslint:recommended', 'prettier', 'plugin:react/recommended'],
+	plugins: ['html'],
 	parserOptions: {
 		ecmaVersion: 12,
 		sourceType: 'module',
 	},
 	rules: {
 		'sort-imports': [
-			'warn',
+			'error',
 			{
 				ignoreCase: false,
 				ignoreDeclarationSort: false,
@@ -27,8 +26,8 @@ module.exports = {
 			'warn',
 			{ vars: 'all', args: 'all', argsIgnorePattern: '^_' },
 		],
-		"prefer-const": true,
+		'prefer-const': 2,
 		'lines-between-class-members': ['warn', 'always'],
-		indent: ['error', 'tab', { SwitchCase: 1, ignoreComments: true }],
+		'react/prop-types': 'off',
 	},
 };

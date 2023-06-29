@@ -18,7 +18,7 @@ export class Joystick extends EventEmitter {
 		this._renderScale = renderScale;
 		this._autoReturn = autoReturn;
 
-		let canvas = document.createElement('canvas');
+		const canvas = document.createElement('canvas');
 		canvas.id = 'Joystick';
 		canvas.width = size * renderScale;
 		canvas.height = size * renderScale;
@@ -48,7 +48,7 @@ export class Joystick extends EventEmitter {
 	}
 
 	_drawOuterCircle() {
-		let context = this._canvas.getContext('2d');
+		const context = this._canvas.getContext('2d');
 		context.imageSmoothingQuality = 'high';
 		context.beginPath();
 		context.arc(
@@ -66,12 +66,12 @@ export class Joystick extends EventEmitter {
 	}
 
 	_drawInnerCircle() {
-		let context = this._canvas.getContext('2d');
+		const context = this._canvas.getContext('2d');
 		context.beginPath();
-		let deltaDistance = Math.sqrt(
+		const deltaDistance = Math.sqrt(
 			this._deltaX * this._deltaX + this._deltaY * this._deltaY,
 		);
-		let scaleFactor = deltaDistance / this._maxStickDelta;
+		const scaleFactor = deltaDistance / this._maxStickDelta;
 		if (scaleFactor > 1) {
 			this._deltaX /= scaleFactor;
 			this._deltaY /= scaleFactor;
@@ -98,7 +98,7 @@ export class Joystick extends EventEmitter {
 	}
 
 	_onMouseUp(_event) {
-		let context = this._canvas.getContext('2d');
+		const context = this._canvas.getContext('2d');
 		this._pressed = false;
 
 		if (this._autoReturn) {
@@ -115,7 +115,7 @@ export class Joystick extends EventEmitter {
 
 	_onMouseMove(event) {
 		if (this._pressed) {
-			let context = this._canvas.getContext('2d');
+			const context = this._canvas.getContext('2d');
 			this._deltaX = (event.pageX - this._refX) * this._renderScale;
 			this._deltaY = (event.pageY - this._refY) * this._renderScale;
 
@@ -132,7 +132,7 @@ export class Joystick extends EventEmitter {
 	}
 
 	overrideMove(x, y) {
-		let context = this._canvas.getContext('2d');
+		const context = this._canvas.getContext('2d');
 		this._deltaX = x * this._maxStickDelta;
 		this._deltaY = y * this._maxStickDelta;
 

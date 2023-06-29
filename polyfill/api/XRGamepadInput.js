@@ -19,11 +19,11 @@ export class XRRemappedGamepad {
 
 		// Apply user-agent-specific overrides to the mapping when applicable.
 		if (map.userAgentOverrides) {
-			for (let agent in map.userAgentOverrides) {
+			for (const agent in map.userAgentOverrides) {
 				if (navigator.userAgent.includes(agent)) {
-					let override = map.userAgentOverrides[agent];
+					const override = map.userAgentOverrides[agent];
 
-					for (let key in override) {
+					for (const key in override) {
 						if (key in map) {
 							// If the key already exists, merge the override values into the
 							// existing dictionary.
@@ -39,10 +39,10 @@ export class XRRemappedGamepad {
 			}
 		}
 
-		let axes = new Array(
+		const axes = new Array(
 			map.axes && map.axes.length ? map.axes.length : gamepad.axes.length,
 		);
-		let buttons = new Array(
+		const buttons = new Array(
 			map.buttons && map.buttons.length
 				? map.buttons.length
 				: gamepad.buttons.length,
@@ -50,7 +50,7 @@ export class XRRemappedGamepad {
 
 		let gripTransform = null;
 		if (map.gripTransform) {
-			let orientation = map.gripTransform.orientation || [0, 0, 0, 1];
+			const orientation = map.gripTransform.orientation || [0, 0, 0, 1];
 			gripTransform = mat4.create();
 			mat4.fromRotationTranslation(
 				gripTransform,
@@ -61,7 +61,7 @@ export class XRRemappedGamepad {
 
 		let targetRayTransform = null;
 		if (map.targetRayTransform) {
-			let orientation = map.targetRayTransform.orientation || [0, 0, 0, 1];
+			const orientation = map.targetRayTransform.orientation || [0, 0, 0, 1];
 			targetRayTransform = mat4.create();
 			mat4.fromRotationTranslation(
 				targetRayTransform,
@@ -92,10 +92,10 @@ export class XRRemappedGamepad {
 	}
 
 	_update() {
-		let gamepad = this[PRIVATE].gamepad;
-		let map = this[PRIVATE].map;
+		const gamepad = this[PRIVATE].gamepad;
+		const map = this[PRIVATE].map;
 
-		let axes = this[PRIVATE].axes;
+		const axes = this[PRIVATE].axes;
 		for (let i = 0; i < axes.length; ++i) {
 			if (map.axes && i in map.axes) {
 				if (map.axes[i] === null) {
@@ -109,14 +109,14 @@ export class XRRemappedGamepad {
 		}
 
 		if (map.axes && map.axes.invert) {
-			for (let axis of map.axes.invert) {
+			for (const axis of map.axes.invert) {
 				if (axis < axes.length) {
 					axes[axis] *= -1;
 				}
 			}
 		}
 
-		let buttons = this[PRIVATE].buttons;
+		const buttons = this[PRIVATE].buttons;
 		for (let i = 0; i < buttons.length; ++i) {
 			if (map.buttons && i in map.buttons) {
 				if (map.buttons[i] === null) {
@@ -232,9 +232,9 @@ export default class GamepadXRInputSource {
 
 	updateBasePoseMatrix() {
 		if (this.nativeGamepad && this.nativeGamepad.pose) {
-			let pose = this.nativeGamepad.pose;
+			const pose = this.nativeGamepad.pose;
 			let position = pose.position;
-			let orientation = pose.orientation;
+			const orientation = pose.orientation;
 			// On initialization, we might not have any values
 			if (!position && !orientation) {
 				return;

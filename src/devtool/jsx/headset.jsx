@@ -14,12 +14,12 @@ import {
 
 import { DEVICE_DEFINITIONS } from '../js/devices';
 import { EmulatorSettings } from '../js/emulatorStates';
-import { useRef } from 'react';
+import React from 'react';
 
 export default function HeadsetBar() {
-	const headsetSelectRef = useRef();
-	const polyfillToggleRef = useRef();
-	const stereoToggleRef = useRef();
+	const headsetSelectRef = React.useRef();
+	const polyfillToggleRef = React.useRef();
+	const stereoToggleRef = React.useRef();
 
 	function onChangeDevice() {
 		const deviceId = headsetSelectRef.current.value;
@@ -65,38 +65,40 @@ export default function HeadsetBar() {
 	});
 
 	return (
-		<div class="card headset-card">
-			<div class="card-body">
-				<div class="row">
-					<div class="col-4 d-flex justify-content-start align-items-center">
-						<img src="./assets/images/headset.png" class="control-icon" />
+		<div className="card headset-card">
+			<div className="card-body">
+				<div className="row">
+					<div className="col-4 d-flex justify-content-start align-items-center">
+						<img src="./assets/images/headset.png" className="control-icon" />
 						<select
 							id="vr-device-select"
-							class="form-select headset-select"
+							className="form-select headset-select"
 							ref={headsetSelectRef}
 							defaultValue={EmulatorSettings.instance.deviceKey}
 							onChange={onChangeDevice}
 						>
 							{Object.values(DEVICE_DEFINITIONS).map(({ shortName, name }) => (
-								<option value={name}>{shortName}</option>
+								<option key={name} value={name}>
+									{shortName}
+								</option>
 							))}
 						</select>
 					</div>
-					<div class="col-8 d-flex justify-content-end align-items-center">
-						<div class="control-button-group">
+					<div className="col-8 d-flex justify-content-end align-items-center">
+						<div className="control-button-group">
 							<button
-								class="btn headset-action-button"
+								className="btn headset-action-button"
 								ref={polyfillToggleRef}
 								onClick={togglePolyfill}
 							>
 								<img
 									src="./assets/images/polyfill-on.png"
-									class="action-icon"
+									className="action-icon"
 								/>
 								Polyfill
 							</button>
 							<button
-								class={
+								className={
 									EmulatorSettings.instance.stereoOn
 										? 'btn headset-action-button button-pressed'
 										: 'btn headset-action-button'
@@ -104,14 +106,14 @@ export default function HeadsetBar() {
 								ref={stereoToggleRef}
 								onClick={onToggleStereo}
 							>
-								<img src="./assets/images/stereo.png" class="action-icon" />
+								<img src="./assets/images/stereo.png" className="action-icon" />
 								Stereo
 							</button>
 							<button
-								class="btn headset-action-button"
+								className="btn headset-action-button"
 								onClick={notifyExitImmersive}
 							>
-								<img src="./assets/images/exit.png" class="action-icon" />
+								<img src="./assets/images/exit.png" className="action-icon" />
 							</button>
 						</div>
 					</div>

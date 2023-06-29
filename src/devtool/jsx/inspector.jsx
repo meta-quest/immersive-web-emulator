@@ -6,14 +6,15 @@
  */
 
 import { DEVICE, OBJECT_NAME } from '../js/constants';
-import { useEffect, useRef, useState } from 'react';
+
+import React from 'react';
 
 export default function Inspector({ device }) {
-	const sceneContainerRef = useRef();
+	const sceneContainerRef = React.useRef();
 	const transformData = {};
 	Object.values(DEVICE).forEach((deviceKey) => {
 		const deviceName = OBJECT_NAME[deviceKey];
-		transformData[deviceName] = useState({
+		transformData[deviceName] = React.useState({
 			position: [0, 0, 0],
 			rotation: [0, 0, 0],
 		});
@@ -24,7 +25,7 @@ export default function Inspector({ device }) {
 		return (value >= 0 ? '\xa0' : '') + value.toFixed(2);
 	}
 
-	useEffect(() => {
+	React.useEffect(() => {
 		sceneContainerRef.current.appendChild(device.canvas);
 		device.on('pose', (event) => {
 			const { deviceKey, position, rotation } = event;
@@ -42,16 +43,16 @@ export default function Inspector({ device }) {
 				{Object.values(DEVICE).map((deviceKey) => {
 					const deviceName = OBJECT_NAME[deviceKey];
 					return (
-						<div class="row transform-card">
-							<div class="col-2 transform-icon d-flex justify-content-center align-items-center">
+						<div key={deviceKey} className="row transform-card">
+							<div className="col-2 transform-icon d-flex justify-content-center align-items-center">
 								<img
 									src={'./assets/images/' + deviceName + '.png'}
-									class="control-icon"
+									className="control-icon"
 								/>
 							</div>
-							<div class="col-10 transform-body">
-								<div class="row">
-									<div class="value">
+							<div className="col-10 transform-body">
+								<div className="row">
+									<div className="value">
 										<span>
 											{fixNumber(transformData[deviceName][0].position[0])}
 										</span>
@@ -65,8 +66,8 @@ export default function Inspector({ device }) {
 										</span>
 									</div>
 								</div>
-								<div class="row">
-									<div class="value">
+								<div className="row">
+									<div className="value">
 										<span>
 											{fixNumber(transformData[deviceName][0].rotation[0])}
 										</span>

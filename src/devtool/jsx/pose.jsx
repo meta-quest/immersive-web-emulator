@@ -8,16 +8,16 @@
 import { EmulatorSettings, emulatorStates } from '../js/emulatorStates';
 
 import { DEVICE } from '../js/constants';
+import React from 'react';
 import { changeInputMode } from '../js/messenger';
 import initKeyboardControl from '../js/keyboard';
-import { useRef } from 'react';
 
 export default function PoseBar({ device }) {
-	const saveDefaultPoseRef = useRef();
-	const resetPoseRef = useRef();
-	const actionMappingToggleRef = useRef();
-	const handModeToggleRef = useRef();
-	const controllerModeToggleRef = useRef();
+	const saveDefaultPoseRef = React.useRef();
+	const resetPoseRef = React.useRef();
+	const actionMappingToggleRef = React.useRef();
+	const handModeToggleRef = React.useRef();
+	const controllerModeToggleRef = React.useRef();
 
 	function onSaveDefaultPose() {
 		const deviceTransform = {};
@@ -72,16 +72,16 @@ export default function PoseBar({ device }) {
 	}
 
 	return (
-		<div class="card pose-card">
-			<div class="card-body">
-				<div class="row">
-					<div class="col-8 d-flex justify-content-start align-items-center">
-						<img src="./assets/images/pose.png" class="control-icon" />
-						<div class="control-button-group">
+		<div className="card pose-card">
+			<div className="card-body">
+				<div className="row">
+					<div className="col-8 d-flex justify-content-start align-items-center">
+						<img src="./assets/images/pose.png" className="control-icon" />
+						<div className="control-button-group">
 							<button
 								ref={saveDefaultPoseRef}
 								type="button"
-								class="btn pose-action-button"
+								className="btn pose-action-button"
 								onClick={onSaveDefaultPose}
 							>
 								Save as default pose
@@ -89,22 +89,22 @@ export default function PoseBar({ device }) {
 							<button
 								ref={resetPoseRef}
 								type="button"
-								class="btn pose-action-button"
+								className="btn pose-action-button"
 								onClick={() => {
 									device.resetPose();
 								}}
 							>
-								<img src="./assets/images/reset.png" class="action-icon" />
+								<img src="./assets/images/reset.png" className="action-icon" />
 							</button>
 						</div>
 					</div>
 
-					<div class="col-4 d-flex justify-content-end align-items-center">
-						<div class="control-button-group">
+					<div className="col-4 d-flex justify-content-end align-items-center">
+						<div className="control-button-group">
 							<button
 								ref={actionMappingToggleRef}
 								type="button"
-								class={
+								className={
 									EmulatorSettings.instance.actionMappingOn
 										? 'btn pose-action-button button-pressed'
 										: 'btn pose-action-button'
@@ -112,12 +112,15 @@ export default function PoseBar({ device }) {
 								title="Keyboard Action Mapping"
 								onClick={onActionMappingToggle}
 							>
-								<img src="./assets/images/keyboard.png" class="action-icon" />
+								<img
+									src="./assets/images/keyboard.png"
+									className="action-icon"
+								/>
 							</button>
 							<button
 								ref={controllerModeToggleRef}
 								type="button"
-								class={
+								className={
 									EmulatorSettings.instance.inputMode === 'controllers'
 										? 'btn pose-action-button button-pressed'
 										: 'btn pose-action-button'
@@ -127,12 +130,15 @@ export default function PoseBar({ device }) {
 									onInputModeChange('controllers');
 								}}
 							>
-								<img src="./assets/images/gamepad.png" class="action-icon" />
+								<img
+									src="./assets/images/gamepad.png"
+									className="action-icon"
+								/>
 							</button>
 							<button
 								ref={handModeToggleRef}
 								type="button"
-								class={
+								className={
 									EmulatorSettings.instance.inputMode === 'hands'
 										? 'btn pose-action-button button-pressed'
 										: 'btn pose-action-button'
@@ -144,7 +150,7 @@ export default function PoseBar({ device }) {
 							>
 								<img
 									src="./assets/images/hand-tracking.png"
-									class="action-icon"
+									className="action-icon"
 								/>
 							</button>
 						</div>

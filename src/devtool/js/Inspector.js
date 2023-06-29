@@ -177,7 +177,7 @@ const updateVec3Display = (elementId, vec3, checkpointVec3) => {
 		element.innerHTML = generateSign(value) + value.toFixed(2);
 		element.classList.toggle('value-changed', diff);
 	};
-	let container = document.getElementById(elementId);
+	const container = document.getElementById(elementId);
 	if (container) {
 		checkDiff(
 			container.getElementsByClassName('x-value')[0],
@@ -224,7 +224,7 @@ const checkTransformDiff = (device) => {
 };
 
 export const checkAllTransformDiff = () => {
-	let diff = {};
+	const diff = {};
 	diff[DEVICE.HEADSET] = checkTransformDiff(DEVICE.HEADSET);
 	diff[DEVICE.LEFT_CONTROLLER] = checkTransformDiff(DEVICE.LEFT_CONTROLLER);
 	diff[DEVICE.RIGHT_CONTROLLER] = checkTransformDiff(DEVICE.RIGHT_CONTROLLER);
@@ -465,7 +465,7 @@ export const resetDevicePose = () => {
 };
 
 export const serializeAllDeviceTransform = () => {
-	let devicesData = {};
+	const devicesData = {};
 	for (const key in emulatorStates.assetNodes) {
 		const device = emulatorStates.assetNodes[key];
 		if (!device) continue;
@@ -478,7 +478,7 @@ export const serializeAllDeviceTransform = () => {
 };
 
 export const deserializeAllDeviceTransform = (poseString) => {
-	let devicesData = JSON.parse(poseString);
+	const devicesData = JSON.parse(poseString);
 	for (const key in emulatorStates.assetNodes) {
 		const device = emulatorStates.assetNodes[key];
 		if (!device) continue;

@@ -47,7 +47,7 @@ export default class XRInputSource {
 	 * @return {XRSpace}
 	 */
 	get gripSpace() {
-		let mode = this[PRIVATE].impl.targetRayMode;
+		const mode = this[PRIVATE].impl.targetRayMode;
 		if (mode === 'gaze' || mode === 'screen') {
 			// grip space must be null for non-trackable input sources
 			return null;

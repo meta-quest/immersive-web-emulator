@@ -8,16 +8,16 @@ import {
 	applyControllerButtonChanged,
 	applyControllerButtonPressed,
 } from '../js/messenger';
-import { useEffect, useRef } from 'react';
 
 import { Joystick } from '../js/joystick';
+import React from 'react';
 import { emulatorStates } from '../js/emulatorStates';
 
 function ControlButtonGroup({ isAnalog, deviceKey, buttonKey }) {
-	const touchRef = useRef();
-	const pressRef = useRef();
-	const holdRef = useRef();
-	const rangeRef = useRef();
+	const touchRef = React.useRef();
+	const pressRef = React.useRef();
+	const holdRef = React.useRef();
+	const rangeRef = React.useRef();
 	const deviceName = CONTROLLER_STRINGS[deviceKey].name;
 	const buttonState = emulatorStates.controllers[deviceName][buttonKey];
 
@@ -100,18 +100,22 @@ function ControlButtonGroup({ isAnalog, deviceKey, buttonKey }) {
 	}
 
 	if (isAnalog) {
-		useEffect(() => {
+		React.useEffect(() => {
 			rangeRef.current.value = 0;
 		});
 	}
 
 	return (
-		<div class="control-button-group">
-			<button class="btn special-button" ref={touchRef} onClick={onTouchToggle}>
+		<div className="control-button-group">
+			<button
+				className="btn special-button"
+				ref={touchRef}
+				onClick={onTouchToggle}
+			>
 				<img src="./assets/images/press.png" />
 			</button>
 			<button
-				class="btn special-button"
+				className="btn special-button"
 				ref={pressRef}
 				onClick={isAnalog ? onPressAnalog : onPressBinary}
 			>
@@ -121,11 +125,15 @@ function ControlButtonGroup({ isAnalog, deviceKey, buttonKey }) {
 				<input
 					ref={rangeRef}
 					type="range"
-					class="form-range special-button"
+					className="form-range special-button"
 					onInput={onRangeInput}
 				/>
 			) : (
-				<button class="btn special-button" ref={holdRef} onClick={onHoldToggle}>
+				<button
+					className="btn special-button"
+					ref={holdRef}
+					onClick={onHoldToggle}
+				>
 					<img src="./assets/images/lock.png" />
 				</button>
 			)}
@@ -135,9 +143,9 @@ function ControlButtonGroup({ isAnalog, deviceKey, buttonKey }) {
 
 export default function ControllerPanel({ deviceKey }) {
 	const strings = CONTROLLER_STRINGS[deviceKey];
-	const joystickContainerRef = useRef();
-	const joystickResetRef = useRef();
-	const joystickStickyRef = useRef();
+	const joystickContainerRef = React.useRef();
+	const joystickResetRef = React.useRef();
+	const joystickStickyRef = React.useRef();
 
 	const joystick = new Joystick(100, true, 4);
 	emulatorStates.joysticks[strings.name] = joystick;
@@ -161,26 +169,29 @@ export default function ControllerPanel({ deviceKey }) {
 		);
 	}
 
-	useEffect(() => {
+	React.useEffect(() => {
 		joystick.addToParent(joystickContainerRef.current);
 	}, []);
 	return (
-		<div class="col">
-			<div class="component-container">
-				<div class="card controller-card">
-					<div class="card-header">
+		<div className="col">
+			<div className="component-container">
+				<div className="card controller-card">
+					<div className="card-header">
 						<img
 							src={`./assets/images/${strings.name}.png`}
-							class="control-icon"
+							className="control-icon"
 						/>
-						<span class="control-label">{strings.displayName}</span>
+						<span className="control-label">{strings.displayName}</span>
 					</div>
-					<div class="card-body">
-						<div class="row">
-							<div class="col-4 d-flex align-items-center">
-								<div ref={joystickContainerRef} class="joystick-panel"></div>
+					<div className="card-body">
+						<div className="row">
+							<div className="col-4 d-flex align-items-center">
+								<div
+									ref={joystickContainerRef}
+									className="joystick-panel"
+								></div>
 							</div>
-							<div class="col-8 d-flex justify-content-end">
+							<div className="col-8 d-flex justify-content-end">
 								<ControlButtonGroup
 									isAnalog={false}
 									deviceKey={deviceKey}
@@ -188,32 +199,38 @@ export default function ControllerPanel({ deviceKey }) {
 								/>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-12 d-flex justify-content-end">
-								<div class="control-button-group">
+						<div className="row">
+							<div className="col-12 d-flex justify-content-end">
+								<div className="control-button-group">
 									<button
 										ref={joystickStickyRef}
 										type="button"
-										class="btn special-button"
+										className="btn special-button"
 										onClick={onStickyToggle}
 									>
-										<img src="./assets/images/sticky.png" class="action-icon" />
+										<img
+											src="./assets/images/sticky.png"
+											className="action-icon"
+										/>
 										Sticky
 									</button>
 									<button
 										ref={joystickResetRef}
 										type="button"
-										class="btn special-button"
+										className="btn special-button"
 										onClick={joystick.reset.bind(joystick)}
 									>
-										<img src="./assets/images/reset.png" class="action-icon" />
+										<img
+											src="./assets/images/reset.png"
+											className="action-icon"
+										/>
 									</button>
 								</div>
 							</div>
 						</div>
 						{['trigger', 'grip'].map((controlName) => (
-							<div class="row">
-								<div class="col-3 d-flex align-items-center">
+							<div key={controlName} className="row">
+								<div className="col-3 d-flex align-items-center">
 									<img
 										src={
 											'./assets/images/' +
@@ -222,11 +239,11 @@ export default function ControllerPanel({ deviceKey }) {
 											strings.handedness +
 											'.png'
 										}
-										class="control-icon"
+										className="control-icon"
 									/>
-									<span class="control-label">{controlName}</span>
+									<span className="control-label">{controlName}</span>
 								</div>
-								<div class="col-9 d-flex justify-content-end">
+								<div className="col-9 d-flex justify-content-end">
 									<ControlButtonGroup
 										isAnalog={true}
 										deviceKey={deviceKey}
@@ -236,15 +253,15 @@ export default function ControllerPanel({ deviceKey }) {
 							</div>
 						))}
 						{['button2', 'button1'].map((controlName) => (
-							<div class="row">
-								<div class="col-4 d-flex align-items-center">
+							<div key={controlName} className="row">
+								<div className="col-4 d-flex align-items-center">
 									<img
 										src={`./assets/images/${controlName}-${strings.handedness}.png`}
-										class="control-icon"
+										className="control-icon"
 									/>
-									<span class="control-label">{strings[controlName]}</span>
+									<span className="control-label">{strings[controlName]}</span>
 								</div>
-								<div class="col-8 d-flex justify-content-end">
+								<div className="col-8 d-flex justify-content-end">
 									<ControlButtonGroup
 										isAnalog={false}
 										deviceKey={deviceKey}

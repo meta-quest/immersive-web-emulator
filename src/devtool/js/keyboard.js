@@ -137,8 +137,8 @@ const moveJoysticks = () => {
 			directions.forward ||
 			directions.backward
 		) {
-			let axisX = directions.left ? -1 : 0 + directions.right ? 1 : 0;
-			let axisY = directions.forward ? -1 : 0 + directions.backward ? 1 : 0;
+			const axisX = directions.left ? -1 : 0 + directions.right ? 1 : 0;
+			const axisY = directions.forward ? -1 : 0 + directions.backward ? 1 : 0;
 			const normalizeScale = Math.sqrt(axisX * axisX + axisY * axisY);
 
 			if (JOYSTICKS[deviceName]) {
