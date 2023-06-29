@@ -12,11 +12,16 @@ body {
 	user-select: none;
 	-moz-user-select: none;
 	-webkit-user-select: none;
+	height: 100%;
+	font-family: sans-serif;
+	overflow: hidden;
+}
+
+#app {
 	display: flex;
 	flex-wrap: nowrap;
 	flex-direction: column;
 	height: 100%;
-	font-family: sans-serif;
 	overflow: hidden;
 }
 
@@ -39,6 +44,7 @@ body {
 }
 
 .component-container {
+	width: 100%;
 	padding: 0;
 	z-index: 1;
 }
@@ -209,12 +215,6 @@ body {
 	margin: 0px;
 }
 
-@media only screen and (max-width: 420px) {
-	.control-label {
-		display: none;
-	}
-}
-
 .controller-card {
 	border-radius: 10px;
 	background-color: #252526;
@@ -240,7 +240,7 @@ body {
 
 .controller-panel {
 	width: 100%;
-	padding: 5px 5px 0px 5px;
+	padding: 5px;
 }
 
 .controller-panel .row {
@@ -408,11 +408,12 @@ body {
 	background-color: #252526;
 	color: #a7a7a7;
 	align-items: center;
-	margin: 0px 5px 0px 5px;
+	margin: 5px 5px 0px 5px;
 	border: 3px dashed;
 	border-bottom: none;
 	border-radius: 10px 10px 0px 0px;
-	padding: 5px;
+	height: 100%;
+	justify-content: center;
 }
 
 .session-progress-bar {

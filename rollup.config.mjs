@@ -48,13 +48,11 @@ export default [
 			copy({
 				targets: [
 					{ src: 'src/devtool/devtool-panel.html', dest: 'dist' },
+					{ src: 'src/devtool/assets/*', dest: 'dist/assets' },
 					{ src: 'src/extension/devtools.html', dest: 'dist' },
 					{ src: 'src/extension/devtools.js', dest: 'dist' },
 					{ src: 'src/extension/popup.html', dest: 'dist' },
 					{ src: 'src/extension/popup.js', dest: 'dist' },
-					{ src: 'src/devtool/ui-components/*', dest: 'dist/ui-components' },
-					{ src: 'src/devtool/styles/*', dest: 'dist/styles' },
-					{ src: 'src/devtool/assets/*', dest: 'dist/assets' },
 				],
 			}),
 		],

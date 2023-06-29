@@ -12,7 +12,7 @@ import React from 'react';
 import { changeInputMode } from '../js/messenger';
 import initKeyboardControl from '../js/keyboard';
 
-export default function PoseBar({ device }) {
+export default function PoseBar({ device, setInputMode }) {
 	const saveDefaultPoseRef = React.useRef();
 	const resetPoseRef = React.useRef();
 	const actionMappingToggleRef = React.useRef();
@@ -42,18 +42,7 @@ export default function PoseBar({ device }) {
 		EmulatorSettings.instance.write();
 	}
 
-	function updateInputPanels() {
-		const controllerPanel = document.getElementById('controllers-panel');
-		const handsPanel = document.getElementById('hands-panel');
-		const inputMode = EmulatorSettings.instance.inputMode;
-		controllerPanel.style.display =
-			inputMode === 'controllers' ? 'flex' : 'none';
-		handsPanel.style.display = inputMode === 'hands' ? 'flex' : 'none';
-		device.render();
-	}
-
 	changeInputMode();
-	updateInputPanels();
 	initKeyboardControl();
 
 	function onInputModeChange(inputMode) {
@@ -68,7 +57,7 @@ export default function PoseBar({ device }) {
 			'button-pressed',
 			inputMode === 'hands',
 		);
-		updateInputPanels();
+		setInputMode(inputMode);
 	}
 
 	return (

@@ -103,7 +103,6 @@ export default class EmulatedDevice extends EventEmitter {
 		});
 
 		this.updateRoom();
-		window.addEventListener('resize', this.render.bind(this));
 	}
 
 	_emitPoseEvent(deviceKey) {
