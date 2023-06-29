@@ -11,47 +11,6 @@ import { EmulatorSettings } from './emulatorStates';
 import { JOYSTICKS } from './controllers';
 import { relayKeyboardEvent } from './messenger';
 
-document.addEventListener(
-	'keydown',
-	(event) => {
-		const result = getReservedKeyAction(event.key);
-		if (EmulatorSettings.instance.actionMappingOn && result) {
-			const [handKey, action] = result;
-			onReservedKeyDown(handKey, action);
-			moveJoysticks();
-		} else {
-			passThroughKeyboardEvent(event);
-		}
-	},
-	false,
-);
-
-document.addEventListener(
-	'keyup',
-	(event) => {
-		const result = getReservedKeyAction(event.key);
-		if (result) {
-			const [handKey, action] = result;
-			onReservedKeyUp(handKey, action);
-			moveJoysticks();
-		} else if (EmulatorSettings.instance.actionMappingOn) {
-			passThroughKeyboardEvent(event);
-		}
-	},
-	false,
-);
-
-document.addEventListener(
-	'keypress',
-	(event) => {
-		const result = getReservedKeyAction(event.key);
-		if (!result && EmulatorSettings.instance.actionMappingOn) {
-			passThroughKeyboardEvent(event);
-		}
-	},
-	false,
-);
-
 const emulatedJoysticks = {};
 
 const resetEmulatedJoysticks = () => {
@@ -68,8 +27,6 @@ const resetEmulatedJoysticks = () => {
 		backward: false,
 	};
 };
-
-resetEmulatedJoysticks();
 
 const getReservedKeyAction = (key) => {
 	let result = null;
@@ -198,41 +155,48 @@ const moveJoysticks = () => {
 	});
 };
 
-export const setupKeyboardControlButtons = () => {
-	document.getElementById('action-mapping').onclick = function () {
-		EmulatorSettings.instance.actionMappingOn =
-			!EmulatorSettings.instance.actionMappingOn;
-		this.classList.toggle(
-			'button-pressed',
-			EmulatorSettings.instance.actionMappingOn,
-		);
-		EmulatorSettings.instance.write();
-	};
-	document
-		.getElementById('action-mapping')
-		.classList.toggle(
-			'button-pressed',
-			EmulatorSettings.instance.actionMappingOn,
-		);
-	// document.getElementById('keyboard-mapping').onclick = function () {
-	// 	alert(`
-	//     Left Controller Mapping:
-	//     Joystick: WASD
-	//     Trigger: E
-	//     Grip: Q
-	//     ButtonX: X
-	//     ButtonY: Z
-	//     ---------------------------
-	//     Right Controller Mapping:
-	//     Joystick: Arrow keys
-	//     Trigger: Enter
-	//     Grip: Shift
-	//     ButtonA: '
-	//     ButtonB: /
-	//     `);
-	// };
-	// document.getElementById('keyboard-settings').onclick = function () {
-	// 	alert('Keyboard control settings not yet available');
-	// };
+export default function initKeyboardControl() {
+	resetEmulatedJoysticks();
 	window.addEventListener('blur', resetEmulatedJoysticks);
-};
+
+	document.addEventListener(
+		'keydown',
+		(event) => {
+			const result = getReservedKeyAction(event.key);
+			if (EmulatorSettings.instance.actionMappingOn && result) {
+				const [handKey, action] = result;
+				onReservedKeyDown(handKey, action);
+				moveJoysticks();
+			} else {
+				passThroughKeyboardEvent(event);
+			}
+		},
+		false,
+	);
+
+	document.addEventListener(
+		'keyup',
+		(event) => {
+			const result = getReservedKeyAction(event.key);
+			if (result) {
+				const [handKey, action] = result;
+				onReservedKeyUp(handKey, action);
+				moveJoysticks();
+			} else if (EmulatorSettings.instance.actionMappingOn) {
+				passThroughKeyboardEvent(event);
+			}
+		},
+		false,
+	);
+
+	document.addEventListener(
+		'keypress',
+		(event) => {
+			const result = getReservedKeyAction(event.key);
+			if (!result && EmulatorSettings.instance.actionMappingOn) {
+				passThroughKeyboardEvent(event);
+			}
+		},
+		false,
+	);
+}

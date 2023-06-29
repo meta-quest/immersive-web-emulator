@@ -23,11 +23,9 @@ import {
 import $ from 'jquery';
 import { EmulatorSettings } from './js/emulatorStates';
 import HeadsetBar from '../jsx/headset.jsx';
-import { changeInputMode } from './js/messenger';
+import PoseBar from '../jsx/pose.jsx';
 import { createRoot } from 'react-dom/client';
 import { registerGestureControls } from './js/hands';
-import { setupKeyboardControlButtons } from './js/keyboard';
-import { setupPoseButtons } from './js/poses';
 
 EmulatorSettings.instance.load().then(() => {
 	$('#transform-component').load(
@@ -45,6 +43,10 @@ EmulatorSettings.instance.load().then(() => {
 	const domNode = document.getElementById('headset-component');
 	const root = createRoot(domNode);
 	root.render(<HeadsetBar />);
+
+	const poseNode = document.getElementById('pose-component');
+	const poseRoot = createRoot(poseNode);
+	poseRoot.render(<PoseBar />);
 
 	[DEVICE.LEFT_CONTROLLER, DEVICE.RIGHT_CONTROLLER].forEach((deviceId) => {
 		const deviceName = OBJECT_NAME[deviceId];
@@ -64,48 +66,5 @@ EmulatorSettings.instance.load().then(() => {
 				onResize();
 			},
 		);
-	});
-
-	$('#pose-component').load('./ui-components/pose-component.html', () => {
-		setupPoseButtons();
-		changeInputMode();
-		const controllerTabButton = document.getElementById(
-			'controller-tab-button',
-		);
-		const handsTabButton = document.getElementById('hands-tab-button');
-		const controllerPanel = document.getElementById('controllers-panel');
-		const handsPanel = document.getElementById('hands-panel');
-
-		const updateInputModeUI = () => {
-			const inputMode = EmulatorSettings.instance.inputMode;
-			controllerPanel.style.display =
-				inputMode === 'controllers' ? 'flex' : 'none';
-			handsPanel.style.display = inputMode === 'hands' ? 'flex' : 'none';
-			controllerTabButton.classList.toggle(
-				'button-pressed',
-				inputMode === 'controllers',
-			);
-			handsTabButton.classList.toggle('button-pressed', inputMode === 'hands');
-			onResize();
-		};
-
-		updateInputModeUI();
-
-		controllerTabButton.onclick = () => {
-			EmulatorSettings.instance.inputMode = 'controllers';
-			EmulatorSettings.instance.write();
-			changeInputMode();
-			updateInputModeUI();
-		};
-
-		handsTabButton.onclick = () => {
-			EmulatorSettings.instance.inputMode = 'hands';
-			EmulatorSettings.instance.write();
-			changeInputMode();
-			updateInputModeUI();
-		};
-
-		setupKeyboardControlButtons();
-		onResize();
 	});
 });
