@@ -9,6 +9,7 @@ export const DEVICE_DEFINITIONS = {
 	'Oculus Rift CV1': {
 		id: 'Oculus Rift CV1',
 		name: 'Oculus Rift CV1',
+		shortName: 'Rift CV1',
 		profile: 'oculus-touch',
 		modes: ['inline', 'immersive-vr'],
 		headset: {
@@ -49,6 +50,7 @@ export const DEVICE_DEFINITIONS = {
 	'Oculus Rift S': {
 		id: 'Oculus Rift S',
 		name: 'Oculus Rift S',
+		shortName: 'Rift S',
 		profile: 'oculus-touch-v2',
 		modes: ['inline', 'immersive-vr'],
 		headset: {
@@ -85,6 +87,7 @@ export const DEVICE_DEFINITIONS = {
 	'Oculus Quest': {
 		id: 'Oculus Quest',
 		name: 'Oculus Quest',
+		shortName: 'Quest 1',
 		profile: 'oculus-touch-v2',
 		modes: ['inline', 'immersive-vr'],
 		headset: {
@@ -121,6 +124,7 @@ export const DEVICE_DEFINITIONS = {
 	'Oculus Quest 2': {
 		id: 'Oculus Quest 2',
 		name: 'Oculus Quest 2',
+		shortName: 'Quest 2',
 		profile: 'oculus-touch-v3',
 		modes: ['inline', 'immersive-vr', 'immersive-ar'],
 		headset: {
@@ -157,6 +161,7 @@ export const DEVICE_DEFINITIONS = {
 	'Meta Quest Pro': {
 		id: 'Meta Quest Pro',
 		name: 'Meta Quest Pro',
+		shortName: 'Quest Pro',
 		profile: 'meta-quest-touch-pro',
 		modes: ['inline', 'immersive-vr', 'immersive-ar'],
 		headset: {
