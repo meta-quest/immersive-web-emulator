@@ -5,7 +5,7 @@
 			"patterns": [
 				"src"
 			],
-			"extensions": "js,css,html",
+			"extensions": "js,jsx,css,html",
 			"quiet": false
 		}
 	},

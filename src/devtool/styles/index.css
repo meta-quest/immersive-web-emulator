@@ -286,6 +286,27 @@ body {
 	padding: 0;
 }
 
+#transform-component button {
+	background-color: #252526;
+	color: white;
+	opacity: 50%;
+	height: 18px;
+	padding: 0px;
+	width: 50px;
+	border-radius: 4px;
+	margin: 2px 0px 1px 2px;
+	border: none;
+}
+
+#transform-component button:hover {
+	opacity: 1;
+}
+
+#transform-component button.active {
+	font-weight: bold;
+	opacity: 1;
+}
+
 .transform-card {
 	color: white;
 	margin: 2px !important;
@@ -297,7 +318,7 @@ body {
 .transform-icon {
 	background-color: #252526;
 	opacity: 50%;
-	border-radius: 10px 2px 2px 10px;
+	border-radius: 6px 2px 2px 6px;
 }
 
 .transform-body {
@@ -305,7 +326,7 @@ body {
 	width: 110px;
 	opacity: 50%;
 	color: white;
-	border-radius: 2px 10px 10px 2px;
+	border-radius: 2px 6px 6px 2px;
 	padding: 0px;
 	margin-left: 2px;
 }
@@ -458,7 +479,7 @@ body {
 	position: absolute;
 	border-radius: 8px;
 	border: 0px;
-	right: 8px;
+	left: 100px;
 	background-color: #a7a7a7;
 }
 
