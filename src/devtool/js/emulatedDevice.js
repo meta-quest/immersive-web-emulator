@@ -7,7 +7,12 @@
 
 import * as THREE from 'three';
 
-import { ASSET_PATH, DEVICE } from './constants';
+import {
+	CONTROLLER_STRINGS,
+	DEVICE,
+	HAND_STRINGS,
+	OBJECT_NAME,
+} from './constants';
 import { EmulatorSettings, emulatorStates } from './emulatorStates';
 
 import { BoxLineGeometry } from 'three/examples/jsm/geometries/BoxLineGeometry.js';
@@ -35,6 +40,9 @@ export default class EmulatedDevice extends EventEmitter {
 		this._camera.position.set(-1.5, 1.7, 2);
 		this._camera.lookAt(new THREE.Vector3(0, 1.6, 0));
 
+		this._controllerMeshes = [];
+		this._handMeshes = [];
+
 		const oc = new OrbitControls(this._camera, this.canvas);
 		oc.addEventListener('change', this.render.bind(this));
 		oc.target.set(0, 1.6, 0);
@@ -54,7 +62,7 @@ export default class EmulatedDevice extends EventEmitter {
 			this._scene.add(node);
 
 			// add device node mesh to parent
-			loader.load(ASSET_PATH[deviceKey], (gltf) => {
+			loader.load(`./assets/${OBJECT_NAME[deviceKey]}.glb`, (gltf) => {
 				const mesh = gltf.scene;
 				mesh.scale.setScalar(2);
 				mesh.rotateY(Math.PI);
@@ -62,8 +70,27 @@ export default class EmulatedDevice extends EventEmitter {
 					child.userData['deviceKey'] = deviceKey;
 				});
 				node.add(mesh);
+				if (CONTROLLER_STRINGS[deviceKey]) {
+					this._controllerMeshes.push(mesh);
+					mesh.visible = EmulatorSettings.instance.inputMode === 'controllers';
+				}
 				this.render();
 			});
+
+			if (HAND_STRINGS[deviceKey]) {
+				loader.load(`./assets/${HAND_STRINGS[deviceKey].name}.glb`, (gltf) => {
+					const mesh = gltf.scene;
+					mesh.scale.setScalar(2);
+					mesh.rotateY(Math.PI);
+					mesh.traverse((child) => {
+						child.userData['deviceKey'] = deviceKey;
+					});
+					node.add(mesh);
+					this._handMeshes.push(mesh);
+					mesh.visible = EmulatorSettings.instance.inputMode === 'hands';
+					this.render();
+				});
+			}
 
 			// setup transform control
 			const controls = new TransformControls(this._camera, this.canvas);
@@ -204,6 +231,12 @@ export default class EmulatedDevice extends EventEmitter {
 	}
 
 	render() {
+		this._handMeshes.forEach((mesh) => {
+			mesh.visible = EmulatorSettings.instance.inputMode === 'hands';
+		});
+		this._controllerMeshes.forEach((mesh) => {
+			mesh.visible = EmulatorSettings.instance.inputMode === 'controllers';
+		});
 		const parent = this.canvas.parentElement;
 		if (!parent) return;
 		const width = parent.offsetWidth;

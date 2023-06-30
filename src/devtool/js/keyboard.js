@@ -112,8 +112,7 @@ const passThroughKeyboardEvent = (event) => {
 
 const moveJoysticks = () => {
 	Object.entries(emulatedJoysticks).forEach(([handKey, directions]) => {
-		const deviceId =
-			handKey == 'left' ? DEVICE.LEFT_CONTROLLER : DEVICE.RIGHT_CONTROLLER;
+		const deviceId = handKey == 'left' ? DEVICE.INPUT_LEFT : DEVICE.INPUT_RIGHT;
 		const deviceName = OBJECT_NAME[deviceId];
 		if (
 			directions.left ||

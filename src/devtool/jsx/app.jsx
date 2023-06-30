@@ -74,7 +74,7 @@ export default function App({ device }) {
 					<HeadsetBar />
 				</div>
 				<div id="render-component" className="component-container row">
-					<Inspector device={device} />
+					<Inspector device={device} inputMode={inputMode} />
 				</div>
 				<div id="pose-component" className="component-container row">
 					<PoseBar device={device} setInputMode={setInputMode} />
@@ -88,21 +88,17 @@ export default function App({ device }) {
 					className="row controller-panel"
 					style={{ display: inputMode === 'controllers' ? 'flex' : 'none' }}
 				>
-					{[DEVICE.LEFT_CONTROLLER, DEVICE.RIGHT_CONTROLLER].map(
-						(deviceKey) => (
-							<ControllerPanel key={deviceKey} deviceKey={deviceKey} />
-						),
-					)}
+					{[DEVICE.INPUT_LEFT, DEVICE.INPUT_RIGHT].map((deviceKey) => (
+						<ControllerPanel key={deviceKey} deviceKey={deviceKey} />
+					))}
 				</div>
 				<div
 					className="row controller-panel"
 					style={{ display: inputMode === 'hands' ? 'flex' : 'none' }}
 				>
-					{[DEVICE.LEFT_CONTROLLER, DEVICE.RIGHT_CONTROLLER].map(
-						(deviceKey) => (
-							<HandPanel key={deviceKey} deviceKey={deviceKey} />
-						),
-					)}
+					{[DEVICE.INPUT_LEFT, DEVICE.INPUT_RIGHT].map((deviceKey) => (
+						<HandPanel key={deviceKey} deviceKey={deviceKey} />
+					))}
 				</div>
 			</div>
 

@@ -5,13 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { DEVICE, OBJECT_NAME } from '../js/constants';
+import {
+	CONTROLLER_STRINGS,
+	DEVICE,
+	HAND_STRINGS,
+	OBJECT_NAME,
+} from '../js/constants';
 
 import { EmulatorSettings } from '../js/emulatorStates';
 import React from 'react';
 import { changeRoomDimension } from '../js/messenger';
 
-export default function Inspector({ device }) {
+export default function Inspector({ device, inputMode }) {
 	const sceneContainerRef = React.useRef();
 	const [showTransforms, setShowTransforms] = React.useState(true);
 	const [showRoomSettings, setShowRoomSettings] = React.useState(false);
@@ -69,7 +74,13 @@ export default function Inspector({ device }) {
 							<div key={deviceKey} className="row transform-card">
 								<div className="col-2 transform-icon d-flex justify-content-center align-items-center">
 									<img
-										src={'./assets/images/' + deviceName + '.png'}
+										src={`./assets/images/${
+											deviceKey === DEVICE.HEADSET
+												? OBJECT_NAME[deviceKey]
+												: inputMode === 'hands'
+												? HAND_STRINGS[deviceKey].name
+												: CONTROLLER_STRINGS[deviceKey].name
+										}.png`}
 										className="control-icon"
 									/>
 								</div>

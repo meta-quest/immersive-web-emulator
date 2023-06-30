@@ -122,7 +122,7 @@ export const changeInputMode = () => {
 export const changeHandPose = (deviceId) => {
 	const handName = HAND_STRINGS[deviceId].name;
 	executeAction(EMULATOR_ACTIONS.HAND_POSE_CHANGE, {
-		handedness: deviceId === DEVICE.LEFT_CONTROLLER ? 'left' : 'right',
+		handedness: deviceId === DEVICE.INPUT_LEFT ? 'left' : 'right',
 		pose: EmulatorSettings.instance.handPoses[handName],
 	});
 };
@@ -130,7 +130,7 @@ export const changeHandPose = (deviceId) => {
 export const updatePinchValue = (deviceId) => {
 	const handName = HAND_STRINGS[deviceId].name;
 	executeAction(EMULATOR_ACTIONS.PINCH_VALUE_CHANGE, {
-		handedness: deviceId === DEVICE.LEFT_CONTROLLER ? 'left' : 'right',
+		handedness: deviceId === DEVICE.INPUT_LEFT ? 'left' : 'right',
 		value: emulatorStates.pinchValues[handName],
 	});
 };
