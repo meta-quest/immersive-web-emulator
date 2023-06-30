@@ -73,6 +73,7 @@ export const emulatorStates = {
 	joysticks: {},
 	buttons: {},
 	sliders: {},
+	emulatedDevice: null,
 };
 
 export class EmulatorSettings {

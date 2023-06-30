@@ -20,6 +20,7 @@ export default function HeadsetBar() {
 	const headsetSelectRef = React.useRef();
 	const polyfillToggleRef = React.useRef();
 	const stereoToggleRef = React.useRef();
+	const [polyfillOn, setPolyfillOn] = React.useState(true);
 
 	function onChangeDevice() {
 		const deviceId = headsetSelectRef.current.value;
@@ -40,32 +41,44 @@ export default function HeadsetBar() {
 		EmulatorSettings.instance.write();
 	}
 
-	const updatePolyfillButton = (tab) => {
+	const updatePolyfillState = (tab) => {
 		const url = new URL(tab.url);
 		const urlMatchPattern = url.origin + '/*';
-		polyfillToggleRef.current.classList.toggle(
-			'button-pressed',
+		setPolyfillOn(
 			!EmulatorSettings.instance.polyfillExcludes.has(urlMatchPattern),
 		);
 	};
 
-	// check every time navigation happens on the tab
-	chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-		if (
-			tabId === chrome.devtools.inspectedWindow.tabId &&
-			changeInfo.status === 'complete'
-		) {
-			updatePolyfillButton(tab);
-		}
-	});
+	React.useEffect(() => {
+		// check every time navigation happens on the tab
+		chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+			if (
+				tabId === chrome.devtools.inspectedWindow.tabId &&
+				changeInfo.status === 'complete'
+			) {
+				updatePolyfillState(tab);
+			}
+		});
 
-	// check on start up
-	chrome.tabs.get(chrome.devtools.inspectedWindow.tabId, (tab) => {
-		updatePolyfillButton(tab);
+		// check on start up
+		chrome.tabs.get(chrome.devtools.inspectedWindow.tabId, (tab) => {
+			updatePolyfillState(tab);
+		});
 	});
 
 	return (
 		<div className="card headset-card">
+			<div
+				style={{
+					backgroundColor: 'rgba(0,0,0,0.5)',
+					zIndex: 10,
+					position: 'fixed',
+					height: (polyfillOn ? 0 : 100) + 'vh',
+					width: '100vw',
+					left: 0,
+					top: 0,
+				}}
+			></div>
 			<div className="card-body">
 				<div className="row">
 					<div className="col-4 d-flex justify-content-start align-items-center">
@@ -87,9 +100,13 @@ export default function HeadsetBar() {
 					<div className="col-8 d-flex justify-content-end align-items-center">
 						<div className="control-button-group">
 							<button
-								className="btn headset-action-button"
+								className={
+									'btn headset-action-button' +
+									(polyfillOn ? ' button-pressed' : '')
+								}
 								ref={polyfillToggleRef}
 								onClick={togglePolyfill}
+								style={{ zIndex: 11, position: 'relative' }}
 							>
 								<img
 									src="./assets/images/polyfill-on.png"

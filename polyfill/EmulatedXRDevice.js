@@ -435,7 +435,7 @@ export default class EmulatedXRDevice extends XRDevice {
 			this._removeBaseLayerCanvasFromDiv(sessionId);
 			this.domOverlayRoot = null;
 			this.dispatchEvent('@@webxr-polyfill/vr-present-end', sessionId);
-			this._notifyLeaveImmersive();
+			this._notifyLeaveImmersive(sessionId);
 		}
 		session.ended = true;
 	}
@@ -764,8 +764,11 @@ export default class EmulatedXRDevice extends XRDevice {
 		dispatchCustomEvent(CLIENT_ACTIONS.ENTER_IMMERSIVE, {});
 	}
 
-	_notifyLeaveImmersive() {
-		this.xrScene.eject();
+	_notifyLeaveImmersive(sessionId) {
+		const session = this.sessions.get(sessionId);
+		if (session.mode === 'immersive-ar') {
+			this.arCanvasContainer.remove();
+		}
 		dispatchCustomEvent(CLIENT_ACTIONS.EXIT_IMMERSIVE, {});
 	}
 

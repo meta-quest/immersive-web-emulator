@@ -46,7 +46,6 @@ body {
 .component-container {
 	width: 100%;
 	padding: 0;
-	z-index: 1;
 }
 
 .root-panel {
@@ -201,6 +200,10 @@ body {
 	padding-left: 5px;
 }
 
+.control-button-group {
+	margin-left: 5px;
+}
+
 .control-button-group * {
 	border-radius: 2px !important;
 	margin: 0px 2px 0px 0px;
@@ -269,7 +272,7 @@ body {
 }
 
 .joystick-panel {
-	width: 125px;
+	width: 80px;
 	position: absolute;
 	top: 28;
 	left: 0;

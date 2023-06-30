@@ -19,6 +19,7 @@ const connection = {
 			switch (payload.action) {
 				case CLIENT_ACTIONS.ENTER_IMMERSIVE:
 					emulatorStates.inImmersive = true;
+					emulatorStates.emulatedDevice?.forceEmitPose();
 					break;
 				case CLIENT_ACTIONS.EXIT_IMMERSIVE:
 					emulatorStates.inImmersive = false;
