@@ -206,7 +206,7 @@ export default class XRScene {
 
 	eject() {
 		const element = this.renderer.domElement;
-		element.parentElement.removeChild(element);
+		element.parentElement.remove();
 	}
 
 	setCanvas(canvas) {

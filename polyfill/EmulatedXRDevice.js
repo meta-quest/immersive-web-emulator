@@ -765,6 +765,7 @@ export default class EmulatedXRDevice extends XRDevice {
 	}
 
 	_notifyLeaveImmersive() {
+		this.xrScene.eject();
 		dispatchCustomEvent(CLIENT_ACTIONS.EXIT_IMMERSIVE, {});
 	}
 
