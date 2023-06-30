@@ -138,4 +138,14 @@ export class EmulatorSettings {
 			});
 		});
 	}
+
+	clear() {
+		const settings = {};
+		settings[STORAGE_KEY] = null;
+		return new Promise((resolve) => {
+			localStorage.set(settings, () => {
+				resolve(settings);
+			});
+		});
+	}
 }

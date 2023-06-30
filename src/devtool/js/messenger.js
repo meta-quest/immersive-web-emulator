@@ -150,3 +150,7 @@ export const togglePolyfill = () => {
 		});
 	});
 };
+
+export const reloadInspectedTab = () => {
+	executeAction(EMULATOR_ACTIONS.EXCLUDE_POLYFILL);
+};

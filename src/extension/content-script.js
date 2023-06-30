@@ -137,7 +137,7 @@ window.addEventListener(
 			// periodically send ping messages to keep the connection alive
 			// we don't want to do this until we know that this is a XR site
 			pingJob = setInterval(() => {
-				sendActionToEmulator('ping');
+				sendActionToEmulator(CLIENT_ACTIONS.PING);
 			}, 5000);
 		}
 	},

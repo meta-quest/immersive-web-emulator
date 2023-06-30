@@ -8,19 +8,22 @@
 import {
 	changeEmulatedDeviceType,
 	notifyExitImmersive,
+	reloadInspectedTab,
 	togglePolyfill,
 	toggleStereoMode,
 } from '../js/messenger';
 
+import { DEFAULT_TRANSFORMS } from '../js/constants';
 import { DEVICE_DEFINITIONS } from '../js/devices';
 import { EmulatorSettings } from '../js/emulatorStates';
 import React from 'react';
 
-export default function HeadsetBar() {
+export default function HeadsetBar({ device }) {
 	const headsetSelectRef = React.useRef();
 	const polyfillToggleRef = React.useRef();
 	const stereoToggleRef = React.useRef();
 	const [polyfillOn, setPolyfillOn] = React.useState(true);
+	const [showDropDown, setShowDropDown] = React.useState(false);
 
 	function onChangeDevice() {
 		const deviceId = headsetSelectRef.current.value;
@@ -132,7 +135,57 @@ export default function HeadsetBar() {
 							>
 								<img src="./assets/images/exit.png" className="action-icon" />
 							</button>
+							<button
+								className={
+									'btn headset-action-button' +
+									(showDropDown ? ' button-pressed' : '')
+								}
+								onClick={() => {
+									setShowDropDown(!showDropDown);
+								}}
+							>
+								<img
+									src="./assets/images/settings.png"
+									className="action-icon"
+								/>
+							</button>
 						</div>
+						{showDropDown && (
+							<div className="drop-down-container">
+								<button
+									className="btn special-button"
+									onClick={() => {
+										EmulatorSettings.instance.defaultPose = DEFAULT_TRANSFORMS;
+										EmulatorSettings.instance.write().then(() => {
+											device.resetPose();
+										});
+									}}
+								>
+									Clear default pose
+								</button>
+								<button
+									className="btn special-button"
+									onClick={() => {
+										EmulatorSettings.instance.clear().then(() => {
+											location.reload();
+											reloadInspectedTab();
+										});
+									}}
+								>
+									Clear all settings
+								</button>
+								<button
+									className="btn special-button"
+									onClick={() => {
+										chrome.tabs.create({
+											url: 'https://chrome.google.com/webstore/detail/immersive-web-emulator/cgffilbpcibhmcfbgggfhfolhkfbhmik',
+										});
+									}}
+								>
+									version - {chrome.runtime.getManifest().version}
+								</button>
+							</div>
+						)}
 					</div>
 				</div>
 			</div>

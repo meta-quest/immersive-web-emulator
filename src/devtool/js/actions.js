@@ -49,4 +49,5 @@ export const POLYFILL_ACTIONS = {
 export const CLIENT_ACTIONS = {
 	ENTER_IMMERSIVE: 'ca-enter-immersive',
 	EXIT_IMMERSIVE: 'ca-exit-immersive',
+	PING: 'ca-ping',
 };

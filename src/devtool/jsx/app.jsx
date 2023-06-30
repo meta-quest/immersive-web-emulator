@@ -71,7 +71,7 @@ export default function App({ device }) {
 				style={{ display: showInspector ? 'flex' : 'none' }}
 			>
 				<div id="headset-component" className="component-container row">
-					<HeadsetBar />
+					<HeadsetBar device={device} />
 				</div>
 				<div id="render-component" className="component-container row">
 					<Inspector device={device} inputMode={inputMode} />

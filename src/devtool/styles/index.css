@@ -287,6 +287,7 @@ body {
 #transform-component {
 	position: absolute;
 	padding: 0;
+	pointer-events: none;
 }
 
 #transform-component button {
@@ -299,6 +300,7 @@ body {
 	border-radius: 4px;
 	margin: 2px 0px 1px 2px;
 	border: none;
+	pointer-events: all;
 }
 
 #transform-component button:hover {
@@ -308,6 +310,10 @@ body {
 #transform-component button.active {
 	font-weight: bold;
 	opacity: 1;
+}
+
+#transform-component input {
+	pointer-events: all;
 }
 
 .transform-card {
@@ -509,4 +515,22 @@ body {
 
 .component-container.row {
 	width: calc(100% - 10px);
+}
+
+.drop-down-container {
+	background-color: #3b3b3c;
+	position: absolute;
+	width: 126px;
+	height: auto;
+	top: 41px;
+	right: 5px;
+	border-radius: 10px 2px 10px 10px;
+	z-index: 1;
+	padding: 5px;
+}
+
+.drop-down-container button {
+	width: 100%;
+	margin: 0;
+	text-align: start;
 }
