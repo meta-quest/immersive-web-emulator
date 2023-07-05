@@ -366,8 +366,17 @@ export default class CustomWebXRPolyfill extends WebXRPolyfill {
 		// Extending XRSession and XRFrame for AR hitting test API.
 
 		XRSession.prototype.requestHitTestSource = function (options) {
-			const source = new XRHitTestSource(this, options);
 			const device = this[XRSESSION_PRIVATE].device;
+			const session = device.sessions.get(this[XRSESSION_PRIVATE].id);
+			if (!session.enabledFeatures.has('hit-test')) {
+				return Promise.reject(
+					new DOMException(
+						'hit-test feature not requested or not supported',
+						'NotSupportedError',
+					),
+				);
+			}
+			const source = new XRHitTestSource(this, options);
 			device.addHitTestSource(source);
 			return Promise.resolve(source);
 		};
@@ -375,8 +384,17 @@ export default class CustomWebXRPolyfill extends WebXRPolyfill {
 		XRSession.prototype.requestHitTestSourceForTransientInput = function (
 			options,
 		) {
-			const source = new XRTransientInputHitTestSource(this, options);
 			const device = this[XRSESSION_PRIVATE].device;
+			const session = device.sessions.get(this[XRSESSION_PRIVATE].id);
+			if (!session.enabledFeatures.has('hit-test')) {
+				return Promise.reject(
+					new DOMException(
+						'hit-test feature not requested or not supported',
+						'NotSupportedError',
+					),
+				);
+			}
+			const source = new XRTransientInputHitTestSource(this, options);
 			device.addHitTestSourceForTransientInput(source);
 			return Promise.resolve(source);
 		};
