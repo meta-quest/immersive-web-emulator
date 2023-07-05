@@ -10,9 +10,8 @@ document.addEventListener('DOMContentLoaded', function () {
 	versionTag.innerHTML = 'version - ' + chrome.runtime.getManifest().version;
 
 	document.getElementById('send-btn').onclick = () => {
-		chrome.tabs.query({ active: true }, (tabs) => {
+		chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
 			const tab = tabs[0];
-			console.log('URL:', tab.url);
 			chrome.tabs.create({
 				url:
 					'https://www.oculus.com/open_url/?url=' + encodeURIComponent(tab.url),
