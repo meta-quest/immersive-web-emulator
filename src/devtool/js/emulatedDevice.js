@@ -138,8 +138,6 @@ export default class EmulatedDevice extends EventEmitter {
 		});
 
 		this.updateRoom();
-
-		this.addMesh(1, 0.5, 1);
 	}
 
 	_emitPoseEvent(deviceKey) {
@@ -228,15 +226,19 @@ export default class EmulatedDevice extends EventEmitter {
 	}
 
 	deleteSelectedMesh() {
-		if (this._selectedDeviceKey != null) {
-			const mesh = this._meshes[this._selectedDeviceKey];
-			const controls = this._transformControls[this._selectedDeviceKey];
-			if (mesh && controls) {
-				this._scene.remove(controls);
-				this._scene.remove(mesh);
-				this.render();
+		Object.entries(this._transformControls).forEach(([key, controls]) => {
+			if (controls.enabled) {
+				const mesh = this._meshes[key];
+				if (mesh) {
+					controls.detach();
+					this._scene.remove(mesh);
+					delete this._meshes[key];
+					controls.dispose();
+					delete this._transformControls[key];
+					this.render();
+				}
 			}
-		}
+		});
 	}
 
 	get canvas() {
