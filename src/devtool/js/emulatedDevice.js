@@ -114,6 +114,7 @@ export default class EmulatedDevice extends EventEmitter {
 		});
 
 		this._meshes = {};
+		this.recoverMeshes();
 
 		// check device node selection by raycast
 		this._raycaster = new THREE.Raycaster();
@@ -133,6 +134,8 @@ export default class EmulatedDevice extends EventEmitter {
 				) {
 					this.toggleControlMode(this._selectedDeviceKey);
 					oc.enabled = true;
+				} else {
+					this.updateMeshes();
 				}
 			}
 		});
@@ -193,7 +196,7 @@ export default class EmulatedDevice extends EventEmitter {
 		this.render();
 	}
 
-	addMesh(width, height, depth, semanticLabel) {
+	addMesh(width, height, depth, semanticLabel, idOverride = null) {
 		if (!isNumber(width) || !isNumber(height) || !isNumber(depth)) {
 			return;
 		}
@@ -218,11 +221,23 @@ export default class EmulatedDevice extends EventEmitter {
 			this.render();
 		});
 		this._scene.add(controls);
-		const meshId = generateUUID();
+		const meshId = idOverride ?? generateUUID();
 		mesh.userData = { meshId, controls, semanticLabel };
 		this._transformControls[meshId] = controls;
 		this._meshes[meshId] = mesh;
-		this.render();
+		EmulatorSettings.instance.meshes[meshId] = {
+			width,
+			height,
+			depth,
+			semanticLabel,
+			position: mesh.position.toArray(),
+			quaternion: mesh.quaternion.toArray(),
+		};
+		EmulatorSettings.instance.write();
+		if (idOverride == null) {
+			this.render();
+		}
+		return mesh;
 	}
 
 	deleteSelectedMesh() {
@@ -236,9 +251,38 @@ export default class EmulatedDevice extends EventEmitter {
 					controls.dispose();
 					delete this._transformControls[key];
 					this.render();
+					delete EmulatorSettings.instance.meshes[key];
+					EmulatorSettings.instance.write();
 				}
 			}
 		});
+	}
+
+	updateMeshes() {
+		Object.entries(this._transformControls).forEach(([meshId, controls]) => {
+			if (controls.enabled) {
+				const mesh = this._meshes[meshId];
+				if (mesh) {
+					EmulatorSettings.instance.meshes[meshId].position =
+						mesh.position.toArray();
+					EmulatorSettings.instance.meshes[meshId].quaternion =
+						mesh.quaternion.toArray();
+				}
+			}
+		});
+		EmulatorSettings.instance.write();
+	}
+
+	recoverMeshes() {
+		Object.entries(EmulatorSettings.instance.meshes).forEach(
+			([meshId, meshData]) => {
+				const { width, height, depth, semanticLabel, position, quaternion } =
+					meshData;
+				const mesh = this.addMesh(width, height, depth, semanticLabel, meshId);
+				mesh.position.fromArray(position);
+				mesh.quaternion.fromArray(quaternion);
+			},
+		);
 	}
 
 	get canvas() {
