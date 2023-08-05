@@ -290,7 +290,7 @@ body {
 	pointer-events: none;
 }
 
-#transform-component button {
+#transform-component > button {
 	background-color: #252526;
 	color: white;
 	opacity: 50%;
@@ -533,4 +533,41 @@ body {
 	width: 100%;
 	margin: 0;
 	text-align: start;
+}
+
+.mesh-menu {
+	margin: 5px;
+	width: 141px;
+}
+
+.mesh-menu > div {
+	margin-bottom: 2px;
+}
+
+.mesh-menu input::-webkit-outer-spin-button,
+.mesh-menu input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+.mesh-menu input[type='number'],
+.mesh-menu select,
+.mesh-menu button {
+	height: 18px;
+	border: none;
+	border-radius: 2px;
+	margin-right: 2px;
+	pointer-events: all;
+	text-align: center;
+}
+
+.mesh-menu input[type='number'],
+.mesh-menu button {
+	appearance: none;
+	-webkit-appearance: none;
+	width: 45px;
+}
+
+.mesh-menu select {
+	width: 92px;
 }

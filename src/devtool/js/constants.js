@@ -100,3 +100,21 @@ export const GAMEPAD_ID_TO_INPUT_ID_MAPPING = {
 	0: 'trigger',
 	1: 'grip',
 };
+
+export const SEMANTIC_LABELS = {
+	Desk: 'desk',
+	Couch: 'couch',
+	Floor: 'floor',
+	Ceiling: 'ceiling',
+	Wall: 'wall',
+	Door: 'door',
+	Window: 'window',
+	Table: 'table',
+	Shelf: 'shelf',
+	Bed: 'bed',
+	Screen: 'screen',
+	Lamp: 'lamp',
+	Plant: 'plant',
+	WallArt: 'wall art',
+	Other: 'other',
+};

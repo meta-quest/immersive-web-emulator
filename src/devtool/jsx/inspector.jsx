@@ -10,6 +10,7 @@ import {
 	DEVICE,
 	HAND_STRINGS,
 	OBJECT_NAME,
+	SEMANTIC_LABELS,
 } from '../js/constants';
 
 import { EmulatorSettings } from '../js/emulatorStates';
@@ -18,8 +19,13 @@ import { changeRoomDimension } from '../js/messenger';
 
 export default function Inspector({ device, inputMode }) {
 	const sceneContainerRef = React.useRef();
+	const meshWidthRef = React.useRef();
+	const meshHeightRef = React.useRef();
+	const meshDepthRef = React.useRef();
+	const semanticLabelRef = React.useRef();
 	const [showTransforms, setShowTransforms] = React.useState(true);
 	const [showRoomSettings, setShowRoomSettings] = React.useState(false);
+	const [showMeshSettings, setShowMeshSettings] = React.useState(false);
 	const transformData = {};
 	Object.values(DEVICE).forEach((deviceKey) => {
 		const deviceName = OBJECT_NAME[deviceKey];
@@ -53,6 +59,7 @@ export default function Inspector({ device, inputMode }) {
 					onClick={() => {
 						setShowTransforms(!showTransforms);
 						setShowRoomSettings(false);
+						setShowMeshSettings(false);
 					}}
 					className={showTransforms ? 'active' : ''}
 				>
@@ -62,10 +69,21 @@ export default function Inspector({ device, inputMode }) {
 					onClick={() => {
 						setShowRoomSettings(!showRoomSettings);
 						setShowTransforms(false);
+						setShowMeshSettings(false);
 					}}
 					className={showRoomSettings ? 'active' : ''}
 				>
 					room
+				</button>
+				<button
+					onClick={() => {
+						setShowMeshSettings(!showMeshSettings);
+						setShowRoomSettings(false);
+						setShowTransforms(false);
+					}}
+					className={showMeshSettings ? 'active' : ''}
+				>
+					mesh
 				</button>
 				{showTransforms &&
 					Object.values(DEVICE).map((deviceKey) => {
@@ -149,6 +167,61 @@ export default function Inspector({ device, inputMode }) {
 									/>
 								</div>
 							))}
+						</div>
+					</div>
+				)}
+				{showMeshSettings && (
+					<div className="mesh-menu">
+						<div>
+							<input
+								ref={meshWidthRef}
+								type="number"
+								placeholder="width"
+								min={0}
+							/>
+							<input
+								ref={meshHeightRef}
+								type="number"
+								placeholder="height"
+								min={0}
+							/>
+							<input
+								ref={meshDepthRef}
+								type="number"
+								placeholder="depth"
+								min={0}
+							/>
+						</div>
+						<div>
+							<select ref={semanticLabelRef}>
+								{Object.values(SEMANTIC_LABELS).map((semanticLabel) => (
+									<option key={semanticLabel} value={semanticLabel}>
+										{semanticLabel}
+									</option>
+								))}
+							</select>
+							<button
+								onClick={() => {
+									device.addMesh(
+										Number(meshWidthRef.current.value),
+										Number(meshHeightRef.current.value),
+										Number(meshDepthRef.current.value),
+										semanticLabelRef.current.value,
+									);
+								}}
+							>
+								create
+							</button>
+						</div>
+						<div>
+							<button
+								onClick={() => {
+									device.deleteSelectedMesh();
+								}}
+								style={{ width: `${139}px` }}
+							>
+								delete selected
+							</button>
 						</div>
 					</div>
 				)}

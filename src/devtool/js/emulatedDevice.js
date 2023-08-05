@@ -20,8 +20,13 @@ import { EventEmitter } from 'events';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
+import { generateUUID } from 'three/src/math/MathUtils.js';
 
 const SELECTION_MOUSE_DOWN_THRESHOLD = 300;
+
+const isNumber = function isNumber(value) {
+	return typeof value === 'number' && isFinite(value);
+};
 
 export default class EmulatedDevice extends EventEmitter {
 	constructor() {
@@ -47,6 +52,7 @@ export default class EmulatedDevice extends EventEmitter {
 		oc.addEventListener('change', this.render.bind(this));
 		oc.target.set(0, 1.6, 0);
 		oc.update();
+		this._orbitControls = oc;
 
 		const loader = new GLTFLoader();
 		this._transformControls = {};
@@ -107,6 +113,8 @@ export default class EmulatedDevice extends EventEmitter {
 			this._scene.add(controls);
 		});
 
+		this._meshes = {};
+
 		// check device node selection by raycast
 		this._raycaster = new THREE.Raycaster();
 		this._mouseVec2 = new THREE.Vector2();
@@ -130,6 +138,8 @@ export default class EmulatedDevice extends EventEmitter {
 		});
 
 		this.updateRoom();
+
+		this.addMesh(1, 0.5, 1);
 	}
 
 	_emitPoseEvent(deviceKey) {
@@ -151,11 +161,17 @@ export default class EmulatedDevice extends EventEmitter {
 		this._mouseVec2.set(point.x * 2 - 1, -(point.y * 2) + 1);
 		this._raycaster.setFromCamera(this._mouseVec2, this._camera);
 		const intersect = this._raycaster.intersectObjects(
-			Object.values(emulatorStates.assetNodes),
+			[
+				...Object.values(emulatorStates.assetNodes),
+				...Object.values(this._meshes),
+			],
 			true,
 		)[0];
 
-		return intersect?.object.userData['deviceKey'];
+		return (
+			intersect?.object.userData['deviceKey'] ??
+			intersect?.object.userData['meshId']
+		);
 	}
 
 	updateRoom() {
@@ -179,6 +195,50 @@ export default class EmulatedDevice extends EventEmitter {
 		this.render();
 	}
 
+	addMesh(width, height, depth, semanticLabel) {
+		if (!isNumber(width) || !isNumber(height) || !isNumber(depth)) {
+			return;
+		}
+		const mesh = new THREE.Mesh(
+			new THREE.BoxGeometry(width, height, depth),
+			new THREE.MeshPhongMaterial({ color: 0xffffff * Math.random() }),
+		);
+		this._scene.add(mesh);
+		const controls = new TransformControls(this._camera, this.canvas);
+		controls.attach(mesh);
+		controls.enabled = false;
+		controls.visible = false;
+		controls.addEventListener(
+			'mouseDown',
+			() => (this._orbitControls.enabled = false),
+		);
+		controls.addEventListener(
+			'mouseUp',
+			() => (this._orbitControls.enabled = true),
+		);
+		controls.addEventListener('change', () => {
+			this.render();
+		});
+		this._scene.add(controls);
+		const meshId = generateUUID();
+		mesh.userData = { meshId, controls, semanticLabel };
+		this._transformControls[meshId] = controls;
+		this._meshes[meshId] = mesh;
+		this.render();
+	}
+
+	deleteSelectedMesh() {
+		if (this._selectedDeviceKey != null) {
+			const mesh = this._meshes[this._selectedDeviceKey];
+			const controls = this._transformControls[this._selectedDeviceKey];
+			if (mesh && controls) {
+				this._scene.remove(controls);
+				this._scene.remove(mesh);
+				this.render();
+			}
+		}
+	}
+
 	get canvas() {
 		return this._renderer.domElement;
 	}
@@ -193,7 +253,7 @@ export default class EmulatedDevice extends EventEmitter {
 		});
 	}
 
-	toggleControlMode(deviceKey, clearOthers = false) {
+	toggleControlMode(deviceKey, clearOthers = true) {
 		if (clearOthers) {
 			Object.entries(this._transformControls).forEach(([key, controls]) => {
 				if (key != deviceKey) {
