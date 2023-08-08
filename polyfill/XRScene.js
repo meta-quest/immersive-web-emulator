@@ -17,6 +17,7 @@ import {
 import { XRPlane, XRPlaneOrientation } from './api/XRPlane';
 
 import { BoxLineGeometry } from 'three/examples/jsm/geometries/BoxLineGeometry.js';
+import { XRMesh } from './api/XRMesh';
 import XRSpace from 'webxr-polyfill/src/api/XRSpace';
 import { mat4 } from 'gl-matrix';
 
@@ -66,6 +67,24 @@ const buildXRPlane = (width, length, position, planeConfig) => {
 		new DOMPointReadOnly(width, 0, length),
 	];
 	return new XRPlane(planeSpace, points, planeConfig.orientation);
+};
+
+/**
+ * @param {THREE.Mesh} mesh
+ */
+const buildXRMesh = (mesh) => {
+	const meshMatrix = new Float32Array(16);
+	mat4.fromRotationTranslation(
+		meshMatrix,
+		mesh.quaternion.toArray(),
+		mesh.position.toArray(),
+	);
+	const meshSpace = new XRSpace();
+	meshSpace._baseMatrix = meshMatrix;
+	const indices = mesh.geometry.index.array;
+	const vertices = mesh.geometry.getAttribute('position').array;
+	const semanticLabel = mesh.userData.semanticLabel;
+	return new XRMesh(meshSpace, vertices, indices, semanticLabel);
 };
 
 class XRRoomFactory {
@@ -253,6 +272,12 @@ export default class XRScene {
 		return this.roomFactory.xrPlanes;
 	}
 
+	get xrMeshes() {
+		return new Set(
+			Object.values(this.meshes).map((mesh) => mesh.userData.xrMeshRef),
+		);
+	}
+
 	updateMeshes(meshes) {
 		Object.entries(meshes).forEach(([meshId, meshData]) => {
 			const { width, height, depth, semanticLabel, position, quaternion } =
@@ -265,9 +290,14 @@ export default class XRScene {
 				mesh.userData = { semanticLabel };
 				this.meshes[meshId] = mesh;
 				this.scene.add(mesh);
+				mesh.userData.xrMeshRef = buildXRMesh(mesh);
 			}
 			this.meshes[meshId].position.fromArray(position);
 			this.meshes[meshId].quaternion.fromArray(quaternion);
+			this.meshes[meshId].userData.xrMeshRef._updateMatrix(
+				position,
+				quaternion,
+			);
 		});
 
 		Object.keys(this.meshes)

@@ -92,6 +92,7 @@ export default class EmulatedXRDevice extends XRDevice {
 		};
 
 		this.appCanvasContainer = createCanvasContainer(APP_CANVAS_Z_INDEX);
+		console.log(this.appCanvasContainer);
 		this.arCanvasContainer = createCanvasContainer(AR_CANVAS_Z_INDEX);
 
 		this.originalCanvasParams = {
@@ -173,6 +174,8 @@ export default class EmulatedXRDevice extends XRDevice {
 				);
 				return true;
 			case 'hand-tracking':
+				return true;
+			case 'mesh-detection':
 				return true;
 			default:
 				return false; // @TODO: Throw an error?
@@ -655,11 +658,7 @@ export default class EmulatedXRDevice extends XRDevice {
 		if (this.domOverlayRoot) {
 			const el = this.domOverlayRoot;
 			el.style._zIndex = el.style.zIndex; // Polluting is bad...
-			if (this.domOverlayRoot.contains(this.appCanvasContainer)) {
-				this.appCanvasContainer.style.zIndex = '';
-			} else {
-				el.style.zIndex = DOM_OVERLAY_Z_INDEX;
-			}
+			el.style.zIndex = DOM_OVERLAY_Z_INDEX;
 		}
 	}
 

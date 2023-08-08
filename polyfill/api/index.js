@@ -1,4 +1,5 @@
 import { XRAnchor, XRAnchorSet } from './XRAnchor';
+import { XRMesh, XRMeshSet } from './XRMesh';
 import { XRPlane, XRPlaneOrientation, XRPlaneSet } from './XRPlane';
 
 import { XRHand } from './XRHand';
@@ -24,4 +25,6 @@ export default {
 	XRHand,
 	XRJointPose,
 	XRJointSpace,
+	XRMesh,
+	XRMeshSet,
 };

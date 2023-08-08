@@ -23,6 +23,7 @@ import XRHitTestResult from './api/XRHitTestResult';
 import XRHitTestSource from './api/XRHitTestSource';
 import { PRIVATE as XRJOINTSPACE_PRIVATE } from './api/XRJointSpace';
 import { XRJointPose } from './api/XRJointPose';
+import { XRMeshSet } from './api/XRMesh';
 import { XRPlaneSet } from './api/XRPlane';
 import XRReferenceSpace from 'webxr-polyfill/src/api/XRReferenceSpace';
 import XRRigidTransform from 'webxr-polyfill/src/api/XRRigidTransform';
@@ -272,6 +273,13 @@ export default class CustomWebXRPolyfill extends WebXRPolyfill {
 			get: function () {
 				const device = this[XRFRAME_PRIVATE].device;
 				return new XRPlaneSet(device.xrScene.xrPlanes);
+			},
+		});
+
+		Object.defineProperty(XRFrame.prototype, 'detectedMeshes', {
+			get: function () {
+				const device = this[XRFRAME_PRIVATE].device;
+				return new XRMeshSet(device.xrScene.xrMeshes);
 			},
 		});
 
