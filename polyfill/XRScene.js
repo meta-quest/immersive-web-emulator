@@ -190,6 +190,7 @@ export default class XRScene {
 		this.hitTestMarker = new Object3D();
 		this.hitTestMarker.rotateX(-Math.PI / 2);
 		this.hitTestTarget.add(this.hitTestMarker);
+		this.meshes = {};
 	}
 
 	inject(canvasContainer) {
@@ -250,5 +251,32 @@ export default class XRScene {
 
 	get xrPlanes() {
 		return this.roomFactory.xrPlanes;
+	}
+
+	updateMeshes(meshes) {
+		Object.entries(meshes).forEach(([meshId, meshData]) => {
+			const { width, height, depth, semanticLabel, position, quaternion } =
+				meshData;
+			if (!this.meshes[meshId]) {
+				const mesh = new Mesh(
+					new BoxGeometry(width, height, depth),
+					new MeshBasicMaterial({ color: 0xffffff * Math.random() }),
+				);
+				mesh.userData = { semanticLabel };
+				this.meshes[meshId] = mesh;
+				this.scene.add(mesh);
+			}
+			this.meshes[meshId].position.fromArray(position);
+			this.meshes[meshId].quaternion.fromArray(quaternion);
+		});
+
+		Object.keys(this.meshes)
+			.filter((key) => {
+				!Object.keys(meshes).includes(key);
+			})
+			.forEach((key) => {
+				this.meshes[key].parent.remove(this.meshes[key]);
+				delete this.meshes[key];
+			});
 	}
 }

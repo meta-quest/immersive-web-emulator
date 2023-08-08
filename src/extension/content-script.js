@@ -102,6 +102,14 @@ const connection = {
 						value: message.value,
 					});
 					break;
+
+				case EMULATOR_ACTIONS.MESHES_CHANGE:
+					EmulatorSettings.instance.load().then(() => {
+						triggerPolyfillAction(POLYFILL_ACTIONS.MESHES_CHANGE, {
+							meshes: EmulatorSettings.instance.meshes,
+						});
+					});
+					break;
 			}
 		});
 		connection.port.onDisconnect.addListener(connection.connect);
@@ -139,6 +147,11 @@ window.addEventListener(
 			pingJob = setInterval(() => {
 				sendActionToEmulator(CLIENT_ACTIONS.PING);
 			}, 5000);
+			EmulatorSettings.instance.load().then(() => {
+				triggerPolyfillAction(POLYFILL_ACTIONS.MESHES_CHANGE, {
+					meshes: EmulatorSettings.instance.meshes,
+				});
+			});
 		}
 	},
 	false,

@@ -1037,6 +1037,11 @@ export default class EmulatedXRDevice extends XRDevice {
 			const pinchValue = event.detail.value;
 			this.handPoseData[handedness].pinchValue = pinchValue;
 		});
+
+		window.addEventListener(POLYFILL_ACTIONS.MESHES_CHANGE, (event) => {
+			const meshes = event.detail.meshes;
+			this.xrScene.updateMeshes(meshes);
+		});
 	}
 }
 

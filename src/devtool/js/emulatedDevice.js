@@ -21,6 +21,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 import { generateUUID } from 'three/src/math/MathUtils.js';
+import { updateMeshes } from './messenger';
 
 const SELECTION_MOUSE_DOWN_THRESHOLD = 300;
 
@@ -136,8 +137,6 @@ export default class EmulatedDevice extends EventEmitter {
 				) {
 					this.toggleControlMode(this._selectedDeviceKey);
 					oc.enabled = true;
-				} else {
-					this.updateMeshes();
 				}
 			}
 		});
@@ -215,10 +214,10 @@ export default class EmulatedDevice extends EventEmitter {
 			'mouseDown',
 			() => (this._orbitControls.enabled = false),
 		);
-		controls.addEventListener(
-			'mouseUp',
-			() => (this._orbitControls.enabled = true),
-		);
+		controls.addEventListener('mouseUp', () => {
+			this._orbitControls.enabled = true;
+			this.updateMeshes();
+		});
 		controls.addEventListener('change', () => {
 			this.render();
 		});
@@ -234,7 +233,7 @@ export default class EmulatedDevice extends EventEmitter {
 			position: mesh.position.toArray(),
 			quaternion: mesh.quaternion.toArray(),
 		};
-		EmulatorSettings.instance.write();
+		EmulatorSettings.instance.write().then(updateMeshes);
 		const label = document.createElement('div');
 		label.classList.add('semantic-label');
 		label.innerHTML = semanticLabel;
@@ -260,7 +259,7 @@ export default class EmulatedDevice extends EventEmitter {
 					delete this._transformControls[key];
 					this.render();
 					delete EmulatorSettings.instance.meshes[key];
-					EmulatorSettings.instance.write();
+					EmulatorSettings.instance.write().then(updateMeshes);
 				}
 			}
 		});
@@ -278,7 +277,7 @@ export default class EmulatedDevice extends EventEmitter {
 				}
 			}
 		});
-		EmulatorSettings.instance.write();
+		EmulatorSettings.instance.write().then(updateMeshes);
 	}
 
 	recoverMeshes() {
