@@ -76,6 +76,8 @@ body {
 	padding: 0;
 	width: 100%;
 	height: 100%;
+	position: relative;
+	overflow: hidden;
 }
 
 .headset-action-button {
@@ -565,9 +567,22 @@ body {
 .mesh-menu button {
 	appearance: none;
 	-webkit-appearance: none;
-	width: 45px;
+	width: 40px;
+	padding: 0;
 }
 
 .mesh-menu select {
-	width: 92px;
+	width: 82px;
+}
+
+.semantic-label {
+	position: absolute;
+	color: white;
+	pointer-events: none;
+	z-index: 20;
+	width: 50px;
+	height: 20px;
+	text-align: center;
+	margin-left: -25px;
+	margin-top: -10px;
 }

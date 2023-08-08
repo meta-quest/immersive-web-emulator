@@ -42,6 +42,7 @@ export default function Inspector({ device, inputMode }) {
 
 	React.useEffect(() => {
 		sceneContainerRef.current.appendChild(device.canvas);
+		sceneContainerRef.current.appendChild(device.labels);
 		device.on('pose', (event) => {
 			const { deviceKey, position, rotation } = event;
 			const deviceName = OBJECT_NAME[deviceKey];
@@ -218,7 +219,7 @@ export default function Inspector({ device, inputMode }) {
 								onClick={() => {
 									device.deleteSelectedMesh();
 								}}
-								style={{ width: `${139}px` }}
+								style={{ width: `${124}px` }}
 							>
 								delete selected
 							</button>

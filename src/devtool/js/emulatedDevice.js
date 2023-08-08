@@ -48,6 +48,8 @@ export default class EmulatedDevice extends EventEmitter {
 		this._controllerMeshes = [];
 		this._handMeshes = [];
 
+		this._labelContainer = document.createElement('div');
+
 		const oc = new OrbitControls(this._camera, this.canvas);
 		oc.addEventListener('change', this.render.bind(this));
 		oc.target.set(0, 1.6, 0);
@@ -222,7 +224,6 @@ export default class EmulatedDevice extends EventEmitter {
 		});
 		this._scene.add(controls);
 		const meshId = idOverride ?? generateUUID();
-		mesh.userData = { meshId, controls, semanticLabel };
 		this._transformControls[meshId] = controls;
 		this._meshes[meshId] = mesh;
 		EmulatorSettings.instance.meshes[meshId] = {
@@ -234,6 +235,11 @@ export default class EmulatedDevice extends EventEmitter {
 			quaternion: mesh.quaternion.toArray(),
 		};
 		EmulatorSettings.instance.write();
+		const label = document.createElement('div');
+		label.classList.add('semantic-label');
+		label.innerHTML = semanticLabel;
+		this._labelContainer.appendChild(label);
+		mesh.userData = { meshId, controls, semanticLabel, label };
 		if (idOverride == null) {
 			this.render();
 		}
@@ -245,6 +251,8 @@ export default class EmulatedDevice extends EventEmitter {
 			if (controls.enabled) {
 				const mesh = this._meshes[key];
 				if (mesh) {
+					const { label } = mesh.userData;
+					this._labelContainer.removeChild(label);
 					controls.detach();
 					this._scene.remove(mesh);
 					delete this._meshes[key];
@@ -287,6 +295,10 @@ export default class EmulatedDevice extends EventEmitter {
 
 	get canvas() {
 		return this._renderer.domElement;
+	}
+
+	get labels() {
+		return this._labelContainer;
 	}
 
 	getDeviceNode(deviceKey) {
@@ -355,5 +367,19 @@ export default class EmulatedDevice extends EventEmitter {
 			this._lastHeight = height;
 		}
 		this._renderer.render(this._scene, this._camera);
+
+		const sceneContainer = this._renderer.domElement.parentElement;
+		if (!sceneContainer) return;
+
+		Object.values(this._meshes).forEach((mesh) => {
+			const { label } = mesh.userData;
+			if (label) {
+				const screenVec = mesh.position.clone().project(this._camera);
+				screenVec.x = ((screenVec.x + 1) * sceneContainer.offsetWidth) / 2;
+				screenVec.y = (-(screenVec.y - 1) * sceneContainer.offsetHeight) / 2;
+				label.style.top = `${screenVec.y}px`;
+				label.style.left = `${screenVec.x}px`;
+			}
+		});
 	}
 }
