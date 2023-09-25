@@ -8,6 +8,7 @@ export class XRMesh {
 	 * @param {import('webxr-polyfill/src/api/XRSpace').default} planeSpace
 	 * @param {Float32Array} pointArray
 	 * @param {Float32Array} indexArray
+	 * @param {string} semanticLabel
 	 */
 	constructor(meshSpace, vertices, indices, semanticLabel) {
 		this._meshSpace = meshSpace;

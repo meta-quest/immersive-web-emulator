@@ -26,26 +26,32 @@ const PLANE_CONFIG = {
 	FLOOR: {
 		orientation: XRPlaneOrientation.Horizontal,
 		quaternion: [0, 0, 0, 1],
+		semanticLabel: 'floor',
 	},
 	CEILING: {
 		orientation: XRPlaneOrientation.Horizontal,
 		quaternion: [0, 0, 1, 0],
+		semanticLabel: 'ceiling',
 	},
 	RIGHT: {
 		orientation: XRPlaneOrientation.Vertical,
 		quaternion: [0, 0, 0.7071068, 0.7071068],
+		semanticLabel: 'wall',
 	},
 	LEFT: {
 		orientation: XRPlaneOrientation.Vertical,
 		quaternion: [0, 0, -0.7071068, 0.7071068],
+		semanticLabel: 'wall',
 	},
 	FRONT: {
 		orientation: XRPlaneOrientation.Vertical,
 		quaternion: [0.7071068, 0, 0, 0.7071068],
+		semanticLabel: 'wall',
 	},
 	BACK: {
 		orientation: XRPlaneOrientation.Vertical,
 		quaternion: [-0.7071068, 0, 0, 0.7071068],
+		semanticLabel: 'wall',
 	},
 };
 const DEFAULT_ROOM_DIMENSION = {
@@ -66,7 +72,12 @@ const buildXRPlane = (width, length, position, planeConfig) => {
 		new DOMPointReadOnly(-width, 0, length),
 		new DOMPointReadOnly(width, 0, length),
 	];
-	return new XRPlane(planeSpace, points, planeConfig.orientation);
+	return new XRPlane(
+		planeSpace,
+		points,
+		planeConfig.orientation,
+		planeConfig.semanticLabel,
+	);
 };
 
 /**
