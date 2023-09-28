@@ -92,7 +92,7 @@ export default class EmulatedXRDevice extends XRDevice {
 		};
 
 		this.appCanvasContainer = createCanvasContainer(APP_CANVAS_Z_INDEX);
-		console.log(this.appCanvasContainer);
+		// console.log(this.appCanvasContainer);
 		this.arCanvasContainer = createCanvasContainer(AR_CANVAS_Z_INDEX);
 
 		this.originalCanvasParams = {
