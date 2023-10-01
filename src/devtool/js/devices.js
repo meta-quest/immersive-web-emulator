@@ -195,4 +195,41 @@ export const DEVICE_DEFINITIONS = {
 			buttons: [1, 2, null, 0, 3, 4, null],
 		},
 	},
+	'Meta Quest 3': {
+		id: 'Meta Quest 3',
+		name: 'Meta Quest 3',
+		shortName: 'Quest 3',
+		profile: 'meta-quest-touch-plus',
+		modes: ['inline', 'immersive-vr', 'immersive-ar'],
+		headset: {
+			hasPosition: true,
+			hasRotation: true,
+		},
+		controllers: [
+			{
+				id: 'Meta Quest Touch Plus (Left)',
+				buttonNum: 7,
+				primaryButtonIndex: 1,
+				primarySqueezeButtonIndex: 2,
+				hasPosition: true,
+				hasRotation: true,
+				hasSqueezeButton: true,
+				handedness: 'left',
+			},
+			{
+				id: 'Meta Quest Touch Plus (Right)',
+				buttonNum: 7,
+				primaryButtonIndex: 1,
+				primarySqueezeButtonIndex: 2,
+				hasPosition: true,
+				hasRotation: true,
+				hasSqueezeButton: true,
+				handedness: 'right',
+			},
+		],
+		polyfillInputMapping: {
+			axes: [2, 3, 0, 1],
+			buttons: [1, 2, null, 0, 3, 4, null],
+		},
+	},
 };

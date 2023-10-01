@@ -88,7 +88,7 @@ export class EmulatorSettings {
 		this.stereoOn = false;
 		this.actionMappingOn = true;
 		this.defaultPose = DEFAULT_TRANSFORMS;
-		this.deviceKey = 'Meta Quest Pro';
+		this.deviceKey = 'Meta Quest 3';
 		this.keyboardMappingOn = true;
 		this.roomDimension = { x: 6, y: 3, z: 6 };
 		this.polyfillExcludes = new Set();
@@ -109,7 +109,7 @@ export class EmulatorSettings {
 				this.stereoOn = settings?.stereoOn ?? false;
 				this.actionMappingOn = settings?.actionMappingOn ?? true;
 				this.defaultPose = settings?.defaultPose ?? DEFAULT_TRANSFORMS;
-				this.deviceKey = settings?.deviceKey ?? 'Meta Quest Pro';
+				this.deviceKey = settings?.deviceKey ?? 'Meta Quest 3';
 				this.keyboardMappingOn = settings?.keyboardMappingOn ?? true;
 				this.roomDimension = settings?.roomDimension ?? { x: 6, y: 3, z: 6 };
 				this.polyfillExcludes = new Set(settings?.polyfillExcludes ?? []);
