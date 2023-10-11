@@ -37,7 +37,7 @@ export default class HandXRInputSource {
 		return 'tracked-pointer';
 	}
 
-	updateFromGamepad(gamepad) {
+	updateFromGamepad(gamepad, pinchValue) {
 		if (this.nativeGamepad !== gamepad) {
 			this.nativeGamepad = gamepad;
 			if (gamepad) {
@@ -54,6 +54,14 @@ export default class HandXRInputSource {
 
 		if (this.gamepad) {
 			this.gamepad._update();
+			this.gamepad[PRIVATE].buttons = [
+				{
+					pressed: pinchValue == 1,
+					touched: pinchValue > 0,
+					value: pinchValue,
+				},
+			];
+			this.gamepad[PRIVATE].axes = [];
 		}
 	}
 

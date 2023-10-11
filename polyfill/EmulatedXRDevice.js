@@ -314,7 +314,11 @@ export default class EmulatedXRDevice extends XRDevice {
 				const inputSourceImpl = this.gamepadInputSources[i];
 				const handInputImpl = this.handInputSources[i];
 				inputSourceImpl.updateFromGamepad(gamepad);
-				handInputImpl.updateFromGamepad(gamepad);
+				const handedness = handInputImpl.handedness;
+				const pinchValue = this.handPoseData[handedness]
+					? this.handPoseData[handedness].pinchValue
+					: 0;
+				handInputImpl.updateFromGamepad(gamepad, pinchValue);
 				if (inputSourceImpl.primaryButtonIndex !== -1) {
 					const primaryActionPressed =
 						gamepad.buttons[inputSourceImpl.primaryButtonIndex].pressed;
