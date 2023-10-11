@@ -407,6 +407,14 @@ export default class CustomWebXRPolyfill extends WebXRPolyfill {
 			return Promise.resolve(source);
 		};
 
+		Object.defineProperty(XRSession.prototype, 'enabledFeatures', {
+			get: function () {
+				const device = this[XRSESSION_PRIVATE].device;
+				const session = device.sessions.get(this[XRSESSION_PRIVATE].id);
+				return Object.freeze(Array.from(session.enabledFeatures));
+			},
+		});
+
 		XRFrame.prototype.getHitTestResults = function (hitTestSource) {
 			const device = this.session[XRSESSION_PRIVATE].device;
 			const hitTestResults = device.getHitTestResults(hitTestSource);
