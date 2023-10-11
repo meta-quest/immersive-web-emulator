@@ -19,6 +19,7 @@ export default class HandXRInputSource {
 		this.outputMatrix = mat4.create();
 		this.primaryActionPressed = false;
 		this.handedness = '';
+		this.targetRayMode = 'gaze';
 		this.armModel = null;
 
 		this.hand = new XRHand(this.inputSource);
@@ -31,10 +32,6 @@ export default class HandXRInputSource {
 			'generic-hand-select',
 			'generic-trigger',
 		];
-	}
-
-	get targetRayMode() {
-		return 'tracked-pointer';
 	}
 
 	updateFromGamepad(gamepad, pinchValue) {
@@ -62,6 +59,14 @@ export default class HandXRInputSource {
 				},
 			];
 			this.gamepad[PRIVATE].axes = [];
+		}
+
+		if (gamepad.pose) {
+			this.targetRayMode = 'tracked-pointer';
+			this.emulatedPosition = !gamepad.pose.hasPosition;
+		} else if (gamepad.hand === '') {
+			this.targetRayMode = 'gaze';
+			this.emulatedPosition = false;
 		}
 	}
 
