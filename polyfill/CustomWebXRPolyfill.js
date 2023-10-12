@@ -415,6 +415,18 @@ export default class CustomWebXRPolyfill extends WebXRPolyfill {
 			},
 		});
 
+		Object.defineProperty(XRSession.prototype, 'inputSources', {
+			get: function () {
+				const device = this[XRSESSION_PRIVATE].device;
+				const inputSources = device.getInputSources();
+				const session = device.sessions.get(this[XRSESSION_PRIVATE].id);
+				if (!session.enabledFeatures.has('hand-tracking')) {
+					return inputSources.filter((inputSource) => inputSource.hand == null);
+				}
+				return inputSources;
+			},
+		});
+
 		XRFrame.prototype.getHitTestResults = function (hitTestSource) {
 			const device = this.session[XRSESSION_PRIVATE].device;
 			const hitTestResults = device.getHitTestResults(hitTestSource);
