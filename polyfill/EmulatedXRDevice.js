@@ -245,6 +245,10 @@ export default class EmulatedXRDevice extends XRDevice {
 			context.clearStencil(currentClearStencil);
 		}
 
+		this.gamepads.forEach((gamepad) => {
+			gamepad.connected = session.immersive;
+		});
+
 		if (session.vr || (session.ar && session.immersive)) {
 			// @TODO: proper FOV
 			const aspect = (width * (this.stereoEffectEnabled ? 0.5 : 1.0)) / height;
