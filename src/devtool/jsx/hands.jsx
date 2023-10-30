@@ -46,6 +46,7 @@ export default function HandPanel({ deviceKey }) {
 						<img
 							src={`./assets/images/${strings.name}.png`}
 							className="control-icon"
+							decoding="async"
 						/>
 						<span className="control-label">{strings.displayName}</span>
 					</div>
@@ -82,7 +83,7 @@ export default function HandPanel({ deviceKey }) {
 										className="btn special-button"
 										onClick={onPressAnalog}
 									>
-										<img src="./assets/images/hand-pose.png" />
+										<img src="./assets/images/hand-pose.png" decoding="async" />
 									</button>
 									<input
 										ref={rangeRef}

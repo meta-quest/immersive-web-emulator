@@ -114,6 +114,7 @@ export default function HeadsetBar({ device }) {
 								<img
 									src="./assets/images/polyfill-on.png"
 									className="action-icon"
+									decoding="async"
 								/>
 								Polyfill
 							</button>
@@ -141,7 +142,7 @@ export default function HeadsetBar({ device }) {
 									(showDropDown ? ' button-pressed' : '')
 								}
 								onClick={() => {
-									setShowDropDown(!showDropDown);
+									setShowDropDown((prevShowDropDown) => !prevShowDropDown);
 								}}
 							>
 								<img

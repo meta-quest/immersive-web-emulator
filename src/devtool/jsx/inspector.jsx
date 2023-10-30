@@ -17,6 +17,12 @@ import { EmulatorSettings } from '../js/emulatorStates';
 import React from 'react';
 import { changeRoomDimension } from '../js/messenger';
 
+
+function fixNumber(rawValue) {
+	const value = Number(rawValue);
+	return (value >= 0 ? '\xa0' : '') + value.toFixed(2);
+}
+
 export default function Inspector({ device, inputMode }) {
 	const sceneContainerRef = React.useRef();
 	const meshWidthRef = React.useRef();
@@ -35,10 +41,6 @@ export default function Inspector({ device, inputMode }) {
 		});
 	});
 
-	function fixNumber(rawValue) {
-		const value = Number(rawValue);
-		return (value >= 0 ? '\xa0' : '') + value.toFixed(2);
-	}
 
 	React.useEffect(() => {
 		sceneContainerRef.current.appendChild(device.canvas);
@@ -58,7 +60,7 @@ export default function Inspector({ device, inputMode }) {
 			<div id="transform-component">
 				<button
 					onClick={() => {
-						setShowTransforms(!showTransforms);
+						setShowTransforms((prevShowTransforms) => !prevShowTransforms);
 						setShowRoomSettings(false);
 						setShowMeshSettings(false);
 					}}
@@ -68,7 +70,7 @@ export default function Inspector({ device, inputMode }) {
 				</button>
 				<button
 					onClick={() => {
-						setShowRoomSettings(!showRoomSettings);
+						setShowRoomSettings((prevShowRoomSettings) => !prevShowRoomSettings);
 						setShowTransforms(false);
 						setShowMeshSettings(false);
 					}}
@@ -78,7 +80,7 @@ export default function Inspector({ device, inputMode }) {
 				</button>
 				<button
 					onClick={() => {
-						setShowMeshSettings(!showMeshSettings);
+						setShowMeshSettings((prevShowMeshSettings) => !prevShowMeshSettings);
 						setShowRoomSettings(false);
 						setShowTransforms(false);
 					}}
@@ -101,6 +103,7 @@ export default function Inspector({ device, inputMode }) {
 												: CONTROLLER_STRINGS[deviceKey].name
 										}.png`}
 										className="control-icon"
+										decoding="async"
 									/>
 								</div>
 								<div className="col-10 transform-body">
@@ -144,6 +147,7 @@ export default function Inspector({ device, inputMode }) {
 							<img
 								src="./assets/images/roomscale.png"
 								className="control-icon"
+								decoding="async"
 							/>
 						</div>
 						<div className="col-10 transform-body">
