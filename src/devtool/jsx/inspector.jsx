@@ -91,7 +91,12 @@ export default function Inspector({ device, inputMode }) {
 						const deviceName = OBJECT_NAME[deviceKey];
 						return (
 							<div key={deviceKey} className="row transform-card">
-								<div className="col-2 transform-icon d-flex justify-content-center align-items-center">
+								<button
+									className="col-2 transform-icon d-flex justify-content-center align-items-center"
+									onClick={() => {
+										device.toggleControlMode(deviceKey);
+									}}
+								>
 									<img
 										src={`./assets/images/${
 											deviceKey === DEVICE.HEADSET
@@ -102,7 +107,7 @@ export default function Inspector({ device, inputMode }) {
 										}.png`}
 										className="control-icon"
 									/>
-								</div>
+								</button>
 								<div className="col-10 transform-body">
 									<div className="row">
 										<div className="value">
