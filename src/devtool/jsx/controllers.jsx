@@ -235,6 +235,7 @@ export default function ControllerPanel({ deviceKey }) {
 											'.png'
 										}
 										className="control-icon"
+										decoding="async"
 									/>
 									<span className="control-label">{controlName}</span>
 								</div>
