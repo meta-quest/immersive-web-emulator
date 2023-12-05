@@ -198,7 +198,12 @@ export default class EmulatedDevice extends EventEmitter {
 	}
 
 	addMesh(width, height, depth, semanticLabel, idOverride = null) {
-		if (!isNumber(width) || !isNumber(height) || !isNumber(depth)) {
+		if (
+			!isNumber(width) ||
+			!isNumber(height) ||
+			!isNumber(depth) ||
+			width * height * depth == 0
+		) {
 			return;
 		}
 		const mesh = new THREE.Mesh(
