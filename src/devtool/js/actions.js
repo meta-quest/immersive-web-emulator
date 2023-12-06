@@ -22,7 +22,7 @@ export const EMULATOR_ACTIONS = {
 	INPUT_MODE_CHANGE: 'ea-input-mode-change',
 	HAND_POSE_CHANGE: 'ea-hand-pose-change',
 	PINCH_VALUE_CHANGE: 'ea-pinch-value-change',
-	MESHES_CHANGE: 'ea-meshes-change',
+	USER_OBJECTS_CHANGE: 'ea-user-objects-change',
 };
 
 /**
@@ -42,7 +42,7 @@ export const POLYFILL_ACTIONS = {
 	INPUT_MODE_CHANGE: 'pa-input-mode-change',
 	HAND_POSE_CHANGE: 'pa-hand-pose-change',
 	PINCH_VALUE_CHANGE: 'pa-pinch-value-change',
-	MESHES_CHANGE: 'pa-meshes-change',
+	USER_OBJECTS_CHANGE: 'pa-user-objects-change',
 };
 
 /**

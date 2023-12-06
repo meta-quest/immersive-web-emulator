@@ -9,6 +9,7 @@ import {
 	MeshBasicMaterial,
 	Object3D,
 	PerspectiveCamera,
+	PlaneGeometry,
 	Raycaster,
 	Scene,
 	Vector3,
@@ -220,7 +221,7 @@ export default class XRScene {
 		this.hitTestMarker = new Object3D();
 		this.hitTestMarker.rotateX(-Math.PI / 2);
 		this.hitTestTarget.add(this.hitTestMarker);
-		this.meshes = {};
+		this.userObjects = {};
 	}
 
 	inject(canvasContainer) {
@@ -280,44 +281,90 @@ export default class XRScene {
 	}
 
 	get xrPlanes() {
-		return this.roomFactory.xrPlanes;
+		return [
+			...this.roomFactory.xrPlanes,
+			...Object.values(this.userObjects)
+				.filter((object) => object.userData.type === 'plane')
+				.map((object) => object.userData.xrObjectRef),
+		];
 	}
 
 	get xrMeshes() {
 		return new Set(
-			Object.values(this.meshes).map((mesh) => mesh.userData.xrMeshRef),
+			Object.values(this.userObjects)
+				.filter((object) => object.userData.type === 'mesh')
+				.map((object) => object.userData.xrObjectRef),
 		);
 	}
 
-	updateMeshes(meshes) {
-		Object.entries(meshes).forEach(([meshId, meshData]) => {
-			const { width, height, depth, semanticLabel, position, quaternion } =
-				meshData;
-			if (!this.meshes[meshId]) {
-				const mesh = new Mesh(
-					new BoxGeometry(width, height, depth),
-					new MeshBasicMaterial({ color: 0xffffff * Math.random() }),
-				);
-				mesh.userData = { semanticLabel };
-				this.meshes[meshId] = mesh;
-				this.scene.add(mesh);
-				mesh.userData.xrMeshRef = buildXRMesh(mesh);
-			}
-			this.meshes[meshId].position.fromArray(position);
-			this.meshes[meshId].quaternion.fromArray(quaternion);
-			this.meshes[meshId].userData.xrMeshRef._updateMatrix(
+	updateUserObjects(objects) {
+		Object.entries(objects).forEach(([userObjectId, objectData]) => {
+			const {
+				type,
+				width,
+				height,
+				depth,
+				isVertical,
+				semanticLabel,
 				position,
 				quaternion,
-			);
+			} = objectData;
+			let object;
+			if (type === 'mesh') {
+				if (!this.userObjects[userObjectId]) {
+					const mesh = new Mesh(
+						new BoxGeometry(width, height, depth),
+						new MeshBasicMaterial({ color: 0xffffff * Math.random() }),
+					);
+					mesh.userData = { type, semanticLabel };
+					this.userObjects[userObjectId] = mesh;
+					this.scene.add(mesh);
+					mesh.userData.xrObjectRef = buildXRMesh(mesh);
+				}
+				object = this.userObjects[userObjectId];
+			} else if (type === 'plane') {
+				if (!this.userObjects[userObjectId]) {
+					const planeGeometry = new PlaneGeometry(width, height);
+					planeGeometry.rotateX(Math.PI / 2);
+					const mesh = new Mesh(
+						planeGeometry,
+						new MeshBasicMaterial({
+							color: 0xffffff * Math.random(),
+							side: DoubleSide,
+						}),
+					);
+					mesh.userData = { type, semanticLabel };
+					this.userObjects[userObjectId] = mesh;
+					this.scene.add(mesh);
+					mesh.userData.xrObjectRef = buildXRPlane(
+						width / 2,
+						height / 2,
+						position,
+						{
+							orientation: isVertical
+								? XRPlaneOrientation.Vertical
+								: XRPlaneOrientation.Horizontal,
+							quaternion,
+							semanticLabel,
+						},
+					);
+				}
+				object = this.userObjects[userObjectId];
+			}
+			if (object) {
+				object.position.fromArray(position);
+				object.quaternion.fromArray(quaternion);
+				object.userData.xrObjectRef._updateMatrix(position, quaternion);
+			}
 		});
 
-		Object.keys(this.meshes)
+		Object.keys(this.userObjects)
 			.filter((key) => {
-				!Object.keys(meshes).includes(key);
+				!Object.keys(objects).includes(key);
 			})
 			.forEach((key) => {
-				this.meshes[key].parent.remove(this.meshes[key]);
-				delete this.meshes[key];
+				this.userObjects[key].parent.remove(this.userObjects[key]);
+				delete this.userObjects[key];
 			});
 	}
 }

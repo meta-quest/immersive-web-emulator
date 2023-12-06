@@ -1,3 +1,5 @@
+import { mat4 } from 'gl-matrix';
+
 /**
  * @see https://immersive-web.github.io/real-world-geometry/plane-detection.html#plane-orientation
  * @enum {string}
@@ -64,6 +66,17 @@ export class XRPlane {
 	 */
 	get semanticLabel() {
 		return this._semanticLabel;
+	}
+
+	/**
+	 * non-standard
+	 * @param {number[]} position
+	 * @param {number[]} quaternion
+	 */
+	_updateMatrix(position, quaternion) {
+		const meshMatrix = new Float32Array(16);
+		mat4.fromRotationTranslation(meshMatrix, quaternion, position);
+		this._planeSpace._baseMatrix = meshMatrix;
 	}
 }
 

@@ -103,10 +103,10 @@ const connection = {
 					});
 					break;
 
-				case EMULATOR_ACTIONS.MESHES_CHANGE:
+				case EMULATOR_ACTIONS.USER_OBJECTS_CHANGE:
 					EmulatorSettings.instance.load().then(() => {
-						triggerPolyfillAction(POLYFILL_ACTIONS.MESHES_CHANGE, {
-							meshes: EmulatorSettings.instance.meshes,
+						triggerPolyfillAction(POLYFILL_ACTIONS.USER_OBJECTS_CHANGE, {
+							objects: EmulatorSettings.instance.userObjects,
 						});
 					});
 					break;
@@ -148,8 +148,8 @@ window.addEventListener(
 				sendActionToEmulator(CLIENT_ACTIONS.PING);
 			}, 5000);
 			EmulatorSettings.instance.load().then(() => {
-				triggerPolyfillAction(POLYFILL_ACTIONS.MESHES_CHANGE, {
-					meshes: EmulatorSettings.instance.meshes,
+				triggerPolyfillAction(POLYFILL_ACTIONS.USER_OBJECTS_CHANGE, {
+					objects: EmulatorSettings.instance.userObjects,
 				});
 			});
 		}

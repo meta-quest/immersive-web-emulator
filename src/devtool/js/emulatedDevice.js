@@ -21,7 +21,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 import { generateUUID } from 'three/src/math/MathUtils.js';
-import { updateMeshes } from './messenger';
+import { updateUserObjects } from './messenger';
 
 const SELECTION_MOUSE_DOWN_THRESHOLD = 300;
 
@@ -197,14 +197,7 @@ export default class EmulatedDevice extends EventEmitter {
 		this.render();
 	}
 
-	addObject(geometry, semanticLabel, idOverride = null) {
-		const object = new THREE.Mesh(
-			geometry,
-			new THREE.MeshPhongMaterial({
-				color: 0xffffff * Math.random(),
-				side: THREE.DoubleSide,
-			}),
-		);
+	addObject(object, semanticLabel, idOverride = null) {
 		this._scene.add(object);
 		const controls = new TransformControls(this._camera, this.canvas);
 		controls.attach(object);
@@ -233,7 +226,7 @@ export default class EmulatedDevice extends EventEmitter {
 		if (idOverride == null) {
 			this.render();
 		}
-		return { object, userObjectId };
+		return userObjectId;
 	}
 
 	addMesh(width, height, depth, semanticLabel, idOverride = null) {
@@ -245,12 +238,14 @@ export default class EmulatedDevice extends EventEmitter {
 		) {
 			return;
 		}
-		const geometry = new THREE.BoxGeometry(width, height, depth);
-		const { object, userObjectId } = this.addObject(
-			geometry,
-			semanticLabel,
-			idOverride,
+		const object = new THREE.Mesh(
+			new THREE.BoxGeometry(width, height, depth),
+			new THREE.MeshPhongMaterial({
+				color: 0xffffff * Math.random(),
+				side: THREE.DoubleSide,
+			}),
 		);
+		const userObjectId = this.addObject(object, semanticLabel, idOverride);
 		EmulatorSettings.instance.userObjects[userObjectId] = {
 			type: 'mesh',
 			width,
@@ -260,7 +255,7 @@ export default class EmulatedDevice extends EventEmitter {
 			position: object.position.toArray(),
 			quaternion: object.quaternion.toArray(),
 		};
-		EmulatorSettings.instance.write().then(updateMeshes);
+		EmulatorSettings.instance.write().then(updateUserObjects);
 		return object;
 	}
 
@@ -268,15 +263,19 @@ export default class EmulatedDevice extends EventEmitter {
 		if (!isNumber(width) || !isNumber(height) || width * height == 0) {
 			return;
 		}
-		const geometry = new THREE.PlaneGeometry(width, height);
-		if (!isVertical) {
-			geometry.rotateX(Math.PI / 2);
-		}
-		const { object, userObjectId } = this.addObject(
-			geometry,
-			semanticLabel,
-			idOverride,
+		const planeGeometry = new THREE.PlaneGeometry(width, height);
+		planeGeometry.rotateX(Math.PI / 2);
+		const object = new THREE.Mesh(
+			planeGeometry,
+			new THREE.MeshPhongMaterial({
+				color: 0xffffff * Math.random(),
+				side: THREE.DoubleSide,
+			}),
 		);
+		if (isVertical) {
+			object.rotateX(Math.PI / 2);
+		}
+		const userObjectId = this.addObject(object, semanticLabel, idOverride);
 		EmulatorSettings.instance.userObjects[userObjectId] = {
 			type: 'plane',
 			width,
@@ -286,7 +285,7 @@ export default class EmulatedDevice extends EventEmitter {
 			position: object.position.toArray(),
 			quaternion: object.quaternion.toArray(),
 		};
-		EmulatorSettings.instance.write().then(updateMeshes);
+		EmulatorSettings.instance.write().then(updateUserObjects);
 		return object;
 	}
 
@@ -304,7 +303,7 @@ export default class EmulatedDevice extends EventEmitter {
 					delete this._transformControls[key];
 					this.render();
 					delete EmulatorSettings.instance.userObjects[key];
-					EmulatorSettings.instance.write().then(updateMeshes);
+					EmulatorSettings.instance.write().then(updateUserObjects);
 				}
 			}
 		});
@@ -324,7 +323,7 @@ export default class EmulatedDevice extends EventEmitter {
 				}
 			},
 		);
-		EmulatorSettings.instance.write().then(updateMeshes);
+		EmulatorSettings.instance.write().then(updateUserObjects);
 	}
 
 	_recoverObjects() {

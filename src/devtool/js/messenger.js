@@ -155,6 +155,6 @@ export const reloadInspectedTab = () => {
 	executeAction(EMULATOR_ACTIONS.EXCLUDE_POLYFILL);
 };
 
-export const updateMeshes = () => {
-	executeAction(EMULATOR_ACTIONS.MESHES_CHANGE);
+export const updateUserObjects = () => {
+	executeAction(EMULATOR_ACTIONS.USER_OBJECTS_CHANGE);
 };
