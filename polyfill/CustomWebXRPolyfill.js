@@ -173,7 +173,11 @@ export default class CustomWebXRPolyfill extends WebXRPolyfill {
 
 		Object.defineProperty(XRSession.prototype, 'persistentAnchors', {
 			get: function () {
-				if (this.persistentAnchorsMap != null) {
+				const device = this[XRSESSION_PRIVATE].device;
+				const session = device.sessions.get(this[XRSESSION_PRIVATE].id);
+				if (!session.enabledFeatures.has('anchors')) {
+					return [];
+				} else if (this.persistentAnchorsMap != null) {
 					return Object.freeze(Array.from(this.persistentAnchorsMap.keys()));
 				} else {
 					return [];
@@ -182,6 +186,16 @@ export default class CustomWebXRPolyfill extends WebXRPolyfill {
 		});
 
 		XRSession.prototype.restorePersistentAnchor = async function (uuid) {
+			const device = this[XRSESSION_PRIVATE].device;
+			const session = device.sessions.get(this[XRSESSION_PRIVATE].id);
+			if (!session.enabledFeatures.has('anchors')) {
+				return Promise.reject(
+					new DOMException(
+						"Failed to execute 'restorePersistentAnchor' on 'XRFrame': Anchors feature is not supported by the session.",
+						'NotSupportedError',
+					),
+				);
+			}
 			if (!this.persistentAnchors.includes(uuid)) {
 				throw new DOMException(
 					'specified persistent anchor cannot be found',
@@ -199,6 +213,16 @@ export default class CustomWebXRPolyfill extends WebXRPolyfill {
 		};
 
 		XRSession.prototype.deletePersistentAnchor = async function (uuid) {
+			const device = this[XRSESSION_PRIVATE].device;
+			const session = device.sessions.get(this[XRSESSION_PRIVATE].id);
+			if (!session.enabledFeatures.has('anchors')) {
+				return Promise.reject(
+					new DOMException(
+						"Failed to execute 'deletePersistentAnchor' on 'XRFrame': Anchors feature is not supported by the session.",
+						'NotSupportedError',
+					),
+				);
+			}
 			if (!this.persistentAnchors.includes(uuid)) {
 				throw new DOMException(
 					'specified persistent anchor cannot be found',
@@ -223,9 +247,18 @@ export default class CustomWebXRPolyfill extends WebXRPolyfill {
 		 */
 		XRFrame.prototype.createAnchor = async function (pose, space) {
 			const session = this[XRFRAME_PRIVATE].session;
+			const device = this[XRFRAME_PRIVATE].device;
+			const xrSession = device.sessions.get(session[XRSESSION_PRIVATE].id);
+			if (!xrSession.enabledFeatures.has('anchors')) {
+				return Promise.reject(
+					new DOMException(
+						"Failed to execute 'createAnchor' on 'XRFrame': Anchors feature is not supported by the session.",
+						'NotSupportedError',
+					),
+				);
+			}
 			const localRefSpace = await session.requestReferenceSpace('local');
 
-			const device = this[XRFRAME_PRIVATE].device;
 			let currentSpaceTransform = null;
 			if (
 				space._specialType === 'target-ray' ||
@@ -264,8 +297,14 @@ export default class CustomWebXRPolyfill extends WebXRPolyfill {
 
 		Object.defineProperty(XRFrame.prototype, 'trackedAnchors', {
 			get: function () {
-				const session = this[XRFRAME_PRIVATE].session;
-				return new XRAnchorSet(session.getTrackedAnchors());
+				const xrSession = this[XRFRAME_PRIVATE].session;
+				const device = this[XRFRAME_PRIVATE].device;
+				const session = device.sessions.get(xrSession[XRSESSION_PRIVATE].id);
+				if (!session.enabledFeatures.has('anchors')) {
+					return new XRAnchorSet();
+				} else {
+					return new XRAnchorSet(session.getTrackedAnchors());
+				}
 			},
 		});
 
