@@ -116,8 +116,8 @@ export default class EmulatedDevice extends EventEmitter {
 			this._scene.add(controls);
 		});
 
-		this._meshes = {};
-		this.recoverMeshes();
+		this._userObjects = {};
+		this._recoverObjects();
 
 		// check device node selection by raycast
 		this._raycaster = new THREE.Raycaster();
@@ -165,14 +165,14 @@ export default class EmulatedDevice extends EventEmitter {
 		const intersect = this._raycaster.intersectObjects(
 			[
 				...Object.values(emulatorStates.assetNodes),
-				...Object.values(this._meshes),
+				...Object.values(this._userObjects),
 			],
 			true,
 		)[0];
 
 		return (
 			intersect?.object.userData['deviceKey'] ??
-			intersect?.object.userData['meshId']
+			intersect?.object.userData['userObjectId']
 		);
 	}
 
@@ -197,6 +197,45 @@ export default class EmulatedDevice extends EventEmitter {
 		this.render();
 	}
 
+	addObject(geometry, semanticLabel, idOverride = null) {
+		const object = new THREE.Mesh(
+			geometry,
+			new THREE.MeshPhongMaterial({
+				color: 0xffffff * Math.random(),
+				side: THREE.DoubleSide,
+			}),
+		);
+		this._scene.add(object);
+		const controls = new TransformControls(this._camera, this.canvas);
+		controls.attach(object);
+		controls.enabled = false;
+		controls.visible = false;
+		controls.addEventListener(
+			'mouseDown',
+			() => (this._orbitControls.enabled = false),
+		);
+		controls.addEventListener('mouseUp', () => {
+			this._orbitControls.enabled = true;
+			this._updateObjects();
+		});
+		controls.addEventListener('change', () => {
+			this.render();
+		});
+		this._scene.add(controls);
+		const userObjectId = idOverride ?? generateUUID();
+		this._transformControls[userObjectId] = controls;
+		this._userObjects[userObjectId] = object;
+		const label = document.createElement('div');
+		label.classList.add('semantic-label');
+		label.innerHTML = semanticLabel;
+		this._labelContainer.appendChild(label);
+		object.userData = { userObjectId, controls, semanticLabel, label };
+		if (idOverride == null) {
+			this.render();
+		}
+		return { object, userObjectId };
+	}
+
 	addMesh(width, height, depth, semanticLabel, idOverride = null) {
 		if (
 			!isNumber(width) ||
@@ -206,93 +245,123 @@ export default class EmulatedDevice extends EventEmitter {
 		) {
 			return;
 		}
-		const mesh = new THREE.Mesh(
-			new THREE.BoxGeometry(width, height, depth),
-			new THREE.MeshPhongMaterial({ color: 0xffffff * Math.random() }),
+		const geometry = new THREE.BoxGeometry(width, height, depth);
+		const { object, userObjectId } = this.addObject(
+			geometry,
+			semanticLabel,
+			idOverride,
 		);
-		this._scene.add(mesh);
-		const controls = new TransformControls(this._camera, this.canvas);
-		controls.attach(mesh);
-		controls.enabled = false;
-		controls.visible = false;
-		controls.addEventListener(
-			'mouseDown',
-			() => (this._orbitControls.enabled = false),
-		);
-		controls.addEventListener('mouseUp', () => {
-			this._orbitControls.enabled = true;
-			this.updateMeshes();
-		});
-		controls.addEventListener('change', () => {
-			this.render();
-		});
-		this._scene.add(controls);
-		const meshId = idOverride ?? generateUUID();
-		this._transformControls[meshId] = controls;
-		this._meshes[meshId] = mesh;
-		EmulatorSettings.instance.meshes[meshId] = {
+		EmulatorSettings.instance.userObjects[userObjectId] = {
+			type: 'mesh',
 			width,
 			height,
 			depth,
 			semanticLabel,
-			position: mesh.position.toArray(),
-			quaternion: mesh.quaternion.toArray(),
+			position: object.position.toArray(),
+			quaternion: object.quaternion.toArray(),
 		};
 		EmulatorSettings.instance.write().then(updateMeshes);
-		const label = document.createElement('div');
-		label.classList.add('semantic-label');
-		label.innerHTML = semanticLabel;
-		this._labelContainer.appendChild(label);
-		mesh.userData = { meshId, controls, semanticLabel, label };
-		if (idOverride == null) {
-			this.render();
-		}
-		return mesh;
+		return object;
 	}
 
-	deleteSelectedMesh() {
+	addPlane(width, height, isVertical, semanticLabel, idOverride = null) {
+		if (!isNumber(width) || !isNumber(height) || width * height == 0) {
+			return;
+		}
+		const geometry = new THREE.PlaneGeometry(width, height);
+		if (!isVertical) {
+			geometry.rotateX(Math.PI / 2);
+		}
+		const { object, userObjectId } = this.addObject(
+			geometry,
+			semanticLabel,
+			idOverride,
+		);
+		EmulatorSettings.instance.userObjects[userObjectId] = {
+			type: 'plane',
+			width,
+			height,
+			isVertical,
+			semanticLabel,
+			position: object.position.toArray(),
+			quaternion: object.quaternion.toArray(),
+		};
+		EmulatorSettings.instance.write().then(updateMeshes);
+		return object;
+	}
+
+	deleteSelectedObject() {
 		Object.entries(this._transformControls).forEach(([key, controls]) => {
 			if (controls.enabled) {
-				const mesh = this._meshes[key];
-				if (mesh) {
-					const { label } = mesh.userData;
+				const object = this._userObjects[key];
+				if (object) {
+					const { label } = object.userData;
 					this._labelContainer.removeChild(label);
 					controls.detach();
-					this._scene.remove(mesh);
-					delete this._meshes[key];
+					this._scene.remove(object);
+					delete this._userObjects[key];
 					controls.dispose();
 					delete this._transformControls[key];
 					this.render();
-					delete EmulatorSettings.instance.meshes[key];
+					delete EmulatorSettings.instance.userObjects[key];
 					EmulatorSettings.instance.write().then(updateMeshes);
 				}
 			}
 		});
 	}
 
-	updateMeshes() {
-		Object.entries(this._transformControls).forEach(([meshId, controls]) => {
-			if (controls.enabled) {
-				const mesh = this._meshes[meshId];
-				if (mesh) {
-					EmulatorSettings.instance.meshes[meshId].position =
-						mesh.position.toArray();
-					EmulatorSettings.instance.meshes[meshId].quaternion =
-						mesh.quaternion.toArray();
+	_updateObjects() {
+		Object.entries(this._transformControls).forEach(
+			([userObjectId, controls]) => {
+				if (controls.enabled) {
+					const object = this._userObjects[userObjectId];
+					if (object) {
+						EmulatorSettings.instance.userObjects[userObjectId].position =
+							object.position.toArray();
+						EmulatorSettings.instance.userObjects[userObjectId].quaternion =
+							object.quaternion.toArray();
+					}
 				}
-			}
-		});
+			},
+		);
 		EmulatorSettings.instance.write().then(updateMeshes);
 	}
 
-	recoverMeshes() {
-		Object.entries(EmulatorSettings.instance.meshes).forEach(
-			([meshId, meshData]) => {
-				const { width, height, depth, semanticLabel, position, quaternion } =
-					meshData;
-				const mesh = this.addMesh(width, height, depth, semanticLabel, meshId);
-				mesh.position.fromArray(position);
-				mesh.quaternion.fromArray(quaternion);
+	_recoverObjects() {
+		Object.entries(EmulatorSettings.instance.userObjects).forEach(
+			([userObjectId, objectData]) => {
+				const {
+					type,
+					width,
+					height,
+					depth,
+					isVertical,
+					semanticLabel,
+					position,
+					quaternion,
+				} = objectData;
+				let object;
+				if (type === 'mesh') {
+					object = this.addMesh(
+						width,
+						height,
+						depth,
+						semanticLabel,
+						userObjectId,
+					);
+				} else if (type === 'plane') {
+					object = this.addPlane(
+						width,
+						height,
+						isVertical,
+						semanticLabel,
+						userObjectId,
+					);
+				}
+				if (object) {
+					object.position.fromArray(position);
+					object.quaternion.fromArray(quaternion);
+				}
 			},
 		);
 	}
@@ -375,10 +444,10 @@ export default class EmulatedDevice extends EventEmitter {
 		const sceneContainer = this._renderer.domElement.parentElement;
 		if (!sceneContainer) return;
 
-		Object.values(this._meshes).forEach((mesh) => {
-			const { label } = mesh.userData;
+		Object.values(this._userObjects).forEach((object) => {
+			const { label } = object.userData;
 			if (label) {
-				const screenVec = mesh.position.clone().project(this._camera);
+				const screenVec = object.position.clone().project(this._camera);
 				screenVec.x = ((screenVec.x + 1) * sceneContainer.offsetWidth) / 2;
 				screenVec.y = (-(screenVec.y - 1) * sceneContainer.offsetHeight) / 2;
 				label.style.top = `${screenVec.y}px`;

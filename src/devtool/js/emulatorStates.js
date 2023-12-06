@@ -97,7 +97,7 @@ export class EmulatorSettings {
 			'left-hand': 'relaxed',
 			'right-hand': 'relaxed',
 		};
-		this.meshes = {};
+		this.userObjects = {};
 	}
 
 	load() {
@@ -115,7 +115,7 @@ export class EmulatorSettings {
 				this.polyfillExcludes = new Set(settings?.polyfillExcludes ?? []);
 				this.inputMode = settings?.inputMode ?? 'controllers';
 				this.handPoses = settings?.handPoses ?? this.handPoses;
-				this.meshes = settings?.meshes ?? {};
+				this.userObjects = settings?.userObjects ?? {};
 				resolve(result);
 			});
 		});
@@ -133,7 +133,7 @@ export class EmulatorSettings {
 			polyfillExcludes: Array.from(this.polyfillExcludes),
 			inputMode: this.inputMode,
 			handPoses: this.handPoses,
-			meshes: this.meshes,
+			userObjects: this.userObjects,
 		});
 		return new Promise((resolve) => {
 			localStorage.set(settings, () => {

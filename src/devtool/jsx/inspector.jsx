@@ -236,11 +236,11 @@ export default function Inspector({ device, inputMode }) {
 							</select>
 							<button
 								onClick={() => {
-									device.addMesh(
-										Number(meshWidthRef.current.value),
-										Number(meshHeightRef.current.value),
-										Number(meshDepthRef.current.value),
-										meshSemanticLabelRef.current.value,
+									device.addPlane(
+										Number(planeWidthRef.current.value),
+										Number(planeHeightRef.current.value),
+										Number(planeVertical),
+										planeSemanticLabelRef.current.value,
 									);
 								}}
 							>
@@ -250,7 +250,7 @@ export default function Inspector({ device, inputMode }) {
 						<div>
 							<button
 								onClick={() => {
-									device.deleteSelectedMesh();
+									device.deleteSelectedObject();
 								}}
 								style={{ width: `${124}px` }}
 							>
@@ -305,7 +305,7 @@ export default function Inspector({ device, inputMode }) {
 						<div>
 							<button
 								onClick={() => {
-									device.deleteSelectedMesh();
+									device.deleteSelectedObject();
 								}}
 								style={{ width: `${124}px` }}
 							>
