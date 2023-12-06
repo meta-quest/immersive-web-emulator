@@ -19,12 +19,20 @@ import { changeRoomDimension } from '../js/messenger';
 
 export default function Inspector({ device, inputMode }) {
 	const sceneContainerRef = React.useRef();
+	// plane setting refs
+	const planeWidthRef = React.useRef();
+	const planeHeightRef = React.useRef();
+	const [planeVertical, setPlaneVertical] = React.useState(true);
+	const planeSemanticLabelRef = React.useRef();
+	// mesh setting refs
 	const meshWidthRef = React.useRef();
 	const meshHeightRef = React.useRef();
 	const meshDepthRef = React.useRef();
-	const semanticLabelRef = React.useRef();
+	const meshSemanticLabelRef = React.useRef();
+
 	const [showTransforms, setShowTransforms] = React.useState(true);
 	const [showRoomSettings, setShowRoomSettings] = React.useState(false);
+	const [showPlaneSettings, setShowPlaneSettings] = React.useState(false);
 	const [showMeshSettings, setShowMeshSettings] = React.useState(false);
 	const transformData = {};
 	Object.values(DEVICE).forEach((deviceKey) => {
@@ -60,6 +68,7 @@ export default function Inspector({ device, inputMode }) {
 					onClick={() => {
 						setShowTransforms(!showTransforms);
 						setShowRoomSettings(false);
+						setShowPlaneSettings(false);
 						setShowMeshSettings(false);
 					}}
 					className={showTransforms ? 'active' : ''}
@@ -70,6 +79,7 @@ export default function Inspector({ device, inputMode }) {
 					onClick={() => {
 						setShowRoomSettings(!showRoomSettings);
 						setShowTransforms(false);
+						setShowPlaneSettings(false);
 						setShowMeshSettings(false);
 					}}
 					className={showRoomSettings ? 'active' : ''}
@@ -78,9 +88,21 @@ export default function Inspector({ device, inputMode }) {
 				</button>
 				<button
 					onClick={() => {
+						setShowPlaneSettings(!showPlaneSettings);
+						setShowRoomSettings(false);
+						setShowTransforms(false);
+						setShowMeshSettings(false);
+					}}
+					className={showPlaneSettings ? 'active' : ''}
+				>
+					plane
+				</button>
+				<button
+					onClick={() => {
 						setShowMeshSettings(!showMeshSettings);
 						setShowRoomSettings(false);
 						setShowTransforms(false);
+						setShowPlaneSettings(false);
 					}}
 					className={showMeshSettings ? 'active' : ''}
 				>
@@ -176,6 +198,67 @@ export default function Inspector({ device, inputMode }) {
 						</div>
 					</div>
 				)}
+				{showPlaneSettings && (
+					<div className="mesh-menu">
+						<div>
+							<input
+								ref={planeWidthRef}
+								type="number"
+								placeholder="width"
+								min={0}
+							/>
+							<input
+								ref={planeHeightRef}
+								type="number"
+								placeholder="height"
+								min={0}
+							/>
+							<button
+								onClick={() => {
+									setPlaneVertical(!planeVertical);
+								}}
+							>
+								<img
+									src={`./assets/images/${
+										planeVertical ? 'vertical' : 'horizontal'
+									}.png`}
+									style={{ width: '1.5em', height: '1.5em' }}
+								/>
+							</button>
+						</div>
+						<div>
+							<select ref={planeSemanticLabelRef}>
+								{Object.values(SEMANTIC_LABELS).map((semanticLabel) => (
+									<option key={semanticLabel} value={semanticLabel}>
+										{semanticLabel}
+									</option>
+								))}
+							</select>
+							<button
+								onClick={() => {
+									device.addMesh(
+										Number(meshWidthRef.current.value),
+										Number(meshHeightRef.current.value),
+										Number(meshDepthRef.current.value),
+										meshSemanticLabelRef.current.value,
+									);
+								}}
+							>
+								create
+							</button>
+						</div>
+						<div>
+							<button
+								onClick={() => {
+									device.deleteSelectedMesh();
+								}}
+								style={{ width: `${124}px` }}
+							>
+								delete selected
+							</button>
+						</div>
+					</div>
+				)}
 				{showMeshSettings && (
 					<div className="mesh-menu">
 						<div>
@@ -199,7 +282,7 @@ export default function Inspector({ device, inputMode }) {
 							/>
 						</div>
 						<div>
-							<select ref={semanticLabelRef}>
+							<select ref={meshSemanticLabelRef}>
 								{Object.values(SEMANTIC_LABELS).map((semanticLabel) => (
 									<option key={semanticLabel} value={semanticLabel}>
 										{semanticLabel}
@@ -212,7 +295,7 @@ export default function Inspector({ device, inputMode }) {
 										Number(meshWidthRef.current.value),
 										Number(meshHeightRef.current.value),
 										Number(meshDepthRef.current.value),
-										semanticLabelRef.current.value,
+										meshSemanticLabelRef.current.value,
 									);
 								}}
 							>

@@ -564,6 +564,10 @@ body {
 	margin-right: 2px;
 	pointer-events: all;
 	text-align: center;
+	background-color: #252526;
+	color: white;
+	opacity: 50%;
+	vertical-align: middle;
 }
 
 .mesh-menu input[type='number'],
