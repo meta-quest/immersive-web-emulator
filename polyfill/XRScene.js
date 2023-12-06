@@ -359,9 +359,7 @@ export default class XRScene {
 		});
 
 		Object.keys(this.userObjects)
-			.filter((key) => {
-				!Object.keys(objects).includes(key);
-			})
+			.filter((key) => !Object.keys(objects).includes(key))
 			.forEach((key) => {
 				this.userObjects[key].parent.remove(this.userObjects[key]);
 				delete this.userObjects[key];
