@@ -29,7 +29,7 @@
 		"lodash": "^4.17.21",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
-		"three": "^0.147.0"
+		"three": "github:felixtrz/three.js#8b0a06e650"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.22.5",
