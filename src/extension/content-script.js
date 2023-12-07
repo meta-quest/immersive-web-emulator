@@ -182,4 +182,7 @@ EmulatorSettings.instance.load().then(() => {
 			pose: EmulatorSettings.instance.handPoses[handedness + '-hand'],
 		});
 	});
+	// actively establish connection with the service worker as soon as the page
+	// loads and the polyfill initializes
+	sendActionToEmulator(CLIENT_ACTIONS.PING);
 });
