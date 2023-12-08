@@ -298,6 +298,12 @@ export default class XRScene {
 	}
 
 	updateUserObjects(objects) {
+		// filter out hidden objects
+		[...Object.keys(objects)].forEach((userObjectId) => {
+			if (!objects[userObjectId].active) {
+				delete objects[userObjectId];
+			}
+		});
 		Object.entries(objects).forEach(([userObjectId, objectData]) => {
 			const {
 				type,

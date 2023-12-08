@@ -229,7 +229,14 @@ export default class EmulatedDevice extends EventEmitter {
 		return userObjectId;
 	}
 
-	addMesh(width, height, depth, semanticLabel, idOverride = null) {
+	addMesh(
+		width,
+		height,
+		depth,
+		semanticLabel,
+		idOverride = null,
+		active = true,
+	) {
 		if (
 			!isNumber(width) ||
 			!isNumber(height) ||
@@ -242,12 +249,13 @@ export default class EmulatedDevice extends EventEmitter {
 			new THREE.BoxGeometry(width, height, depth),
 			new THREE.MeshPhongMaterial({
 				color: 0xffffff * Math.random(),
-				side: THREE.DoubleSide,
+				transparent: true,
 			}),
 		);
 		const userObjectId = this.addObject(object, semanticLabel, idOverride);
 		EmulatorSettings.instance.userObjects[userObjectId] = {
 			type: 'mesh',
+			active: true,
 			width,
 			height,
 			depth,
@@ -255,11 +263,19 @@ export default class EmulatedDevice extends EventEmitter {
 			position: object.position.toArray(),
 			quaternion: object.quaternion.toArray(),
 		};
+		this._toggleObjectVisibility(userObjectId, active);
 		EmulatorSettings.instance.write().then(updateUserObjects);
 		return object;
 	}
 
-	addPlane(width, height, isVertical, semanticLabel, idOverride = null) {
+	addPlane(
+		width,
+		height,
+		isVertical,
+		semanticLabel,
+		idOverride = null,
+		active = true,
+	) {
 		if (!isNumber(width) || !isNumber(height) || width * height == 0) {
 			return;
 		}
@@ -270,6 +286,7 @@ export default class EmulatedDevice extends EventEmitter {
 			new THREE.MeshPhongMaterial({
 				color: 0xffffff * Math.random(),
 				side: THREE.DoubleSide,
+				transparent: true,
 			}),
 		);
 		if (isVertical) {
@@ -278,6 +295,7 @@ export default class EmulatedDevice extends EventEmitter {
 		const userObjectId = this.addObject(object, semanticLabel, idOverride);
 		EmulatorSettings.instance.userObjects[userObjectId] = {
 			type: 'plane',
+			active: true,
 			width,
 			height,
 			isVertical,
@@ -285,6 +303,7 @@ export default class EmulatedDevice extends EventEmitter {
 			position: object.position.toArray(),
 			quaternion: object.quaternion.toArray(),
 		};
+		this._toggleObjectVisibility(userObjectId, active);
 		EmulatorSettings.instance.write().then(updateUserObjects);
 		return object;
 	}
@@ -305,6 +324,33 @@ export default class EmulatedDevice extends EventEmitter {
 					delete EmulatorSettings.instance.userObjects[key];
 					EmulatorSettings.instance.write().then(updateUserObjects);
 				}
+			}
+		});
+	}
+
+	_toggleObjectVisibility(objectId, active = undefined) {
+		const object = this._userObjects[objectId];
+		if (object) {
+			const isActive =
+				active ?? !EmulatorSettings.instance.userObjects[objectId].active;
+			EmulatorSettings.instance.userObjects[objectId].active = isActive;
+			const { label, semanticLabel } = object.userData;
+			if (isActive) {
+				object.material.opacity = 1;
+				label.innerHTML = semanticLabel;
+			} else {
+				object.material.opacity = 0.4;
+				label.innerHTML = '[hidden] ' + semanticLabel;
+			}
+		}
+	}
+
+	toggleSelectedObjectVisibility() {
+		Object.entries(this._transformControls).forEach(([objectId, controls]) => {
+			if (controls.enabled) {
+				this._toggleObjectVisibility(objectId);
+				this.render();
+				EmulatorSettings.instance.write().then(updateUserObjects);
 			}
 		});
 	}
@@ -331,6 +377,7 @@ export default class EmulatedDevice extends EventEmitter {
 			([userObjectId, objectData]) => {
 				const {
 					type,
+					active,
 					width,
 					height,
 					depth,
@@ -347,6 +394,7 @@ export default class EmulatedDevice extends EventEmitter {
 						depth,
 						semanticLabel,
 						userObjectId,
+						active,
 					);
 				} else if (type === 'plane') {
 					object = this.addPlane(
@@ -355,6 +403,7 @@ export default class EmulatedDevice extends EventEmitter {
 						isVertical,
 						semanticLabel,
 						userObjectId,
+						active,
 					);
 				}
 				if (object) {

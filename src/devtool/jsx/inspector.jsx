@@ -257,6 +257,16 @@ export default function Inspector({ device, inputMode }) {
 								delete selected
 							</button>
 						</div>
+						<div>
+							<button
+								onClick={() => {
+									device.toggleSelectedObjectVisibility();
+								}}
+								style={{ width: `${124}px` }}
+							>
+								show/hide selected
+							</button>
+						</div>
 					</div>
 				)}
 				{showMeshSettings && (
@@ -310,6 +320,16 @@ export default function Inspector({ device, inputMode }) {
 								style={{ width: `${124}px` }}
 							>
 								delete selected
+							</button>
+						</div>
+						<div>
+							<button
+								onClick={() => {
+									device.toggleSelectedObjectVisibility();
+								}}
+								style={{ width: `${124}px` }}
+							>
+								show/hide selected
 							</button>
 						</div>
 					</div>
