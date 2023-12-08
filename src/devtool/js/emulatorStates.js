@@ -98,6 +98,7 @@ export class EmulatorSettings {
 			'right-hand': 'relaxed',
 		};
 		this.userObjects = {};
+		this.triggerMode = 'normal';
 	}
 
 	load() {
@@ -116,6 +117,7 @@ export class EmulatorSettings {
 				this.inputMode = settings?.inputMode ?? 'controllers';
 				this.handPoses = settings?.handPoses ?? this.handPoses;
 				this.userObjects = settings?.userObjects ?? {};
+				this.triggerMode = settings?.triggerMode ?? 'normal';
 				resolve(result);
 			});
 		});
@@ -134,6 +136,7 @@ export class EmulatorSettings {
 			inputMode: this.inputMode,
 			handPoses: this.handPoses,
 			userObjects: this.userObjects,
+			triggerMode: this.triggerMode,
 		});
 		return new Promise((resolve) => {
 			localStorage.set(settings, () => {

@@ -118,3 +118,24 @@ export const SEMANTIC_LABELS = {
 	WallArt: 'wall art',
 	Other: 'other',
 };
+
+export const TRIGGER_MODES = ['slow', 'normal', 'fast', 'turbo'];
+
+export const TRIGGER_CONFIG = {
+	slow: {
+		interval: 20,
+		holdTime: 100,
+	},
+	normal: {
+		interval: 10,
+		holdTime: 50,
+	},
+	fast: {
+		interval: 5,
+		holdTime: 10,
+	},
+	turbo: {
+		interval: 1,
+		holdTime: 1,
+	},
+};

@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { DEFAULT_TRANSFORMS, TRIGGER_MODES } from '../js/constants';
 import {
 	changeEmulatedDeviceType,
 	notifyExitImmersive,
@@ -13,7 +14,6 @@ import {
 	toggleStereoMode,
 } from '../js/messenger';
 
-import { DEFAULT_TRANSFORMS } from '../js/constants';
 import { DEVICE_DEFINITIONS } from '../js/devices';
 import { EmulatorSettings } from '../js/emulatorStates';
 import React from 'react';
@@ -24,6 +24,9 @@ export default function HeadsetBar({ device }) {
 	const stereoToggleRef = React.useRef();
 	const [polyfillOn, setPolyfillOn] = React.useState(true);
 	const [showDropDown, setShowDropDown] = React.useState(false);
+	const [triggerMode, setTriggerMode] = React.useState(
+		EmulatorSettings.instance.triggerMode,
+	);
 
 	function onChangeDevice() {
 		const deviceId = headsetSelectRef.current.value;
@@ -152,6 +155,23 @@ export default function HeadsetBar({ device }) {
 						</div>
 						{showDropDown && (
 							<div className="drop-down-container">
+								<button
+									className="btn special-button"
+									onClick={() => {
+										const currentModeIndex = TRIGGER_MODES.indexOf(
+											EmulatorSettings.instance.triggerMode,
+										);
+										const nextModeIndex =
+											(currentModeIndex + 1) % TRIGGER_MODES.length;
+										EmulatorSettings.instance.triggerMode =
+											TRIGGER_MODES[nextModeIndex];
+										EmulatorSettings.instance.write().then(() => {
+											setTriggerMode(EmulatorSettings.instance.triggerMode);
+										});
+									}}
+								>
+									Trigger: {triggerMode}
+								</button>
 								<button
 									className="btn special-button"
 									onClick={() => {

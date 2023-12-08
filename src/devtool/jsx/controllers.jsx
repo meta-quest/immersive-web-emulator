@@ -9,7 +9,9 @@ import {
 	BUTTON_POLYFILL_INDEX_MAPPING,
 	CONTROLLER_STRINGS,
 	PRESS_AND_RELEASE_DURATION,
+	TRIGGER_CONFIG,
 } from '../js/constants';
+import { EmulatorSettings, emulatorStates } from '../js/emulatorStates';
 import {
 	applyControllerAnalogValue,
 	applyControllerButtonChanged,
@@ -18,7 +20,6 @@ import {
 
 import { Joystick } from '../js/joystick';
 import React from 'react';
-import { emulatorStates } from '../js/emulatorStates';
 
 function ControlButtonGroup({ isAnalog, deviceKey, buttonKey }) {
 	const touchRef = React.useRef();
@@ -275,8 +276,8 @@ export default function ControllerPanel({ deviceKey }) {
 export function createAnalogPressFunction(pressRef, rangeRef, onRangeInput) {
 	return function () {
 		const step = 10;
-		const interval = 10;
-		const holdTime = 50;
+		const { interval, holdTime } =
+			TRIGGER_CONFIG[EmulatorSettings.instance.triggerMode];
 		pressRef.current.disabled = true;
 		let rangeValue = 0;
 		const pressIntervalId = setInterval(() => {
