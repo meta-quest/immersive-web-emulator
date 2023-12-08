@@ -455,6 +455,16 @@ export default class EmulatedDevice extends EventEmitter {
 		this.render();
 	}
 
+	setDeviceTransform(deviceKey, position, rotation) {
+		const deviceNode = this.getDeviceNode(deviceKey);
+		if (deviceNode) {
+			deviceNode.position.fromArray(position);
+			deviceNode.rotation.fromArray(rotation);
+			this._emitPoseEvent(deviceKey);
+			this.render();
+		}
+	}
+
 	resetPose() {
 		Object.values(DEVICE).forEach((deviceKey) => {
 			const deviceNode = this.getDeviceNode(deviceKey);

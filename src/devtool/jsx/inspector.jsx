@@ -43,9 +43,49 @@ export default function Inspector({ device, inputMode }) {
 		});
 	});
 
-	function fixNumber(rawValue) {
-		const value = Number(rawValue);
-		return (value >= 0 ? '\xa0' : '') + value.toFixed(2);
+	const [inputValues, setInputValues] = React.useState(
+		Object.values(DEVICE).reduce((acc, deviceKey) => {
+			const deviceName = OBJECT_NAME[deviceKey];
+			for (let i = 0; i < 3; i++) {
+				acc[`${deviceName}-position-${i}`] =
+					transformData[deviceName][0].position[i];
+				acc[`${deviceName}-rotation-${i}`] =
+					transformData[deviceName][0].rotation[i];
+			}
+			return acc;
+		}, {}),
+	);
+
+	function handleInputChange(key, event) {
+		const value = parseFloat(event.target.value);
+		if (!isNaN(value)) {
+			const clampedValue = roundAndClamp(value);
+			setInputValues((prevValues) => ({
+				...prevValues,
+				[key]: clampedValue,
+			}));
+			// Split the key into its components
+			const [deviceName, type, index] = key.split('-');
+			const deviceKey = Object.keys(OBJECT_NAME).find(
+				(key) => OBJECT_NAME[key] === deviceName,
+			);
+			// Update the device transform
+			if (deviceKey) {
+				const position = [...transformData[deviceName][0].position];
+				const rotation = [...transformData[deviceName][0].rotation];
+				if (type === 'position') {
+					position[index] = clampedValue;
+				} else if (type === 'rotation') {
+					rotation[index] = clampedValue;
+				}
+				device.setDeviceTransform(deviceKey, position, rotation);
+			}
+		}
+	}
+
+	function roundAndClamp(number) {
+		const rounded = Math.round(number * 100) / 100;
+		return Math.min(Math.max(rounded, -99.99), 99.99);
 	}
 
 	React.useEffect(() => {
@@ -57,6 +97,15 @@ export default function Inspector({ device, inputMode }) {
 			const transform = transformData[deviceName];
 			const setTransform = transform[1];
 			setTransform({ position, rotation });
+			setInputValues((prevValues) => ({
+				...prevValues,
+				[`${deviceName}-position-0`]: roundAndClamp(position[0]),
+				[`${deviceName}-position-1`]: roundAndClamp(position[1]),
+				[`${deviceName}-position-2`]: roundAndClamp(position[2]),
+				[`${deviceName}-rotation-0`]: roundAndClamp(rotation[0]),
+				[`${deviceName}-rotation-1`]: roundAndClamp(rotation[1]),
+				[`${deviceName}-rotation-2`]: roundAndClamp(rotation[2]),
+			}));
 		});
 		device.forceEmitPose();
 	}, []);
@@ -131,36 +180,25 @@ export default function Inspector({ device, inputMode }) {
 									/>
 								</button>
 								<div className="col-10 transform-body">
-									<div className="row">
-										<div className="value">
-											<span>
-												{fixNumber(transformData[deviceName][0].position[0])}
-											</span>
-											&nbsp;
-											<span>
-												{fixNumber(transformData[deviceName][0].position[1])}
-											</span>
-											&nbsp;
-											<span>
-												{fixNumber(transformData[deviceName][0].position[2])}
-											</span>
+									{['position', 'rotation'].map((type) => (
+										<div className="row" key={`${deviceName}-${type}`}>
+											<div className="value">
+												{[0, 1, 2].map((i) => (
+													<input
+														key={`${deviceName}-${type}-${i}`}
+														type="number"
+														value={inputValues[`${deviceName}-${type}-${i}`]}
+														onChange={(event) =>
+															handleInputChange(
+																`${deviceName}-${type}-${i}`,
+																event,
+															)
+														}
+													/>
+												))}
+											</div>
 										</div>
-									</div>
-									<div className="row">
-										<div className="value">
-											<span>
-												{fixNumber(transformData[deviceName][0].rotation[0])}
-											</span>
-											&nbsp;
-											<span>
-												{fixNumber(transformData[deviceName][0].rotation[1])}
-											</span>
-											&nbsp;
-											<span>
-												{fixNumber(transformData[deviceName][0].rotation[2])}
-											</span>
-										</div>
-									</div>
+									))}
 								</div>
 							</div>
 						);

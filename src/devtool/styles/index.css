@@ -324,7 +324,7 @@ body {
 .transform-card {
 	color: white;
 	margin: 2px !important;
-	width: 137px;
+	width: 155px;
 	font-size: 10px;
 	line-height: 1.2em;
 }
@@ -337,7 +337,7 @@ body {
 
 .transform-body {
 	background-color: #252526;
-	width: 110px;
+	width: 127px;
 	opacity: 50%;
 	color: white;
 	border-radius: 2px 6px 6px 2px;
@@ -352,6 +352,27 @@ body {
 .value {
 	font-family: 'Roboto Mono', monospace;
 	padding: 0;
+}
+
+.value > input[type='number'] {
+	border: none;
+	background-color: black;
+	border-radius: 5px;
+	width: 40px;
+	-webkit-appearance: none;
+	-moz-appearance: textfield;
+	appearance: textfield;
+	margin-left: 2px;
+	color: white;
+	text-align: center;
+}
+
+.value > input[type='number']:first-child {
+	margin-left: 0;
+}
+
+.value > input[type='number']:focus {
+	outline: none;
 }
 
 .value-changed {
@@ -549,8 +570,8 @@ body {
 	margin-bottom: 2px;
 }
 
-.mesh-menu input::-webkit-outer-spin-button,
-.mesh-menu input::-webkit-inner-spin-button {
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
 	-webkit-appearance: none;
 	margin: 0;
 }
