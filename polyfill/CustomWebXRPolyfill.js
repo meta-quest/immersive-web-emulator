@@ -303,7 +303,7 @@ export default class CustomWebXRPolyfill extends WebXRPolyfill {
 				if (!session.enabledFeatures.has('anchors')) {
 					return new XRAnchorSet();
 				} else {
-					return new XRAnchorSet(session.getTrackedAnchors());
+					return new XRAnchorSet(xrSession.getTrackedAnchors());
 				}
 			},
 		});
