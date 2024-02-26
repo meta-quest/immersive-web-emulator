@@ -43,6 +43,13 @@ const connection = {
 					});
 					break;
 
+				case EMULATOR_ACTIONS.CONTROLLER_VISIBILITY_CHANGE:
+					triggerPolyfillAction(POLYFILL_ACTIONS.CONTROLLER_VISIBILITY_CHANGE, {
+						objectName: message.objectName,
+						visible: message.visible,
+					});
+					break;
+
 				case EMULATOR_ACTIONS.BUTTON_STATE_CHANGE:
 					triggerPolyfillAction(POLYFILL_ACTIONS.BUTTON_STATE_CHANGE, {
 						objectName: message.objectName,

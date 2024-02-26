@@ -276,7 +276,7 @@ body {
 .joystick-panel {
 	width: 80px;
 	position: absolute;
-	top: 28;
+	top: 30;
 	left: 0;
 }
 
@@ -529,6 +529,10 @@ body {
 .controller-card .form-select:focus {
 	color: #fff;
 	background-color: #3b3b3c;
+}
+
+.controller-card .card-header .title {
+	padding-bottom: auto;
 }
 
 .controller-card .card-body .row {

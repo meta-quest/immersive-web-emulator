@@ -89,7 +89,11 @@ export default function App({ device }) {
 					style={{ display: inputMode === 'controllers' ? 'flex' : 'none' }}
 				>
 					{[DEVICE.INPUT_LEFT, DEVICE.INPUT_RIGHT].map((deviceKey) => (
-						<ControllerPanel key={deviceKey} deviceKey={deviceKey} />
+						<ControllerPanel
+							key={deviceKey}
+							deviceKey={deviceKey}
+							device={device}
+						/>
 					))}
 				</div>
 				<div

@@ -323,7 +323,7 @@ export default class EmulatedXRDevice extends XRDevice {
 					? this.handPoseData[handedness].pinchValue
 					: 0;
 				handInputImpl.updateFromGamepad(gamepad, pinchValue);
-				if (inputSourceImpl.primaryButtonIndex !== -1) {
+				if (inputSourceImpl.primaryButtonIndex !== -1 && inputSourceImpl.active) {
 					const primaryActionPressed =
 						gamepad.buttons[inputSourceImpl.primaryButtonIndex].pressed;
 					if (primaryActionPressed && !inputSourceImpl.primaryActionPressed) {
@@ -342,7 +342,7 @@ export default class EmulatedXRDevice extends XRDevice {
 					}
 					// imputSourceImpl.primaryActionPressed is updated in onFrameEnd().
 				}
-				if (inputSourceImpl.primarySqueezeButtonIndex !== -1) {
+				if (inputSourceImpl.primarySqueezeButtonIndex !== -1 && inputSourceImpl.active) {
 					const primarySqueezeActionPressed =
 						gamepad.buttons[inputSourceImpl.primarySqueezeButtonIndex].pressed;
 					if (
@@ -858,6 +858,16 @@ export default class EmulatedXRDevice extends XRDevice {
 		gamepad.axes[axisIndex] = value;
 	}
 
+	_updateInputVisibility(controllerIndex, visible) {
+		if (controllerIndex >= this.gamepads.length) {
+			throw new Error('ControllerIndex ' + controllerIndex + ' is greater than the gamepads.length ' + this.gamepads.length);
+		}
+		const gamepad = this.gamepads[controllerIndex];
+		gamepad.active = visible;
+		const inputSourceImpl = this.gamepadInputSources[controllerIndex];
+		inputSourceImpl.active = visible;
+	}
+
 	_initializeControllers(config) {
 		const hasController = config.controllers !== undefined;
 		const controllerNum = hasController ? config.controllers.length : 0;
@@ -969,6 +979,24 @@ export default class EmulatedXRDevice extends XRDevice {
 							quaternionArray,
 							objectName === 'right-controller' ? 0 : 1,
 						); // @TODO: remove magic number
+						break;
+				}
+			},
+		);
+
+		window.addEventListener(
+			POLYFILL_ACTIONS.CONTROLLER_VISIBILITY_CHANGE,
+			(event) => {
+				const objectName = event.detail.objectName;
+				const visible = event.detail.visible;
+
+				switch (objectName) {
+					case 'right-controller':
+					case 'left-controller':
+						this._updateInputVisibility(
+							objectName === 'right-controller' ? 0 : 1, // @TODO: remove magic number
+							visible,
+						); 
 						break;
 				}
 			},

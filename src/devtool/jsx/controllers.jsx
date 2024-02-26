@@ -16,6 +16,7 @@ import {
 	applyControllerAnalogValue,
 	applyControllerButtonChanged,
 	applyControllerButtonPressed,
+	toggleControllerVisibility,
 } from '../js/messenger';
 
 import { Joystick } from '../js/joystick';
@@ -136,11 +137,13 @@ function ControlButtonGroup({ isAnalog, deviceKey, buttonKey }) {
 	);
 }
 
-export default function ControllerPanel({ deviceKey }) {
+export default function ControllerPanel({ deviceKey, device }) {
 	const strings = CONTROLLER_STRINGS[deviceKey];
 	const joystickContainerRef = React.useRef();
 	const joystickResetRef = React.useRef();
 	const joystickStickyRef = React.useRef();
+
+	const [showController, setShowController] = React.useState(true);
 
 	const joystick = new Joystick(100, true, 4);
 	emulatorStates.joysticks[strings.name] = joystick;
@@ -164,6 +167,13 @@ export default function ControllerPanel({ deviceKey }) {
 		);
 	}
 
+	function toggleDeviceVisibility(event) {
+		setShowController(!showController); // React state only applies to the next rendering frame
+		device.toggleControllerVisibility(deviceKey, !showController);
+		toggleControllerVisibility(deviceKey, !showController);
+		event.target.classList.toggle('button-pressed', showController);
+	}
+
 	React.useEffect(() => {
 		joystick.addToParent(joystickContainerRef.current);
 	}, []);
@@ -172,12 +182,21 @@ export default function ControllerPanel({ deviceKey }) {
 		<div className="col">
 			<div className="component-container">
 				<div className="card controller-card">
-					<div className="card-header">
-						<img
-							src={`./assets/images/${strings.name}.png`}
-							className="control-icon"
-						/>
-						<span className="control-label">{strings.displayName}</span>
+					<div className="card-header d-flex justify-content-between align-items-center">
+						<div className="title">
+							<img
+								src={`./assets/images/${strings.name}.png`}
+								className="control-icon"
+							/>
+							<span className="control-label">{strings.displayName}</span>
+						</div>
+						<button
+							className="btn special-button"
+							type="button"
+							onClick={(event) => toggleDeviceVisibility(event)}
+						>
+							Hide
+						</button>
 					</div>
 					<div className="card-body">
 						<div className="row">

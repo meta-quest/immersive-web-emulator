@@ -11,6 +11,7 @@
 export const EMULATOR_ACTIONS = {
 	HEADSET_POSE_CHANGE: 'ea-headset-pose-change',
 	CONTROLLER_POSE_CHANGE: 'ea-controller-pose-change',
+	CONTROLLER_VISIBILITY_CHANGE: 'ea-controller-visibility-change',
 	BUTTON_STATE_CHANGE: 'ea-button-state-change',
 	ANALOG_VALUE_CHANGE: 'ea-analog-value-change',
 	DEVICE_TYPE_CHANGE: 'ea-device-type-change',
@@ -31,6 +32,7 @@ export const EMULATOR_ACTIONS = {
 export const POLYFILL_ACTIONS = {
 	HEADSET_POSE_CHANGE: 'pa-headset-pose-change',
 	CONTROLLER_POSE_CHANGE: 'pa-controller-pose-change',
+	CONTROLLER_VISIBILITY_CHANGE: 'pa-controller-visibility-change',
 	BUTTON_STATE_CHANGE: 'pa-button-state-change',
 	ANALOG_VALUE_CHANGE: 'pa-analog-value-change',
 	DEVICE_TYPE_CHANGE: 'pa-device-type-change',

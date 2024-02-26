@@ -151,6 +151,13 @@ export const togglePolyfill = () => {
 	});
 };
 
+export const toggleControllerVisibility = (deviceKey, visible) => {
+	executeAction(EMULATOR_ACTIONS.CONTROLLER_VISIBILITY_CHANGE, {
+		objectName: OBJECT_NAME[deviceKey],
+		visible,
+	});
+};
+
 export const reloadInspectedTab = () => {
 	executeAction(EMULATOR_ACTIONS.EXCLUDE_POLYFILL);
 };
