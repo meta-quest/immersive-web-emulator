@@ -6,17 +6,23 @@
  */
 
 import { EmulatorSettings, emulatorStates } from '../js/emulatorStates';
-import { changeHandPose, updatePinchValue } from '../js/messenger';
+import {
+	changeHandPose,
+	updatePinchValue,
+	toggleHandVisibility,
+} from '../js/messenger';
 
 import { HAND_STRINGS } from '../js/constants';
 import React from 'react';
 import { createAnalogPressFunction } from './controllers.jsx';
 
-export default function HandPanel({ deviceKey }) {
+export default function HandPanel({ deviceKey, device }) {
 	const strings = HAND_STRINGS[deviceKey];
 	const pressRef = React.createRef();
 	const rangeRef = React.createRef();
 	const poseSelectRef = React.createRef();
+
+	const [showHand, setShowHand] = React.useState(true);
 
 	function onHandPoseChange() {
 		EmulatorSettings.instance.handPoses[strings.name] =
@@ -28,6 +34,13 @@ export default function HandPanel({ deviceKey }) {
 	function onRangeInput() {
 		emulatorStates.pinchValues[strings.name] = rangeRef.current.value / 100;
 		updatePinchValue(deviceKey);
+	}
+
+	function toggleDeviceVisibility(event) {
+		setShowHand(!showHand); // React state only applies to the next rendering frame
+		device.toggleHandVisibility(deviceKey, !showHand);
+		toggleHandVisibility(deviceKey, !showHand);
+		event.target.classList.toggle('button-pressed', showHand);
 	}
 
 	const onPressAnalog = createAnalogPressFunction(
@@ -42,13 +55,32 @@ export default function HandPanel({ deviceKey }) {
 		<div className="col">
 			<div className="component-container">
 				<div className="card controller-card hand-card">
-					<div className="card-header">
-						<img
-							src={`./assets/images/${strings.name}.png`}
-							className="control-icon"
-						/>
-						<span className="control-label">{strings.displayName}</span>
+					<div className="card-header d-flex justify-content-between align-items-center">
+						<div className="title">
+							<img
+								src={`./assets/images/${strings.name}.png`}
+								className="control-icon"
+							/>
+							<span className="control-label">{strings.displayName}</span>
+						</div>
+						<button
+							className="btn special-button"
+							type="button"
+							onClick={(event) => toggleDeviceVisibility(event)}
+							style={{ zIndex: 11, position: 'relative' }}
+						>
+							Hide
+						</button>
 					</div>
+					<div
+						style={{
+							backgroundColor: 'rgba(0,0,0,0.5)',
+							zIndex: 10,
+							position: 'absolute',
+							height: (showHand ? 0 : 100) + '%',
+							width: '100%',
+						}}
+					></div>
 					<div className="card-body">
 						<div className="row">
 							<div className="col-4 d-flex align-items-center">

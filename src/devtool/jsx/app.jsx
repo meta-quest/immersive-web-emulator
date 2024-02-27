@@ -101,7 +101,7 @@ export default function App({ device }) {
 					style={{ display: inputMode === 'hands' ? 'flex' : 'none' }}
 				>
 					{[DEVICE.INPUT_LEFT, DEVICE.INPUT_RIGHT].map((deviceKey) => (
-						<HandPanel key={deviceKey} deviceKey={deviceKey} />
+						<HandPanel key={deviceKey} deviceKey={deviceKey} device={device} />
 					))}
 				</div>
 			</div>

@@ -47,8 +47,9 @@ export default class EmulatedDevice extends EventEmitter {
 		this._camera.lookAt(new THREE.Vector3(0, 1.6, 0));
 
 		this._controllerMeshes = {};
-		this._controllerMeshesVisible = {};
+		this._controllerMeshesHidden = {};
 		this._handMeshes = {};
+		this._handMeshesHidden = {};
 
 		this._labelContainer = document.createElement('div');
 
@@ -83,7 +84,7 @@ export default class EmulatedDevice extends EventEmitter {
 				if (CONTROLLER_STRINGS[deviceKey]) {
 					this._controllerMeshes[deviceKey] = mesh;
 					mesh.visible = EmulatorSettings.instance.inputMode === 'controllers';
-					this._controllerMeshesVisible[deviceKey] = mesh.visible;
+					this._controllerMeshesHidden[deviceKey] = false;
 				}
 				this.render();
 			});
@@ -99,6 +100,7 @@ export default class EmulatedDevice extends EventEmitter {
 					node.add(mesh);
 					this._handMeshes[deviceKey] = mesh;
 					mesh.visible = EmulatorSettings.instance.inputMode === 'hands';
+					this._handMeshesHidden[deviceKey] = false;
 					this.render();
 				});
 			}
@@ -205,7 +207,6 @@ export default class EmulatedDevice extends EventEmitter {
 		controls.attach(object);
 		controls.enabled = false;
 		controls.visible = false;
-		controls.hidden = false;
 		controls.addEventListener(
 			'mouseDown',
 			() => (this._orbitControls.enabled = false),
@@ -445,11 +446,11 @@ export default class EmulatedDevice extends EventEmitter {
 			});
 		}
 		const controls = this._transformControls[deviceKey];
-		if (!controls.enabled && !controls.hidden) {
+		if (!controls.enabled) {
 			controls.enabled = true;
 			controls.visible = true;
 			controls.setMode('translate');
-		} else if (controls.getMode() === 'translate' && !controls.hidden) {
+		} else if (controls.getMode() === 'translate') {
 			controls.setMode('rotate');
 		} else {
 			controls.enabled = false;
@@ -459,11 +460,12 @@ export default class EmulatedDevice extends EventEmitter {
 	}
 
 	toggleControllerVisibility(deviceKey, visible) {
-		this._controllerMeshesVisible[deviceKey] = visible;
-		const controls = this._transformControls[deviceKey];
-		controls.visible = visible;
-		controls.enabled = visible;
-		controls.hidden = !visible;
+		this._controllerMeshesHidden[deviceKey] = !visible;
+		this.render();
+	}
+
+	toggleHandVisibility(deviceKey, visible) {
+		this._handMeshesHidden[deviceKey] = !visible;
 		this.render();
 	}
 
@@ -493,12 +495,14 @@ export default class EmulatedDevice extends EventEmitter {
 
 	render() {
 		Object.entries(this._handMeshes).forEach(([deviceKey, mesh]) => {
-			mesh.visible = EmulatorSettings.instance.inputMode === 'hands';
+			mesh.visible =
+				EmulatorSettings.instance.inputMode === 'hands' &&
+				!this._handMeshesHidden[deviceKey];
 		});
 		Object.entries(this._controllerMeshes).forEach(([deviceKey, mesh]) => {
 			mesh.visible =
 				EmulatorSettings.instance.inputMode === 'controllers' &&
-				this._controllerMeshesVisible[deviceKey];
+				!this._controllerMeshesHidden[deviceKey];
 		});
 		const parent = this.canvas.parentElement;
 		if (!parent) return;

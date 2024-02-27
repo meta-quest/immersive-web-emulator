@@ -103,6 +103,13 @@ const connection = {
 					});
 					break;
 
+				case EMULATOR_ACTIONS.HAND_VISIBILITY_CHANGE:
+					triggerPolyfillAction(POLYFILL_ACTIONS.HAND_VISIBILITY_CHANGE, {
+						handedness: message.handedness,
+						visible: message.visible,
+					});
+					break;
+
 				case EMULATOR_ACTIONS.PINCH_VALUE_CHANGE:
 					triggerPolyfillAction(POLYFILL_ACTIONS.PINCH_VALUE_CHANGE, {
 						handedness: message.handedness,

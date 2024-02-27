@@ -194,10 +194,20 @@ export default function ControllerPanel({ deviceKey, device }) {
 							className="btn special-button"
 							type="button"
 							onClick={(event) => toggleDeviceVisibility(event)}
+							style={{ zIndex: 11, position: 'relative' }}
 						>
 							Hide
 						</button>
 					</div>
+					<div
+						style={{
+							backgroundColor: 'rgba(0,0,0,0.5)',
+							zIndex: 10,
+							position: 'absolute',
+							height: (showController ? 0 : 100) + '%',
+							width: '100%',
+						}}
+					></div>
 					<div className="card-body">
 						<div className="row">
 							<div className="col-4 d-flex align-items-center">

@@ -858,13 +858,19 @@ export default class EmulatedXRDevice extends XRDevice {
 		gamepad.axes[axisIndex] = value;
 	}
 
-	_updateInputVisibility(controllerIndex, visible) {
-		if (controllerIndex >= this.gamepads.length) {
-			throw new Error('ControllerIndex ' + controllerIndex + ' is greater than the gamepads.length ' + this.gamepads.length);
+	_updateControllerInputVisibility(controllerIndex, visible) {
+		if (controllerIndex >= this.gamepadInputSources.length) {
+			throw new Error('ControllerIndex ' + controllerIndex + ' is greater than the gamepadInputSources.length ' + this.gamepadInputSources.length);
 		}
-		const gamepad = this.gamepads[controllerIndex];
-		gamepad.active = visible;
 		const inputSourceImpl = this.gamepadInputSources[controllerIndex];
+		inputSourceImpl.active = visible;
+	}
+
+	_updateHandInputVisibility(handIndex, visible) {
+		if (handIndex >= this.handInputSources.length) {
+			throw new Error('HandIndex ' + handIndex + ' is greater than the handInputSources.length ' + this.handInputSources.length);
+		}
+		const inputSourceImpl = this.handInputSources[handIndex];
 		inputSourceImpl.active = visible;
 	}
 
@@ -993,7 +999,7 @@ export default class EmulatedXRDevice extends XRDevice {
 				switch (objectName) {
 					case 'right-controller':
 					case 'left-controller':
-						this._updateInputVisibility(
+						this._updateControllerInputVisibility(
 							objectName === 'right-controller' ? 0 : 1, // @TODO: remove magic number
 							visible,
 						); 
@@ -1066,6 +1072,24 @@ export default class EmulatedXRDevice extends XRDevice {
 			const poseId = event.detail.pose;
 			this.handPoseData[handedness].poseId = poseId;
 		});
+
+		window.addEventListener(
+			POLYFILL_ACTIONS.HAND_VISIBILITY_CHANGE,
+			(event) => {
+				const handedness = event.detail.handedness;
+				const visible = event.detail.visible;
+
+				switch (handedness) {
+					case 'right':
+					case 'left':
+						this._updateHandInputVisibility(
+							handedness === 'right' ? 0 : 1, // @TODO: remove magic number
+							visible,
+						); 
+						break;
+				}
+			},
+		);
 
 		window.addEventListener(POLYFILL_ACTIONS.PINCH_VALUE_CHANGE, (event) => {
 			const handedness = event.detail.handedness;

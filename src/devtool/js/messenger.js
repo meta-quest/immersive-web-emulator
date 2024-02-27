@@ -158,6 +158,13 @@ export const toggleControllerVisibility = (deviceKey, visible) => {
 	});
 };
 
+export const toggleHandVisibility = (deviceId, visible) => {
+	executeAction(EMULATOR_ACTIONS.HAND_VISIBILITY_CHANGE, {
+		handedness: HAND_STRINGS[deviceId].handedness,
+		visible,
+	});
+};
+
 export const reloadInspectedTab = () => {
 	executeAction(EMULATOR_ACTIONS.EXCLUDE_POLYFILL);
 };
