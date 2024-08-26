@@ -31,6 +31,7 @@ const updateInjection = (reloadTabId = null) => {
 							allFrames: true,
 							runAt: 'document_start',
 							world: 'MAIN',
+							matchOriginAsFallback: true,
 							excludeMatches: Array.from(
 								EmulatorSettings.instance.polyfillExcludes,
 							),
