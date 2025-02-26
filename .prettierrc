@@ -1,9 +1,11 @@
 {
-	"filepath": "./.eslintrc.js",
+  "semi": true,
 	"endOfLine": "lf",
 	"useTabs": true,
 	"trailingComma": "all",
 	"arrowParens": "always",
+  "printWidth": 80,
+  "tabWidth": 2,
 	"singleQuote": true,
 	"jsxSingleQuote": false
 }

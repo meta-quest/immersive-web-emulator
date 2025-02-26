@@ -1,126 +1,69 @@
----
-title: Immersive Web Emulator
-description: Describes how to use the Immersive Web Emulator to run WebXR apps on a desktop browser without an XR device..
-tags:
-  - WEB_PLATFORM
-  - WEBXR
----
+<p align="center">
+    <img height="60px" width="60px" src="https://meta-quest.github.io/immersive-web-emulation-runtime/iwer-text.svg" />
+    <h1 align="center">Immersive Web Emulator 2.0</h1>
+</p>
 
-Immersive Web Emulator is a browser extension that assists WebXR content creation. It enables developers to responsively run [WebXR](https://www.w3.org/TR/webxr/) apps on a desktop browser without the need of an XR device.
+<p align="center">
+    <a href="https://chromewebstore.google.com/detail/immersive-web-emulator/cgffilbpcibhmcfbgggfhfolhkfbhmik"><img src="https://badgen.net/chrome-web-store/v/cgffilbpcibhmcfbgggfhfolhkfbhmik" alt="store version" /></a>
+    <a href="https://chromewebstore.google.com/detail/immersive-web-emulator/cgffilbpcibhmcfbgggfhfolhkfbhmik"><img src="https://badgen.net/chrome-web-store/rating/cgffilbpcibhmcfbgggfhfolhkfbhmik" alt="store rating" /></a>
+    <a href="https://chromewebstore.google.com/detail/immersive-web-emulator/cgffilbpcibhmcfbgggfhfolhkfbhmik"><img src="https://badgen.net/chrome-web-store/users/cgffilbpcibhmcfbgggfhfolhkfbhmik" alt="chrome users" /></a>
+    <a href="https://raw.githubusercontent.com/meta-quest/immersive-web-emulation-runtime/main/LICENSE"><img src="https://badgen.net/github/license/meta-quest/immersive-web-emulation-runtime/" alt="license" /></a>
+</p>
 
-Inspired by the [official WebXR Emulator Extension by Mozilla Reality](https://github.com/MozillaReality/WebXR-emulator-extension/) and our previous efforts of extending it for better functionality, Immersive Web Emulator is designed and rebuilt from the ground up with an emphasis on full input emulation (including touch and analog input), better usability with a re-engineered UI, and more features, such as keyboard input mirroring and input session recording/playback, specifically for Meta Quest headsets.
+The Immersive Web Emulator (IWE) is a browser extension that injects a WebXR runtime into web pages, enabling full WebXR emulation on desktop, Chromium-based browsers.
 
-![Immersive Web Emulator](./screenshots/overview.gif)
+Powered by the [Immersive Web Emulation Runtime](https://meta-quest.github.io/immersive-web-emulation-runtime/), IWE offers a comprehensive WebXR runtime that polyfills or overrides existing WebXR APIs. It includes the Synthetic Environment Module ([@iwer/sem](https://www.npmjs.com/package/@iwer/sem)) for mixed reality emulation capabilities and the DevUI ([@iwer/devui](https://www.npmjs.com/package/@iwer/devui)) for an intuitive developer interface overlay.
 
-## Immersive Web Emulator Features
+![Immersive Web Emulator](./screenshots/iwe.gif)
 
-- [WebXR API polyfill](https://github.com/immersive-web/webxr-polyfill)
-- 6DOF transform control for the headset and left and right controllers, powered by [Three.js](https://threejs.org/)
-- Full input emulation support for Meta Quest Touch controllers
-- External input mirroring support for both keyboard and gamepad
-- Cross browsers support with [WebExtensions API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/)
+## Supported Features
+
+IWE supports most mainstream WebXR features and APIs, offering compatibility on par with the WebXR support in the [Meta Quest Browser](https://www.meta.com/experiences/browser/1916519981771802/).
+
+| Specifications                                                                                               | Support Status                                                                          |
+| ------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| [**WebXR Device API**](https://immersive-web.github.io/webxr/)                                               | ✅                                                                                      |
+| [**WebXR Gamepads Module**](https://immersive-web.github.io/webxr-gamepads-module/)                          | ✅                                                                                      |
+| [**WebXR Hand Input Module**](https://immersive-web.github.io/webxr-hand-input/)                             | ✅                                                                                      |
+| [**WebXR Augmented Reality Module**](https://immersive-web.github.io/webxr-ar-module/)                       | ✅                                                                                      |
+| [**WebXR Hit Test Module**](https://immersive-web.github.io/hit-test)                                        | ✅                                                                                      |
+| [**WebXR Plane Detection Module**](https://immersive-web.github.io/real-world-geometry/plane-detection.html) | ✅                                                                                      |
+| [**WebXR Mesh Detection Module**](https://immersive-web.github.io/real-world-meshing/)                       | ✅                                                                                      |
+| [**WebXR Anchors Module**](https://immersive-web.github.io/anchors/)                                         | ✅                                                                                      |
+| [**WebXR Layers API**](https://immersive-web.github.io/layers/)                                              | \* Works with [layers polyfill](https://github.com/immersive-web/webxr-layers-polyfill) |
+| [**WebXR Lighting Estimation API**](https://immersive-web.github.io/lighting-estimation/)                    | ⛔                                                                                      |
+| [**WebXR DOM Overlays Module**](https://immersive-web.github.io/dom-overlays)                                | ⛔                                                                                      |
 
 ## Installation
 
-This extension is built on [WebExtensions API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions) and implements [Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/). It works on Chrome, Microsoft Edge, and other browsers that support the API. The immersive Web Emulator can be installed from the following browser extension stores:
+This extension is built on the [WebExtensions API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions) and implements [Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/). It is compatible with Chrome, Microsoft Edge, and other browsers supporting the API. You can install the Immersive Web Emulator from the following browser extension stores:
 
-- [Google Chrome Web Store Page](https://chrome.google.com/webstore/detail/immersive-web-emulator/cgffilbpcibhmcfbgggfhfolhkfbhmik)
-- [Microsoft Edge Add-ons Store Page](https://microsoftedge.microsoft.com/addons/detail/immersive-web-emulator/hhlkbhldhffpeibcfggfndbkfohndamj)
+- [Google Chrome Web Store](https://chrome.google.com/webstore/detail/immersive-web-emulator/cgffilbpcibhmcfbgggfhfolhkfbhmik)
+- [Microsoft Edge Add-ons Store](https://microsoftedge.microsoft.com/addons/detail/immersive-web-emulator/hhlkbhldhffpeibcfggfndbkfohndamj)
 
 ### Manual Installation
 
-For other Chromium-based browsers, you can download our latest release, and try to manually install the extension by:
+For other Chromium-based browsers, you can manually install the extension by following these steps:
 
-1. Download the latest release [here](https://github.com/meta-quest/immersive-web-emulator/releases), unpack it and note the unpacked directory.
-2. Open the Extensions page of the browser, it can typically be found in the browser menu, or you can try navigating to "chrome://extensions" in the URL bar if the browser is Chromium-based.
-3. Locate and Enable **developer mode** on the Extensions page.
-4. Locate and click on the **Load unpacked button** and select the unpacked directory from step 1.
+1. Download the latest release [here](https://github.com/meta-quest/immersive-web-emulator/releases), unpack it, and note the unpacked directory.
+2. Open the Extensions page in your browser, typically found in the browser menu, or navigate to `chrome://extensions` in the URL bar if using a Chromium-based browser.
+3. Enable **Developer mode** on the Extensions page.
+4. Click on the **Load unpacked** button and select the unpacked directory from step 1.
 
-The process may vary for different browsers.
+Note: The process may vary for different browsers.
 
-## Immersive Web Emulator Usage
+### Non-Chromium Browsers
 
-After successfully installing the emulator, do the following to use Immersive Web Emulator:
+At this time, IWE is not supported on non-Chromium-based browsers. However, you can integrate IWER directly into your app by following [this guide](https://meta-quest.github.io/immersive-web-emulation-runtime/getting-started.html#adding-iwer-to-your-project) to achieve the **same experience on any modern browser** of your choosing.
 
-1. Go to a WebXR app page (for example, see the [WebXR Examples](#WebXR-Examples)). Notice that the app detects an XR device (emulated) and allows you to enter the immersive VR mode.
-2. Open the **Immersive Web Emulator** tab by going to the Chrome settings button and selcting **More tools** > **Developer tools** and looking for it on the tab bar at the top of the screen. You might need to click **>>** if there are many tabs. From there, you can control the emulated devices. You can move the headset and controllers, and trigger the controller buttons. You can see their transforms reflected in the WebXR application. Note that the **Immersive Web Emulator** tab is only available on WebXR app pages.
+Alternatively, use one of the frameworks with IWER already built-in:
 
-### Device Nodes Transform Controls
-
-By clicking a device node in the emulator's 3D viewport, you can select gizmo mode of the device. By dragging a gizmo, you can rotate or translate the device. Alternatively, you can use the following keyboard shortcut to cycle through gizmo modes of the different device nodes:
-
-| Device Node      | Keyboard Binding |
-| ---------------- | ---------------- |
-| Headset          | Number Key 1     |
-| Left Controller  | Number Key 2     |
-| Right Controller | Number Key 3     |
-
-![Transform](./screenshots/transform.gif)
-
-### Meta Touch Controller Emulated Controls
-
-| Button Action   | Description                                                                                       |
-| --------------- | ------------------------------------------------------------------------------------------------- |
-| Touch           | Toggle '[GamepadButton](https://developer.mozilla.org/en-US/docs/Web/API/GamepadButton).touched'. |
-| Press           | Set 'GamepadButton.pressed' to true and revert after 0.25 seconds.                                |
-| Lock            | Toggle '[GamepadButton](https://developer.mozilla.org/en-US/docs/Web/API/GamepadButton).pressed'. |
-| Joystick        | Set values on '[Gamepad.axes](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad/axes)'.    |
-| Joystick-Sticky | Toggle the auto-return feature of the emulated joystick.                                          |
-| Joystick-Reset  | Recenter the emulated joystick.                                                                   |
-| Slider          | Emulate analog input for trigger and grip.                                                        |
-
-![UI-Controls](./screenshots/uicontrols.gif)
-
-### Stereo Effect
-
-You can enable/disable Stereo Effect which renders two views.
-
-### Pose Controls
-
-You can save an arbitrary combination of device nodes transform data as the default starting pose of the emulator.
-
-### Keyboard Control & Events Pass-Through
-
-There are keyboard mapping built in for some important controller emulated controls:
-
-| Button Action        | Keyboard Binding |
-| -------------------- | ---------------- |
-| Left Joystick        | W/A/S/D          |
-| Left Joystick Click  | C                |
-| Button X             | X                |
-| Button Y             | Z                |
-| Left Trigger         | E                |
-| Left Grip            | Q                |
-| Right Joystick       | Arrow Keys       |
-| Right Joystick Click | .                |
-| Button A             | '                |
-| Button B             | /                |
-| Right Trigger        | Enter            |
-| Right Grip           | Shift            |
-
-![Keyboard-Controls](./screenshots/keyboardcontrols.gif)
-
-Keyboard events other than those reserved for controller emulation are passed through to the main WebXR experience, you may wish to utilize this feature to build in some shortcuts for debugging purposes.
-
-<!-- ### Record Session & Emulator Playback
-
-You can also use the session recording utility package to record input sessions from your WebXR experiences in headset, and replay the input session with the emulator -->
-
-## Note
-
-- Even if native WebXR API is available the extension overrides it with WebXR polyfill
-
-## WebXR Examples
-
-- [WebXR Samples](https://immersive-web.github.io/webxr-samples/)
-- [Three.js WebXR VR examples](https://threejs.org/examples/?q=WebXR#webxr_vr_ballshooter)
-- [Babylon.js WebXR examples](https://doc.babylonjs.com/features/featuresDeepDive/webXR/webXRDemos)
-- [A-Frame](https://aframe.io/)
-
-## Contributing
-
-See the [CONTRIBUTING](CONTRIBUTING.md) file for how to help out.
+- [React-Three/XR](https://pmndrs.github.io/xr/docs/getting-started/development-setup)
 
 ## License
 
-Immersive Web Emulator is MIT licensed, as found in the [LICENSE](LICENSE.md) file.
+IWER is licensed under the MIT License. For more details, see the [LICENSE](https://github.com/meta-quest/immersive-web-emulator/blob/main/LICENSE) file in this repository.
+
+## Contributing
+
+Your contributions are welcome! Please feel free to submit issues and pull requests. Before contributing, make sure to review our [Contributing Guidelines](https://github.com/meta-quest/immersive-web-emulator/blob/main/CONTRIBUTING.md) and [Code of Conduct](https://github.com/meta-quest/immersive-web-emulator/blob/main/CODE_OF_CONDUCT.md).

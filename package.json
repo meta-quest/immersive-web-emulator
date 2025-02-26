@@ -1,60 +1,38 @@
 {
 	"name": "immersive-web-emulator",
-	"watch": {
-		"build:devtool": {
-			"patterns": [
-				"src"
-			],
-			"extensions": "js,jsx,css,html",
-			"quiet": false
-		}
-	},
 	"scripts": {
-		"build:devtool": "rollup -c",
-		"build:polyfill": "cd polyfill && npm run build",
-		"build": "rimraf dist && npm run build:polyfill && npm run build:devtool",
-		"lint": "eslint ./src",
-		"format": "prettier --write ./src/**/*",
-		"watch": "npm-watch",
-		"postinstall": "cd polyfill && npm install",
-		"zip": "npm run build && bestzip iwe-release.zip dist/* icons/* manifest.json LICENSE.md"
+		"build": "rimraf build && tsc && rollup -c",
+		"zip": "rimraf iwe-release.zip && npm run build && bestzip iwe-release.zip build/* icons/* manifest.json LICENSE"
 	},
 	"pre-commit": [
 		"lint"
 	],
 	"dependencies": {
-		"bootstrap": "^5.2.3",
-		"events": "^3.3.0",
-		"jquery": "^3.6.1",
-		"lodash": "^4.17.21",
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0",
-		"three": "github:felixtrz/three.js#8b0a06e650"
+		"@iwer/devui": "^1.1.1",
+		"@iwer/sem": "^0.2.5",
+		"iwer": "^2.0.1",
+		"three": "^0.165.0",
+		"tldts": "^6.1.75"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.22.5",
-		"@babel/plugin-syntax-jsx": "^7.22.5",
-		"@babel/preset-react": "^7.22.5",
-		"@rollup/plugin-babel": "^6.0.3",
-		"@rollup/plugin-commonjs": "^25.0.1",
-		"@rollup/plugin-node-resolve": "^15.1.0",
-		"@rollup/plugin-replace": "^5.0.2",
-		"@types/chrome": "^0.0.235",
-		"@typescript-eslint/eslint-plugin": "^5.59.5",
-		"@typescript-eslint/parser": "^5.59.5",
+		"@rollup/plugin-commonjs": "^26.0.1",
+		"@rollup/plugin-json": "^6.1.0",
+		"@rollup/plugin-node-resolve": "^15.2.3",
+		"@rollup/plugin-replace": "^5.0.7",
+		"@rollup/plugin-strip": "^3.0.4",
+		"@rollup/plugin-terser": "^0.4.4",
+		"@types/chrome": "^0.0.299",
+		"@types/node": "^18.7.13",
+		"@typescript-eslint/eslint-plugin": "^5.55.0",
+		"@typescript-eslint/parser": "^5.55.0",
 		"bestzip": "^2.2.1",
-		"eslint": "^8.40.0",
-		"eslint-config-prettier": "^8.5.0",
-		"eslint-plugin-html": "^7.1.0",
-		"eslint-plugin-react": "^7.32.2",
-		"npm-watch": "^0.11.0",
-		"pre-commit": "^1.2.2",
-		"prettier": "^2.8.0",
-		"rimraf": "^4.1.2",
-		"rollup": "^3.25.1",
-		"rollup-plugin-cleanup": "^3.2.1",
-		"rollup-plugin-copy": "^3.4.0",
-		"rollup-plugin-import-css": "^3.1.0",
-		"typescript": "^5.0.4"
+		"eslint": "^8.36.0",
+		"eslint-config-prettier": "^8.10.0",
+		"eslint-plugin-prettier": "^5.0.1",
+		"npm": "^11.0.0",
+		"prettier": "^3.0.3",
+		"rimraf": "^6.0.1",
+		"rollup": "^2.79.1",
+		"typescript": "^5.5.3"
 	}
 }
