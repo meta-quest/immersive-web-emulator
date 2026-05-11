@@ -8,9 +8,9 @@
 		"lint"
 	],
 	"dependencies": {
-		"@iwer/devui": "^1.1.1",
+		"@iwer/devui": "^1.1.2",
 		"@iwer/sem": "^0.2.5",
-		"iwer": "^2.0.1",
+		"iwer": "^2.1.1",
 		"three": "^0.165.0",
 		"tldts": "^6.1.75"
 	},
