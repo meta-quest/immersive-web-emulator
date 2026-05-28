@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "extraKnownMarketplaces": {
+    "meta-quest": {
+      "source": {
+        "source": "github",
+        "repo": "meta-quest/agentic-tools"
+      },
+      "autoUpdate": true
+    }
+  },
+  "enabledPlugins": {
+    "meta-vr@meta-quest": true
+  }
+}

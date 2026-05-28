@@ -67,3 +67,9 @@ IWER is licensed under the MIT License. For more details, see the [LICENSE](http
 ## Contributing
 
 Your contributions are welcome! Please feel free to submit issues and pull requests. Before contributing, make sure to review our [Contributing Guidelines](https://github.com/meta-quest/immersive-web-emulator/blob/main/CONTRIBUTING.md) and [Code of Conduct](https://github.com/meta-quest/immersive-web-emulator/blob/main/CODE_OF_CONDUCT.md).
+
+## AI coding agents
+
+This repo is wired up for AI coding agents — `AGENTS.md`, `.vscode/extensions.json`, `.mcp.json`, `.cursor/rules/`, and a few client-specific dotfiles surface the **Meta Horizon** VS Code/Cursor extension, the `hzdb` MCP server, and the Meta Quest skill set automatically.
+
+Full toolchain, including Meta Quest skills and per-client install instructions: [github.com/meta-quest/agentic-tools](https://github.com/meta-quest/agentic-tools).
